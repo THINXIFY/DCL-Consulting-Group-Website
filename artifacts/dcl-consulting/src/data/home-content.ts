@@ -80,3 +80,73 @@ export const industries: IndustryItem[] = [
   { name: 'Hospitality', context: 'Experiences, property, and service led businesses.', image: img('dcl-ind-hospitality') },
   { name: 'Professional Services', context: 'Knowledge businesses and specialist operators.', image: img('dcl-ind-professional') },
 ];
+
+export interface AudienceItem {
+  title: string;
+  copy: string;
+}
+
+export interface QualityItem {
+  title: string;
+  copy: string;
+}
+
+export interface CompanyFact {
+  label: string;
+  value: string;
+}
+
+export interface PhilosophyStatement {
+  text: string;
+  highlight: string;
+}
+
+export const whoWeAdvise: AudienceItem[] = [
+  {
+    title: 'Private Capital',
+    copy: 'Independent perspective for private investors evaluating opportunities, commercial risks and strategic choices.',
+  },
+  {
+    title: 'Corporate Ambition',
+    copy: 'Structured analysis for businesses considering growth, expansion, partnerships or other significant commercial decisions.',
+  },
+  {
+    title: 'Strategic Opportunity',
+    copy: 'Decision support when an opportunity is complex, unfamiliar or requires deeper independent scrutiny.',
+  },
+];
+
+export const whyDcl: QualityItem[] = [
+  {
+    title: 'Independent Perspective',
+    copy: 'A considered view shaped by the opportunity and the evidence rather than a predetermined conclusion.',
+  },
+  {
+    title: 'Analytical Discipline',
+    copy: 'Structured evaluation focused on the commercial, financial and strategic factors most relevant to the decision.',
+  },
+  {
+    title: 'Commercial Understanding',
+    copy: 'Attention to how businesses, markets and opportunities work in practice, not only how they appear on paper.',
+  },
+  {
+    title: 'Clear Communication',
+    copy: 'Complex information translated into a clearer view of what matters, what remains uncertain and what deserves attention.',
+  },
+];
+
+export const companyFacts: CompanyFact[] = [
+  { label: 'Company', value: 'DCL Consulting and Investments Limited' },
+  { label: 'Company Type', value: 'Private Limited Company' },
+  { label: 'Registered In', value: 'England & Wales' },
+  { label: 'Company Number', value: '10086906' },
+  { label: 'Director', value: 'David Christopher Lebond' },
+];
+
+export const philosophy: PhilosophyStatement[] = [
+  { text: 'Understand before concluding.', highlight: 'Understand' },
+  { text: 'Challenge assumptions before accepting them.', highlight: 'Challenge' },
+  { text: 'Consider risk alongside opportunity.', highlight: 'risk' },
+  { text: 'Focus on what materially changes the decision.', highlight: 'materially' },
+  { text: 'Communicate the conclusion clearly.', highlight: 'clearly' },
+];

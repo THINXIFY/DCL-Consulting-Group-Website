@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { approach, expertise, industries } from './home-content';
+import { approach, companyFacts, expertise, industries, philosophy, whoWeAdvise, whyDcl } from './home-content';
 
 const NUMBERING_PATTERN = /\b(0?[1-9]|1[0-2])\s*[/.)-]/;
 const DASH_CHARS = /[–—]/;
@@ -45,6 +45,41 @@ describe('home-content', () => {
 
   it('contains no numbering or em-dash characters anywhere', () => {
     const strings = [...allStrings(expertise), ...allStrings(approach), ...allStrings(industries)];
+    for (const s of strings) {
+      expect(s).not.toMatch(NUMBERING_PATTERN);
+      expect(s).not.toMatch(DASH_CHARS);
+    }
+  });
+
+  it('has three who-we-advise audiences and four why-dcl qualities, no numbering', () => {
+    expect(whoWeAdvise).toHaveLength(3);
+    expect(whyDcl).toHaveLength(4);
+    for (const item of [...whoWeAdvise, ...whyDcl]) {
+      expect(item).not.toHaveProperty('number');
+      expect(item.title).toBeTruthy();
+      expect(item.copy).toBeTruthy();
+    }
+  });
+
+  it('has exactly the five real company facts from the brief, nothing invented', () => {
+    expect(companyFacts).toEqual([
+      { label: 'Company', value: 'DCL Consulting and Investments Limited' },
+      { label: 'Company Type', value: 'Private Limited Company' },
+      { label: 'Registered In', value: 'England & Wales' },
+      { label: 'Company Number', value: '10086906' },
+      { label: 'Director', value: 'David Christopher Lebond' },
+    ]);
+  });
+
+  it('has five philosophy statements, each with a highlight word present in its own text', () => {
+    expect(philosophy).toHaveLength(5);
+    for (const item of philosophy) {
+      expect(item.text).toContain(item.highlight);
+    }
+  });
+
+  it('has no numbering or em-dash characters in the new arrays', () => {
+    const strings = [...allStrings(whoWeAdvise), ...allStrings(whyDcl), ...allStrings(companyFacts), ...allStrings(philosophy)];
     for (const s of strings) {
       expect(s).not.toMatch(NUMBERING_PATTERN);
       expect(s).not.toMatch(DASH_CHARS);
