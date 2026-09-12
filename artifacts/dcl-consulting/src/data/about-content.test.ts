@@ -14,13 +14,14 @@ function allStrings(value: unknown): string[] {
 }
 
 describe('about-content', () => {
-  it('has four how-we-think chapters, each with a title, question, and copy', () => {
+  it('has four how-we-think chapters, each with a title, question, copy, and image', () => {
     expect(howWeThink).toHaveLength(4);
     for (const item of howWeThink) {
       expect(item).not.toHaveProperty('number');
       expect(item.title).toBeTruthy();
       expect(item.question).toBeTruthy();
       expect(item.copy).toBeTruthy();
+      expect(item.image).toMatch(/^https:\/\/picsum\.photos\/seed\//);
     }
   });
 
