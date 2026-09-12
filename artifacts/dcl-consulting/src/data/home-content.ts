@@ -171,3 +171,43 @@ export const philosophy: PhilosophyStatement[] = [
     support: 'Translate analysis into a perspective that is useful for decision-making.',
   },
 ];
+
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+export const faq: FaqItem[] = [
+  {
+    question: 'What does DCL Consulting do?',
+    answer: 'DCL Consulting provides investment consulting and strategic decision support, helping investors and businesses evaluate opportunities through commercial analysis, financial considerations, risk assessment and independent strategic perspective.',
+  },
+  {
+    question: 'Who does DCL work with?',
+    answer: 'DCL supports private investors, businesses and decision-makers seeking a clearer understanding of significant investment or strategic opportunities.',
+  },
+  {
+    question: 'What types of opportunities can DCL assess?',
+    answer: 'DCL can support the evaluation of investment opportunities, acquisitions, growth initiatives, market entry, strategic partnerships, business performance and other complex commercial decisions.',
+  },
+  {
+    question: 'Does DCL work across different industries?',
+    answer: 'Yes. DCL takes a sector-agnostic approach, focusing on the fundamentals of each opportunity rather than applying a fixed sector template.',
+  },
+  {
+    question: 'What does a typical engagement involve?',
+    answer: 'Each engagement begins by understanding the decision, objectives and available information. DCL then identifies the most relevant commercial, financial, risk and strategic factors before developing a clearer decision-focused perspective.',
+  },
+  {
+    question: 'Can DCL support due diligence?',
+    answer: 'DCL can support the organised review of important information, assumptions, dependencies and unresolved questions that should be considered before a significant decision.',
+  },
+  {
+    question: 'Does DCL manage or execute investments?',
+    answer: "DCL's website and services are positioned around consulting, analysis and strategic decision support rather than brokerage, custody, trading or portfolio-management services.",
+  },
+  {
+    question: 'How do I start a conversation with DCL?',
+    answer: 'Get in touch to introduce the opportunity or decision you are considering, and DCL will determine the appropriate scope for an initial discussion.',
+  },
+];

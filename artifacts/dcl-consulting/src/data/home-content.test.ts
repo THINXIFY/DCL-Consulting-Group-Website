@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { approach, companyFacts, expertise, industries, philosophy, whoWeAdvise, whyDcl } from './home-content';
+import { approach, companyFacts, expertise, faq, industries, philosophy, whoWeAdvise, whyDcl } from './home-content';
 
 const NUMBERING_PATTERN = /\b(0?[1-9]|1[0-2])\s*[/.)-]/;
 const DASH_CHARS = /[–—]/;
@@ -81,6 +81,19 @@ describe('home-content', () => {
   it('has no numbering or em-dash characters in the new arrays', () => {
     const strings = [...allStrings(whoWeAdvise), ...allStrings(whyDcl), ...allStrings(companyFacts), ...allStrings(philosophy)];
     for (const s of strings) {
+      expect(s).not.toMatch(NUMBERING_PATTERN);
+      expect(s).not.toMatch(DASH_CHARS);
+    }
+  });
+
+  it('has eight FAQ items with no numbering or em-dash characters', () => {
+    expect(faq).toHaveLength(8);
+    for (const item of faq) {
+      expect(item).not.toHaveProperty('number');
+      expect(item.question).toBeTruthy();
+      expect(item.answer).toBeTruthy();
+    }
+    for (const s of allStrings(faq)) {
       expect(s).not.toMatch(NUMBERING_PATTERN);
       expect(s).not.toMatch(DASH_CHARS);
     }
