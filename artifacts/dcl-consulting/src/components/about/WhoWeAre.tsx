@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { ensureGsapRegistered, gsap } from '@/lib/gsap';
 import { useMediaQuery } from '@/hooks/use-media-query';
 
-const WHO_WE_ARE_IMAGE = 'https://picsum.photos/seed/dcl-who-we-are-report-review/1200/1500?grayscale';
+const WHO_WE_ARE_IMAGE = 'https://picsum.photos/id/1031/1200/1500';
 
 export function WhoWeAre() {
   const rootRef = useRef<HTMLElement>(null);
@@ -100,7 +100,7 @@ export function WhoWeAre() {
         <div className="relative mt-20 grid grid-cols-1 gap-y-12 lg:mt-28 lg:grid-cols-12 lg:gap-x-8">
           <div className="lg:col-span-6">
             <div className="dclWhoWeAre__imageWrap aspect-[4/5] w-full overflow-hidden lg:sticky lg:top-24">
-              <img data-testid="img-whoweare" className="dclWhoWeAre__image h-full w-full scale-110 object-cover" src={WHO_WE_ARE_IMAGE} alt="Editorial close crop of an investment report under review, used as institutional context imagery" />
+              <img data-testid="img-whoweare" className="dclWhoWeAre__image h-full w-full scale-110 object-cover" src={WHO_WE_ARE_IMAGE} alt="Sharp geometric facade of a contemporary building, used as institutional context imagery" />
             </div>
           </div>
 
@@ -115,12 +115,12 @@ export function WhoWeAre() {
           </div>
         </div>
 
-        <p
-          data-testid="text-whoweare-closing"
-          className="dclHome__display dclWhoWeAre__closing mt-20 max-w-[820px] text-[clamp(2rem,4vw,3.4rem)] leading-[1.2] tracking-[-.025em] text-[#080a0d] lg:mt-24"
-        >
-          The objective is simple: a better-informed view of what matters, what remains uncertain and what deserves closer attention.
-        </p>
+        <div data-testid="text-whoweare-closing" className="dclWhoWeAre__closing mt-24 lg:mt-32">
+          <p className="dclHome__display text-[clamp(1.4rem,2vw,1.8rem)] italic leading-none text-[#6b737a]">The objective is simple.</p>
+          <p className="dclHome__display mt-4 max-w-[880px] text-[clamp(2.2rem,4.6vw,3.8rem)] leading-[1.15] tracking-[-.03em] text-[#080a0d]">
+            a better-informed view of what matters, what remains uncertain and what deserves closer attention.
+          </p>
+        </div>
       </div>
     </section>
   );
