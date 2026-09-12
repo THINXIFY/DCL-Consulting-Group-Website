@@ -8,6 +8,11 @@ import { About } from '@/components/sections/About';
 import { Expertise } from '@/components/sections/Expertise';
 import { Approach } from '@/components/sections/Approach';
 import { Industries } from '@/components/sections/Industries';
+import { WhoWeAdvise } from '@/components/sections/WhoWeAdvise';
+import { WhyDcl } from '@/components/sections/WhyDcl';
+import { DclAtAGlance } from '@/components/sections/DclAtAGlance';
+import { OurPhilosophy } from '@/components/sections/OurPhilosophy';
+import { FinalCta } from '@/components/sections/FinalCta';
 import NotFound from '@/pages/not-found';
 import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 
@@ -21,6 +26,11 @@ function Home() {
       <Expertise />
       <Approach />
       <Industries />
+      <WhoWeAdvise />
+      <WhyDcl />
+      <DclAtAGlance />
+      <OurPhilosophy />
+      <FinalCta />
     </main>
   );
 }
