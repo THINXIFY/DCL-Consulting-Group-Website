@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { WhoWeAre } from './WhoWeAre';
 
 describe('WhoWeAre', () => {
-  it('renders the eyebrow, headline, lead, both body paragraphs, and closing statement', () => {
+  it('renders the eyebrow, headline, lead, both body paragraphs, and the pull statement', () => {
     render(<WhoWeAre />);
     const section = document.getElementById('who-we-are');
     expect(section).not.toBeNull();
@@ -16,7 +16,7 @@ describe('WhoWeAre', () => {
     expect(screen.getByText(/develop a clearer understanding of opportunities/i)).toBeInTheDocument();
     expect(screen.getByText(/understanding the commercial fundamentals/i)).toBeInTheDocument();
     expect(screen.getByText(/rather than approaching every situation/i)).toBeInTheDocument();
-    expect(screen.getByTestId('text-whoweare-closing')).toHaveTextContent(/a better-informed view/i);
+    expect(screen.getByTestId('text-whoweare-pull')).toHaveTextContent(/a better-informed view/i);
   });
 
   it('contains no numbering or em-dash characters', () => {
