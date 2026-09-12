@@ -12,6 +12,7 @@ import { WhoWeAdvise } from '@/components/sections/WhoWeAdvise';
 import { WhyDcl } from '@/components/sections/WhyDcl';
 import { DclAtAGlance } from '@/components/sections/DclAtAGlance';
 import { OurPhilosophy } from '@/components/sections/OurPhilosophy';
+import { Faq } from '@/components/sections/Faq';
 import { FinalCta } from '@/components/sections/FinalCta';
 import NotFound from '@/pages/not-found';
 import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
@@ -30,6 +31,7 @@ function Home() {
       <WhyDcl />
       <DclAtAGlance />
       <OurPhilosophy />
+      <Faq />
       <FinalCta />
     </main>
   );
