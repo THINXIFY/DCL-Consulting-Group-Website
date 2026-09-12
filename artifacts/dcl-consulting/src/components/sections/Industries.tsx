@@ -83,7 +83,7 @@ export function Industries() {
         <div className="mt-16 grid gap-14 border-t border-white/20 pt-14 lg:grid-cols-[.75fr_1.25fr] lg:gap-20">
           {isDesktop && (
             <div data-testid="image-industry-sticky" className="lg:sticky lg:top-24 lg:self-start">
-              <div className="dclIndustries__frame relative aspect-[4/5] w-full overflow-hidden">
+              <div className="dclIndustries__frame relative aspect-square w-full overflow-hidden">
                 {industries.map((item, index) => (
                   <img
                     key={item.name}

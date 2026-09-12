@@ -3,12 +3,18 @@ import { ArrowDownRight } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { ensureGsapRegistered, gsap } from '@/lib/gsap';
 import { useMediaQuery } from '@/hooks/use-media-query';
+import { useMagnetic } from '@/hooks/use-magnetic';
 
 const HERO_IMAGE = 'https://picsum.photos/seed/dcl-hero-facade/1600/2000?grayscale';
 
 export function Hero() {
   const rootRef = useRef<HTMLElement>(null);
+  const exploreRef = useRef<HTMLAnchorElement>(null);
+  const startRef = useRef<HTMLAnchorElement>(null);
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+
+  useMagnetic(exploreRef, { strength: 0.3 });
+  useMagnetic(startRef, { strength: 0.3 });
 
   useEffect(() => {
     if (!rootRef.current) return;
@@ -67,17 +73,23 @@ export function Hero() {
           </p>
           <div className="mt-9 flex flex-wrap gap-5">
             <a
+              ref={exploreRef}
               href="#expertise"
               data-testid="link-explore-expertise"
-              className="dclHero__reveal dclHero__reveal--cta dclMagnetic group inline-flex items-center gap-4 bg-[#c6e3fa] px-5 py-3 text-[11px] font-semibold uppercase tracking-[.13em] text-[#080a0d] transition-colors hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+              className="dclHero__reveal dclHero__reveal--cta group inline-flex items-center gap-4 bg-[#c6e3fa] px-5 py-3 text-[11px] font-semibold uppercase tracking-[.13em] text-[#0A0C0F] transition-[background-color,box-shadow] duration-300 hover:bg-white hover:shadow-[0_8px_28px_rgba(198,227,250,.35)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
             >
               Explore Our Expertise
-              <ArrowDownRight size={15} strokeWidth={1.3} className="transition-transform group-hover:translate-y-1" />
+              <ArrowDownRight
+                size={15}
+                strokeWidth={1.3}
+                className="transition-transform duration-300 ease-out group-hover:translate-x-1 group-hover:-translate-y-1"
+              />
             </a>
             <a
+              ref={startRef}
               href="#about"
               data-testid="link-start-conversation-hero"
-              className="dclHero__reveal dclHero__reveal--cta dclMagnetic inline-flex items-center border-b border-white/45 px-1 py-3 text-[11px] font-semibold uppercase tracking-[.13em] text-white/80 transition-colors hover:border-[#c6e3fa] hover:text-[#c6e3fa] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+              className="dclHero__reveal dclHero__reveal--cta inline-flex items-center border-b border-white/45 px-1 py-3 text-[11px] font-semibold uppercase tracking-[.13em] text-white/80 transition-colors duration-300 hover:border-[#c6e3fa] hover:text-[#c6e3fa] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
             >
               Start a Conversation
             </a>
