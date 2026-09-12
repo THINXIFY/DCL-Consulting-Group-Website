@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Menu, X } from 'lucide-react';
+import { Link } from 'wouter';
 
 function Mark() {
   return (
@@ -11,11 +12,26 @@ function Mark() {
 }
 
 const NAV_LINKS: Array<[string, string]> = [
-  ['About us', '#about'],
+  ['About us', '/about'],
   ['Our expertise', '#expertise'],
   ['Our approach', '#approach'],
   ['Industries', '#industries'],
 ];
+
+function NavLink({ href, className, testId, onClick, children }: { href: string; className: string; testId: string; onClick?: () => void; children: ReactNode }) {
+  if (href.startsWith('#')) {
+    return (
+      <a href={href} data-testid={testId} onClick={onClick} className={className}>
+        {children}
+      </a>
+    );
+  }
+  return (
+    <Link href={href} data-testid={testId} onClick={onClick} className={className}>
+      {children}
+    </Link>
+  );
+}
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -23,17 +39,17 @@ export function Header() {
   return (
     <header className="absolute inset-x-0 top-0 z-20">
       <div className="mx-auto flex max-w-[1440px] items-center justify-between px-6 py-6 sm:px-10 lg:px-16">
-        <a href="#top" data-testid="link-home"><Mark /></a>
+        <Link href="/" data-testid="link-home"><Mark /></Link>
         <nav className="hidden items-center gap-8 md:flex" aria-label="Primary navigation">
           {NAV_LINKS.map(([label, href]) => (
-            <a
+            <NavLink
               key={href}
               href={href}
-              data-testid={`link-nav-${label.toLowerCase().replaceAll(' ', '-')}`}
+              testId={`link-nav-${label.toLowerCase().replaceAll(' ', '-')}`}
               className="text-[11px] font-medium uppercase tracking-[.12em] text-white/70 transition-colors hover:text-[#c6e3fa] focus-visible:text-[#c6e3fa] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
             >
               {label}
-            </a>
+            </NavLink>
           ))}
         </nav>
         <a
@@ -57,15 +73,15 @@ export function Header() {
       {open && (
         <nav className="border-t border-white/10 bg-[#080a0d]/95 px-6 py-5 md:hidden" aria-label="Mobile navigation">
           {NAV_LINKS.map(([label, href]) => (
-            <a
+            <NavLink
               key={href}
               href={href}
               onClick={() => setOpen(false)}
-              data-testid={`link-mobile-${label.toLowerCase().replaceAll(' ', '-')}`}
+              testId={`link-mobile-${label.toLowerCase().replaceAll(' ', '-')}`}
               className="block border-b border-white/10 py-4 text-[11px] font-medium uppercase tracking-[.14em] text-white/80"
             >
               {label}
-            </a>
+            </NavLink>
           ))}
         </nav>
       )}

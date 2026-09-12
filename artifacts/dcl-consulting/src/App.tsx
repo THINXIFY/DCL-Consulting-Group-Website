@@ -16,7 +16,6 @@ import { Faq } from '@/components/sections/Faq';
 import { FinalCta } from '@/components/sections/FinalCta';
 import AboutPage from '@/pages/about';
 import NotFound from '@/pages/not-found';
-import { useScrollTriggerRefresh } from '@/hooks/use-scroll-trigger-refresh';
 import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 
 const queryClient = new QueryClient();
@@ -57,7 +56,6 @@ function RoutedErrorBoundary({ children }: { children: ReactNode }) {
 }
 
 function App() {
-  useScrollTriggerRefresh();
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
