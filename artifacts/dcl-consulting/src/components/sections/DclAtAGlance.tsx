@@ -77,7 +77,7 @@ export function DclAtAGlance() {
           DCL Consulting and Investments Limited is a private limited company registered in England and Wales, providing investment consulting and strategic decision support.
         </p>
 
-        <div className="dclGlance__rule mt-16 h-px w-full bg-[#080a0d]/20" />
+        <div className="dclGlance__rule mt-16 h-px w-full bg-[#8bbfe8]" />
         <div className="mt-2">
           {companyFacts.map((fact) => (
             <div
