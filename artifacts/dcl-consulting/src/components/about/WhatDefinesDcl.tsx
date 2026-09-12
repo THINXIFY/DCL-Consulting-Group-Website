@@ -9,6 +9,7 @@ function slug(title: string) {
 
 export function WhatDefinesDcl() {
   const rootRef = useRef<HTMLElement>(null);
+  const rowsRef = useRef<HTMLDivElement>(null);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -37,10 +38,13 @@ export function WhatDefinesDcl() {
         { autoAlpha: 0, y: 20 },
         { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.09, ease: 'power2.out', scrollTrigger: { trigger: rootRef.current, start: 'top 58%' } },
       );
+      // Appears in the sticky left column only once the row list on the
+      // right has mostly scrolled past, so it reads as the conclusion of
+      // reading through the principles rather than being visible upfront.
       gsap.fromTo(
         '.dclWhatDefines__closing',
-        { autoAlpha: 0, y: 26 },
-        { autoAlpha: 1, y: 0, duration: 0.85, ease: 'power2.out', scrollTrigger: { trigger: '.dclWhatDefines__closing', start: 'top 88%' } },
+        { autoAlpha: 0, y: 16 },
+        { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power2.out', scrollTrigger: { trigger: rowsRef.current, start: 'bottom 75%' } },
       );
     }, rootRef);
     return () => ctx.revert();
@@ -61,10 +65,23 @@ export function WhatDefinesDcl() {
             <p className="dclWhatDefines__fadeUp mt-7 max-w-[380px] text-[16px] leading-7 text-[#35404a]">
               DCL's work is guided by a small number of principles that shape how opportunities are examined and how conclusions are communicated.
             </p>
+
+            <div className="dclWhatDefines__closing mt-16 border-t border-[#080a0d]/15 pt-8">
+              <p
+                data-testid="text-defines-closing"
+                className="dclHome__display max-w-[340px] text-[clamp(1.6rem,2.4vw,2.15rem)] leading-[1.15] tracking-[-.02em] text-[#080a0d]"
+              >
+                Independent thinking.
+                <br />
+                Structured judgement.
+                <br />
+                Clear communication.
+              </p>
+            </div>
           </div>
 
           <div className="lg:col-span-8 lg:col-start-5">
-            <div className="border-t border-[#080a0d]/14">
+            <div ref={rowsRef} className="border-t border-[#080a0d]/14">
               {whatDefinesDcl.map((item, index) => {
                 const active = isDesktop ? activeIndex === index : true;
                 const dimmed = isDesktop && activeIndex !== null && !active;
@@ -103,19 +120,6 @@ export function WhatDefinesDcl() {
               })}
             </div>
           </div>
-        </div>
-
-        <div className="relative mt-24 lg:mt-32">
-          <p
-            data-testid="text-defines-closing"
-            className="dclHome__display dclWhatDefines__closing max-w-[760px] text-[clamp(2rem,4vw,3.4rem)] leading-[1.15] tracking-[-.03em] text-[#080a0d]"
-          >
-            Independent thinking.
-            <br />
-            Structured judgement.
-            <br />
-            Clear communication.
-          </p>
         </div>
       </div>
 
