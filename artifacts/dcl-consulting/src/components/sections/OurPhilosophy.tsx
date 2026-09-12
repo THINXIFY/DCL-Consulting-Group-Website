@@ -64,7 +64,7 @@ export function OurPhilosophy() {
           duration: 0.7,
           stagger: 0.08,
           ease: 'power2.out',
-          scrollTrigger: { trigger: rootRef.current, start: 'top 75%' },
+          scrollTrigger: { trigger: rootRef.current, start: 'top 80%' },
         },
       );
 
@@ -87,52 +87,96 @@ export function OurPhilosophy() {
   }, [isDesktop, prefersReducedMotion]);
 
   return (
-    <section id="our-philosophy" ref={rootRef} aria-labelledby="philosophy-title" className="bg-[#080a0d] text-white">
-      <div className="mx-auto max-w-[1440px] px-6 pt-24 sm:px-10 sm:pt-32 lg:px-16 lg:pt-40">
-        <p data-testid="text-philosophy-eyebrow" className="dclHome__eyebrow dclPhilosophy__intro mb-5 text-[#8bbfe8]">
-          Our philosophy
-        </p>
-        <h2 id="philosophy-title" className="dclHome__display dclPhilosophy__intro max-w-[600px] text-[clamp(2.6rem,5.4vw,4.8rem)] leading-[.94] tracking-[-.04em]">
-          Clarity before capital.
-        </h2>
-        <p className="dclPhilosophy__intro mt-6 max-w-[520px] text-[16px] leading-7 text-white/58">
-          Good decisions begin with understanding the opportunity clearly, testing assumptions and identifying what can materially influence the outcome.
-        </p>
-      </div>
-
+    <section
+      id="our-philosophy"
+      ref={rootRef}
+      aria-labelledby="philosophy-title"
+      className="text-white"
+      style={{ background: 'radial-gradient(140% 100% at 15% 0%, #101216 0%, #0a0b0d 45%, #080a0d 100%)' }}
+    >
       {isDesktop ? (
-        <div ref={pinWrapRef} className="relative" style={{ height: `${philosophy.length * 100}vh` }}>
-          <div className="sticky top-0 flex h-[100dvh] flex-col items-center justify-center overflow-hidden px-6 sm:px-10 lg:px-16">
-            <div className="relative w-full max-w-[900px]">
-              {philosophy.map((item, index) => (
-                <p
-                  key={item.text}
-                  data-testid={`statement-${index}`}
-                  data-active={activeIndex === index}
-                  className="dclHome__display absolute inset-0 flex items-center justify-center text-center text-[clamp(2rem,4.6vw,4rem)] leading-[1.05] tracking-[-.03em] transition-opacity duration-700"
-                  style={{ opacity: activeIndex === index ? 1 : 0 }}
-                >
-                  {renderStatement(item.text, item.highlight)}
-                </p>
-              ))}
-            </div>
-            <div className="absolute bottom-16 h-px w-full max-w-[300px] bg-white/15">
-              <div ref={progressRuleRef} className="h-full origin-left bg-[#8bbfe8]" style={{ transform: 'scaleX(0)' }} />
+        <div ref={pinWrapRef} className="relative" style={{ height: `${philosophy.length * 90}vh` }}>
+          <div data-testid="philosophy-pin" className="sticky top-0 flex h-[100dvh] flex-col justify-center overflow-hidden px-6 sm:px-10 lg:px-16">
+            <div className="mx-auto w-full max-w-[1100px]">
+              <p data-testid="text-philosophy-eyebrow" className="dclHome__eyebrow dclPhilosophy__intro mb-4 text-[#8bbfe8]">
+                Our philosophy
+              </p>
+              <h2 id="philosophy-title" className="dclHome__display dclPhilosophy__intro max-w-[520px] text-[clamp(2rem,3.6vw,3.2rem)] leading-[.98] tracking-[-.03em]">
+                Clarity before capital.
+              </h2>
+              <p className="dclPhilosophy__intro mt-4 max-w-[460px] text-[15px] leading-6 text-white/50">
+                Good decisions begin with understanding the opportunity clearly, testing assumptions and identifying what can materially influence the outcome.
+              </p>
+
+              <div className="relative mt-16 min-h-[220px] overflow-hidden">
+                {philosophy.map((item, index) => {
+                  const offset = index < activeIndex ? -20 : index > activeIndex ? 20 : 0;
+                  const isActive = activeIndex === index;
+                  return (
+                    <div
+                      key={item.text}
+                      data-testid={`statement-${index}`}
+                      data-active={isActive}
+                      className="absolute inset-x-0 top-0 transition-[opacity,transform] duration-700 ease-out"
+                      style={{ opacity: isActive ? 1 : 0, transform: `translateY(${isActive ? 0 : offset}px)` }}
+                    >
+                      <p className="dclHome__display max-w-[820px] text-[clamp(2.2rem,4.8vw,4.2rem)] leading-[1.05] tracking-[-.03em]">
+                        {renderStatement(item.text, item.highlight)}
+                      </p>
+                      <p data-testid={`support-${index}`} className="mt-6 max-w-[440px] text-[15px] leading-6 text-white/50 sm:text-[16px]">
+                        {item.support}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="mt-14 flex items-center gap-8">
+                <div className="h-px w-full max-w-[260px] bg-white/15">
+                  <div ref={progressRuleRef} className="h-full origin-left bg-[#8bbfe8]" style={{ transform: 'scaleX(0)' }} />
+                </div>
+                <div className="flex items-center gap-3">
+                  {philosophy.map((item, index) => (
+                    <span
+                      key={item.text}
+                      data-testid={`philosophy-tick-${index}`}
+                      data-active={activeIndex === index}
+                      className="block h-4 w-px bg-white/20 transition-[background-color,transform] duration-400"
+                      style={{
+                        backgroundColor: activeIndex === index ? '#8bbfe8' : undefined,
+                        transform: activeIndex === index ? 'scaleY(1.5)' : 'scaleY(1)',
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
       ) : (
-        <div className="dclPhilosophy__mobileList mx-auto flex max-w-[720px] flex-col gap-14 px-6 py-20 sm:px-10">
-          {philosophy.map((item, index) => (
-            <p
-              key={item.text}
-              data-testid={`statement-${index}`}
-              data-active={true}
-              className="dclPhilosophy__mobileStatement dclHome__display text-[clamp(1.8rem,7vw,2.6rem)] leading-[1.1] tracking-[-.03em]"
-            >
-              {renderStatement(item.text, item.highlight)}
-            </p>
-          ))}
+        <div className="px-6 py-24 sm:px-10 sm:py-32">
+          <p data-testid="text-philosophy-eyebrow" className="dclHome__eyebrow dclPhilosophy__intro mb-5 text-[#8bbfe8]">
+            Our philosophy
+          </p>
+          <h2 id="philosophy-title" className="dclHome__display dclPhilosophy__intro max-w-[600px] text-[clamp(2.6rem,7vw,3.4rem)] leading-[.96] tracking-[-.03em]">
+            Clarity before capital.
+          </h2>
+          <p className="dclPhilosophy__intro mt-5 max-w-[480px] text-[16px] leading-7 text-white/55">
+            Good decisions begin with understanding the opportunity clearly, testing assumptions and identifying what can materially influence the outcome.
+          </p>
+
+          <div className="dclPhilosophy__mobileList mt-16 flex flex-col gap-14">
+            {philosophy.map((item, index) => (
+              <div key={item.text} data-testid={`statement-${index}`} data-active={true} className="dclPhilosophy__mobileStatement">
+                <p className="dclHome__display text-[clamp(1.8rem,7vw,2.6rem)] leading-[1.1] tracking-[-.03em]">
+                  {renderStatement(item.text, item.highlight)}
+                </p>
+                <p data-testid={`support-${index}`} className="mt-4 max-w-[480px] text-[15px] leading-6 text-white/50">
+                  {item.support}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </section>
