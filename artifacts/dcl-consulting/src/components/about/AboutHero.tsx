@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { Header } from '@/components/Header';
 import { aboutHeroImage } from '@/data/about-content';
 import { ensureGsapRegistered, gsap } from '@/lib/gsap';
 import { useMediaQuery } from '@/hooks/use-media-query';
@@ -45,6 +46,7 @@ export function AboutHero() {
 
   return (
     <section id="about-hero" ref={rootRef} aria-labelledby="about-hero-title" className="relative min-h-[100dvh] overflow-hidden bg-[#080a0d] text-white">
+      <Header />
       <div className="dclAboutHero__imageWrap absolute inset-x-0 bottom-0 top-[38%] overflow-hidden lg:top-[42%]">
         <img className="dclAboutHero__image h-full w-full scale-110 object-cover" src={aboutHeroImage} alt="Architectural facade of a contemporary commercial building" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,10,13,.85)_0%,rgba(8,10,13,.25)_35%,rgba(8,10,13,.55)_100%)]" />
