@@ -12,7 +12,7 @@ class ResizeObserverStub {
   disconnect() {}
 }
 
-if (!('ResizeObserver' in window)) {
+if (typeof window.ResizeObserver === 'undefined') {
   window.ResizeObserver = ResizeObserverStub as unknown as typeof ResizeObserver;
 }
 
