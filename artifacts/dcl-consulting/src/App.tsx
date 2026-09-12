@@ -14,7 +14,6 @@ import { DclAtAGlance } from '@/components/sections/DclAtAGlance';
 import { OurPhilosophy } from '@/components/sections/OurPhilosophy';
 import { Faq } from '@/components/sections/Faq';
 import { FinalCta } from '@/components/sections/FinalCta';
-import AboutPage from '@/pages/about';
 import NotFound from '@/pages/not-found';
 import { useScrollTriggerRefresh } from '@/hooks/use-scroll-trigger-refresh';
 import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
@@ -44,7 +43,6 @@ function Router() {
     <RoutedErrorBoundary>
       <Switch>
         <Route path="/" component={Home} />
-        <Route path="/about" component={AboutPage} />
         <Route component={NotFound} />
       </Switch>
     </RoutedErrorBoundary>
