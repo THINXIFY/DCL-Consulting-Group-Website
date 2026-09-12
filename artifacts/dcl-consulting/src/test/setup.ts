@@ -28,3 +28,8 @@ if (!('matchMedia' in window) || !window.matchMedia) {
     dispatchEvent: () => false,
   })) as unknown as typeof window.matchMedia;
 }
+
+if (typeof window.requestAnimationFrame === 'undefined') {
+  window.requestAnimationFrame = (callback: FrameRequestCallback) => setTimeout(() => callback(Date.now()), 16) as unknown as number;
+  window.cancelAnimationFrame = (handle: number) => clearTimeout(handle);
+}
