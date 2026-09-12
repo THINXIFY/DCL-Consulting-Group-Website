@@ -99,6 +99,7 @@ export interface CompanyFact {
 export interface PhilosophyStatement {
   text: string;
   highlight: string;
+  support: string;
 }
 
 export const whoWeAdvise: AudienceItem[] = [
@@ -144,9 +145,29 @@ export const companyFacts: CompanyFact[] = [
 ];
 
 export const philosophy: PhilosophyStatement[] = [
-  { text: 'Understand before concluding.', highlight: 'Understand' },
-  { text: 'Challenge assumptions before accepting them.', highlight: 'Challenge' },
-  { text: 'Consider risk alongside opportunity.', highlight: 'risk' },
-  { text: 'Focus on what materially changes the decision.', highlight: 'materially' },
-  { text: 'Communicate the conclusion clearly.', highlight: 'clearly' },
+  {
+    text: 'Understand before concluding.',
+    highlight: 'Understand',
+    support: 'Establish the context and the facts before forming a view.',
+  },
+  {
+    text: 'Challenge assumptions before accepting them.',
+    highlight: 'Challenge',
+    support: 'Test what is known, what is assumed and what still requires scrutiny.',
+  },
+  {
+    text: 'Consider risk alongside opportunity.',
+    highlight: 'risk',
+    support: 'A compelling opportunity should still be examined for uncertainty and downside.',
+  },
+  {
+    text: 'Focus on what materially changes the decision.',
+    highlight: 'materially',
+    support: 'Separate important factors from background information.',
+  },
+  {
+    text: 'Communicate the conclusion clearly.',
+    highlight: 'clearly',
+    support: 'Translate analysis into a perspective that is useful for decision-making.',
+  },
 ];
