@@ -21,10 +21,10 @@ describe('Header', () => {
     expect(screen.getByTestId('link-mobile-about-us')).toBeInTheDocument();
   });
 
-  it('links the logo home and keeps all nav links as same-page anchors', () => {
+  it('links the logo home and "About us" to the dedicated /about page, keeping the rest as same-page anchors', () => {
     render(<Header />);
     expect(screen.getByTestId('link-home')).toHaveAttribute('href', '/');
-    expect(screen.getByTestId('link-nav-about-us')).toHaveAttribute('href', '#about');
+    expect(screen.getByTestId('link-nav-about-us')).toHaveAttribute('href', '/about');
     expect(screen.getByTestId('link-nav-our-expertise')).toHaveAttribute('href', '#expertise');
   });
 });

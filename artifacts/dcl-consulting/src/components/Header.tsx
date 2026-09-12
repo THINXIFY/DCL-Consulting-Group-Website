@@ -12,7 +12,7 @@ function Mark() {
 }
 
 const NAV_LINKS: Array<[string, string]> = [
-  ['About us', '#about'],
+  ['About us', '/about'],
   ['Our expertise', '#expertise'],
   ['Our approach', '#approach'],
   ['Industries', '#industries'],
