@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { Leadership } from './Leadership';
 
 describe('Leadership', () => {
-  it('renders the eyebrow, headline, name, role, body copy, and all three approach principles', () => {
+  it('renders the eyebrow, headline, name, role, body copy, and all three approach principles as a triptych', () => {
     render(<Leadership />);
     expect(screen.getByTestId('text-leadership-eyebrow')).toHaveTextContent('Leadership');
     expect(screen.getByText(/leadership grounded/i)).toBeInTheDocument();
@@ -12,9 +12,11 @@ describe('Leadership', () => {
     expect(screen.getByTestId('text-leadership-role')).toHaveTextContent('DCL Consulting and Investments Limited');
     expect(screen.getByText(/is led by david christopher lebond/i)).toBeInTheDocument();
 
-    for (const title of ['Understand before concluding.', 'Challenge where necessary.', 'Communicate what matters clearly.']) {
-      expect(screen.getByText(title)).toBeInTheDocument();
-    }
+    const principles = screen.getAllByTestId(/^leadership-principle-/);
+    expect(principles).toHaveLength(3);
+    expect(principles[0]).toHaveTextContent('Understand before concluding.');
+    expect(principles[1]).toHaveTextContent('Challenge where necessary.');
+    expect(principles[2]).toHaveTextContent('Communicate what matters clearly.');
   });
 
   it('renders the exact three formal facts, nothing invented, and does not claim the image is a portrait', () => {
