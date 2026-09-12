@@ -27,4 +27,15 @@ describe('DclAtAGlance', () => {
     const section = document.getElementById('dcl-at-a-glance');
     expect(section?.textContent).not.toMatch(/[–—]/);
   });
+
+  it('gives each fact row its own animated rule, and hides the decorative watermark from assistive tech', () => {
+    render(<DclAtAGlance />);
+    const row = screen.getByTestId('fact-director');
+    expect(row.querySelector('.dclGlance__rowRule')).not.toBeNull();
+
+    const section = document.getElementById('dcl-at-a-glance');
+    const watermark = section?.querySelector('[aria-hidden="true"]');
+    expect(watermark).not.toBeNull();
+    expect(watermark).toHaveTextContent('DCL');
+  });
 });
