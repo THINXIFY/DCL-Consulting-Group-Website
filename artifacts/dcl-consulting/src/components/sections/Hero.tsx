@@ -76,7 +76,7 @@ export function Hero() {
               ref={exploreRef}
               href="#expertise"
               data-testid="link-explore-expertise"
-              className="dclHero__reveal dclHero__reveal--cta group inline-flex items-center gap-4 bg-[#c6e3fa] px-5 py-3 text-[11px] font-semibold uppercase tracking-[.13em] text-[#0A0C0F] transition-[background-color,box-shadow] duration-300 hover:bg-white hover:shadow-[0_8px_28px_rgba(198,227,250,.35)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+              className="dclHero__reveal dclHero__reveal--cta group inline-flex items-center gap-4 bg-[#c6e3fa] px-5 py-3 text-[11px] font-semibold uppercase tracking-[.13em] text-black transition-[background-color,box-shadow] duration-300 hover:bg-white hover:shadow-[0_8px_28px_rgba(198,227,250,.35)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
             >
               Explore Our Expertise
               <ArrowDownRight
