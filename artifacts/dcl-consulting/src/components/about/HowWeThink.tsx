@@ -45,18 +45,18 @@ export function HowWeThink() {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         '.dclHowWeThink__intro',
-        { autoAlpha: 0, y: 20 },
+        { autoAlpha: 0, y: 18 },
         { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.08, ease: 'power2.out', scrollTrigger: { trigger: rootRef.current, start: 'top 78%' } },
       );
       gsap.fromTo(
-        '.dclHowWeThink__chapter',
-        { autoAlpha: 0, y: 22 },
-        { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.08, ease: 'power2.out', scrollTrigger: { trigger: rootRef.current, start: 'top 60%' } },
+        '.dclHowWeThink__row',
+        { autoAlpha: 0, y: 18 },
+        { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.08, ease: 'power2.out', scrollTrigger: { trigger: rootRef.current, start: 'top 55%' } },
       );
       gsap.fromTo(
         '.dclHowWeThink__closing',
-        { autoAlpha: 0, y: 24 },
-        { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out', scrollTrigger: { trigger: '.dclHowWeThink__closing', start: 'top 85%' } },
+        { autoAlpha: 0, y: 20 },
+        { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out', scrollTrigger: { trigger: '.dclHowWeThink__closing', start: 'top 88%' } },
       );
     }, rootRef);
     return () => ctx.revert();
@@ -71,67 +71,87 @@ export function HowWeThink() {
       style={{ backgroundColor: isDesktop ? TONES[activeIndex] : TONES[0] }}
     >
       <div className="mx-auto max-w-[1440px]">
-        <div className="grid gap-16 lg:grid-cols-[.62fr_1.38fr] lg:gap-24">
-          <div className={isDesktop ? 'lg:sticky lg:top-24 lg:self-start' : undefined}>
-            <p data-testid="text-think-eyebrow" className="dclHome__eyebrow dclHowWeThink__intro mb-6 text-[#8bbfe8]">
-              How we think
-            </p>
-            <h2 id="think-title" className="dclHome__display dclHowWeThink__intro max-w-[480px] text-[clamp(2.6rem,5.2vw,4.4rem)] leading-[.94] tracking-[-.04em]">
-              Better decisions begin with better questions.
-            </h2>
-            <p className="dclHowWeThink__intro mt-6 max-w-[440px] text-[16px] leading-7 text-white/55 sm:text-[17px]">
-              Before forming a view, DCL considers an opportunity from multiple perspectives, establishing the context, examining the fundamentals, challenging assumptions and focusing attention on the factors most likely to influence the outcome.
-            </p>
+        {isDesktop ? (
+          <div className="grid gap-16 lg:grid-cols-[.58fr_.06fr_1.36fr]">
+            <div className="lg:sticky lg:top-24 lg:self-start">
+              <p data-testid="text-think-eyebrow" className="dclHome__eyebrow dclHowWeThink__intro mb-6 text-[#8bbfe8]">
+                How we think
+              </p>
+              <h2 id="think-title" className="dclHome__display dclHowWeThink__intro max-w-[420px] text-[clamp(2.6rem,4.4vw,3.6rem)] leading-[.96] tracking-[-.035em]">
+                Better decisions begin with better questions.
+              </h2>
+              <p className="dclHowWeThink__intro mt-6 max-w-[400px] text-[16px] leading-7 text-white/50">
+                Before forming a view, DCL considers an opportunity from multiple perspectives, establishing the context, examining the fundamentals, challenging assumptions and focusing attention on the factors most likely to influence the outcome.
+              </p>
 
-            {isDesktop && (
-              <div className="dclHowWeThink__intro mt-14 border-t border-white/12 pt-10">
-                <p
-                  key={activeIndex}
-                  data-testid="text-think-active-question"
-                  className="max-w-[420px] font-serif text-[clamp(1.6rem,2.6vw,2.3rem)] italic leading-[1.3] text-[#c6e3fa] transition-opacity duration-500"
-                >
-                  {howWeThink[activeIndex].question}
-                </p>
+              <div className="dclHowWeThink__intro relative mt-16 min-h-[280px] border-t border-white/12 pt-10">
+                {howWeThink.map((chapter, index) => (
+                  <div key={chapter.title} className="absolute inset-x-0 top-10 transition-opacity duration-500" style={{ opacity: activeIndex === index ? 1 : 0 }}>
+                    <p data-testid={activeIndex === index ? 'text-think-active-label' : undefined} className="dclHome__eyebrow text-[#8bbfe8]">
+                      {chapter.title}
+                    </p>
+                    <p
+                      data-testid={activeIndex === index ? 'text-think-active-question' : undefined}
+                      className="mt-4 max-w-[420px] font-serif text-[clamp(1.7rem,2.6vw,2.4rem)] leading-[1.25] text-white"
+                    >
+                      {chapter.question}
+                    </p>
+                    <div className="mt-7 h-[110px] w-[150px] overflow-hidden">
+                      <img src={chapter.image} alt="" className="h-full w-full object-cover" style={{ objectPosition: `${20 + index * 20}% 50%` }} />
+                    </div>
+                  </div>
+                ))}
               </div>
-            )}
-          </div>
+            </div>
 
-          <div ref={listRef} className="relative lg:pl-10">
-            {isDesktop && (
-              <div className="absolute left-0 top-0 hidden h-full w-px bg-white/10 lg:block">
+            <div className="hidden lg:block">
+              <div className="h-full w-px bg-white/10">
                 <div ref={progressRef} className="h-full w-full origin-top bg-[#8bbfe8]" style={{ transform: 'scaleY(0)' }} />
               </div>
-            )}
-            <div className="flex flex-col">
+            </div>
+
+            <div ref={listRef} className="flex flex-col">
               {howWeThink.map((chapter, index) => {
-                const active = isDesktop ? activeIndex === index : true;
+                const active = activeIndex === index;
                 return (
                   <div
                     key={chapter.title}
-                    data-testid={`think-chapter-${chapter.title.toLowerCase()}`}
+                    data-testid={`think-reading-${index}`}
                     data-active={active}
-                    className="dclHowWeThink__chapter min-h-[240px] border-b border-white/12 py-10 transition-opacity duration-500 lg:min-h-[70vh] lg:py-0"
-                    style={{ opacity: active ? 1 : 0.35 }}
+                    className="dclHowWeThink__row flex min-h-[62vh] flex-col justify-center border-b border-white/10 py-10 transition-opacity duration-500"
+                    style={{ opacity: active ? 1 : 0.32 }}
                   >
-                    <div className="flex h-full flex-col justify-center">
-                      <h3 className="dclHome__display text-[clamp(2rem,3.6vw,3.4rem)] leading-none tracking-[-.03em]">{chapter.title}</h3>
-                      <span
-                        className="mt-5 block h-px bg-[#8bbfe8] transition-transform duration-500"
-                        style={{ width: '72px', transform: `scaleX(${active ? 1 : 0})`, transformOrigin: 'left center' }}
-                      />
-                      {!isDesktop && (
-                        <p className="mt-5 max-w-[420px] font-serif text-[1.3rem] italic leading-snug text-[#c6e3fa]">{chapter.question}</p>
-                      )}
-                      <p className="mt-5 max-w-[460px] text-[16px] leading-7 text-white/60 sm:text-[17px]">{chapter.copy}</p>
-                    </div>
+                    <p className="max-w-[46ch] text-[19px] leading-[1.65] text-white/85 sm:text-[21px]">{chapter.copy}</p>
                   </div>
                 );
               })}
             </div>
           </div>
-        </div>
+        ) : (
+          <div>
+            <p data-testid="text-think-eyebrow" className="dclHome__eyebrow dclHowWeThink__intro mb-6 text-[#8bbfe8]">
+              How we think
+            </p>
+            <h2 id="think-title" className="dclHome__display dclHowWeThink__intro max-w-[420px] text-[clamp(2.4rem,7vw,3rem)] leading-[.98] tracking-[-.03em]">
+              Better decisions begin with better questions.
+            </h2>
+            <p className="dclHowWeThink__intro mt-6 max-w-[440px] text-[16px] leading-7 text-white/50">
+              Before forming a view, DCL considers an opportunity from multiple perspectives, establishing the context, examining the fundamentals, challenging assumptions and focusing attention on the factors most likely to influence the outcome.
+            </p>
 
-        <p className="dclHowWeThink__closing dclHome__display mt-24 max-w-[900px] text-[clamp(1.9rem,3.6vw,3.2rem)] leading-[1.15] tracking-[-.02em] text-white">
+            <div className="mt-14 flex flex-col gap-14">
+              {howWeThink.map((chapter) => (
+                <div key={chapter.title} data-testid={`think-mobile-${chapter.title.toLowerCase()}`} className="dclHowWeThink__row border-t border-white/12 pt-8">
+                  <p className="dclHome__eyebrow text-[#8bbfe8]">{chapter.title}</p>
+                  <p className="mt-4 font-serif text-[1.6rem] leading-[1.25] text-white">{chapter.question}</p>
+                  <p className="mt-4 max-w-[520px] text-[16px] leading-7 text-white/70">{chapter.copy}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <p className="dclHowWeThink__closing dclHome__display mt-24 max-w-[900px] text-[clamp(2rem,3.6vw,3.2rem)] leading-[1.15] tracking-[-.02em] text-white">
           Information creates value when it leads to clearer judgement.
         </p>
       </div>

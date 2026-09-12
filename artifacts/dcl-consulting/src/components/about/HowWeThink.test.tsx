@@ -14,31 +14,34 @@ function mockDesktop(matches: boolean) {
 describe('HowWeThink', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('renders the eyebrow, headline, intro, and all four chapter titles', () => {
+  it('renders the eyebrow, headline, intro, and closing thought', () => {
     mockDesktop(true);
     render(<HowWeThink />);
     expect(screen.getByTestId('text-think-eyebrow')).toHaveTextContent('How we think');
     expect(screen.getByText(/better decisions begin/i)).toBeInTheDocument();
-    for (const title of ['Context', 'Fundamentals', 'Risk', 'Judgement']) {
-      expect(screen.getByTestId(`think-chapter-${title.toLowerCase()}`)).toHaveTextContent(title);
-    }
     expect(screen.getByText(/information creates value when it leads to clearer judgement/i)).toBeInTheDocument();
   });
 
-  it('shows the first chapter active by default on desktop, with its question in the sticky panel', () => {
+  it('shows the first chapter\'s label and question in the sticky stage, with a reading column of copy only (no repeated titles)', () => {
     mockDesktop(true);
     render(<HowWeThink />);
-    expect(screen.getByTestId('think-chapter-context')).toHaveAttribute('data-active', 'true');
-    expect(screen.getByTestId('think-chapter-fundamentals')).toHaveAttribute('data-active', 'false');
+    expect(screen.getByTestId('text-think-active-label')).toHaveTextContent('Context');
     expect(screen.getByTestId('text-think-active-question')).toHaveTextContent('What are we actually considering?');
+
+    const readingRows = screen.getAllByTestId(/^think-reading-/);
+    expect(readingRows).toHaveLength(4);
+    expect(readingRows[0]).toHaveTextContent('Understand the opportunity');
+    expect(readingRows[0]).not.toHaveTextContent('Context');
+    expect(readingRows[0]).toHaveAttribute('data-active', 'true');
+    expect(readingRows[1]).toHaveAttribute('data-active', 'false');
   });
 
-  it('shows every chapter fully visible on mobile with no sticky/scroll dependency', () => {
+  it('shows every chapter fully self-contained (label, question, copy) on mobile, no sticky/scroll dependency', () => {
     mockDesktop(false);
     render(<HowWeThink />);
     for (const title of ['Context', 'Fundamentals', 'Risk', 'Judgement']) {
-      const chapter = screen.getByTestId(`think-chapter-${title.toLowerCase()}`);
-      expect(chapter).toHaveAttribute('data-active', 'true');
+      expect(screen.getByTestId(`think-mobile-${title.toLowerCase()}`)).toBeInTheDocument();
     }
+    expect(screen.queryByTestId('text-think-active-label')).not.toBeInTheDocument();
   });
 });
