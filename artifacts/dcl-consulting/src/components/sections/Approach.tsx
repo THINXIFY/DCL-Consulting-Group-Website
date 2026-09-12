@@ -50,6 +50,9 @@ export function Approach() {
     >
       <div className="mx-auto grid max-w-[1440px] gap-16 lg:grid-cols-[.85fr_1.4fr] lg:gap-28">
         <div className={isDesktop ? 'lg:sticky lg:top-24 lg:self-start' : undefined}>
+          <p data-testid="text-approach-eyebrow" className="dclHome__eyebrow mb-5 text-[#4f718c]">
+            Our approach
+          </p>
           <h2 id="approach-title" className="dclHome__display max-w-[430px] text-[clamp(2.6rem,5.4vw,5.2rem)] leading-[.93] tracking-[-.04em] text-[#080a0d]">
             From information to informed judgement.
           </h2>

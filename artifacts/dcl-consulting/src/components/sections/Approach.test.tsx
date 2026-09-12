@@ -14,13 +14,12 @@ function mockDesktop(matches: boolean) {
 describe('Approach', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('renders all five stages with no numbering and no eyebrow', () => {
+  it('renders the eyebrow and all five stages with no numbering', () => {
     render(<Approach />);
-    const section = document.getElementById('approach');
+    expect(screen.getByTestId('text-approach-eyebrow')).toHaveTextContent('Our approach');
     for (const title of ['Understand', 'Analyse', 'Challenge', 'Assess', 'Advise']) {
       expect(screen.getByTestId(`text-stage-${title.toLowerCase()}`)).toHaveTextContent(title);
     }
-    expect(section?.querySelector('.dclHome__eyebrow')).toBeNull();
   });
 
   it('marks the first stage active by default on desktop', () => {

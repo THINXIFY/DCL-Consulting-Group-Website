@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { industries } from '@/data/home-content';
+import { ensureGsapRegistered, gsap } from '@/lib/gsap';
 import { useMediaQuery } from '@/hooks/use-media-query';
 
 function slug(name: string) {
@@ -7,40 +8,107 @@ function slug(name: string) {
 }
 
 export function Industries() {
+  const rootRef = useRef<HTMLElement>(null);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
+  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
   const [activeIndex, setActiveIndex] = useState(0);
   const active = industries[activeIndex];
 
+  useEffect(() => {
+    if (!rootRef.current || prefersReducedMotion) return;
+    ensureGsapRegistered();
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        '.dclIndustries__heading',
+        { autoAlpha: 0, y: 20 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.7,
+          stagger: 0.08,
+          ease: 'power2.out',
+          scrollTrigger: { trigger: rootRef.current, start: 'top 75%' },
+        },
+      );
+
+      if (isDesktop) {
+        gsap.fromTo(
+          '.dclIndustries__frame',
+          { clipPath: 'inset(0 0 100% 0)' },
+          {
+            clipPath: 'inset(0 0 0% 0)',
+            duration: 1,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: '.dclIndustries__frame', start: 'top 80%' },
+          },
+        );
+      }
+
+      gsap.fromTo(
+        '.dclIndustries__item',
+        { autoAlpha: 0, y: 16 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.5,
+          stagger: 0.04,
+          ease: 'power2.out',
+          scrollTrigger: { trigger: rootRef.current, start: 'top 65%' },
+        },
+      );
+    }, rootRef);
+
+    return () => ctx.revert();
+  }, [isDesktop, prefersReducedMotion]);
+
   return (
-    <section id="industries" aria-labelledby="industries-title" className="bg-[#080a0d] px-6 py-24 text-white sm:px-10 sm:py-32 lg:px-16 lg:py-40">
+    <section
+      id="industries"
+      ref={rootRef}
+      aria-labelledby="industries-title"
+      className="bg-[#080a0d] px-6 py-24 text-white sm:px-10 sm:py-32 lg:px-16 lg:py-40"
+    >
       <div className="mx-auto max-w-[1440px]">
-        <h2 id="industries-title" className="dclHome__display max-w-[760px] text-[clamp(2.6rem,5.6vw,5.6rem)] leading-[.92] tracking-[-.04em]">
-          Perspective across <em className="text-[#c6e3fa] not-italic">different sectors.</em>
+        <p data-testid="text-industries-eyebrow" className="dclHome__eyebrow dclIndustries__heading mb-5 text-[#8bbfe8]">
+          Industries we assess
+        </p>
+        <h2 id="industries-title" className="dclHome__display dclIndustries__heading max-w-[760px] text-[clamp(2.6rem,5.6vw,5.6rem)] leading-[.92] tracking-[-.04em]">
+          Insight across <em className="text-[#c6e3fa] not-italic">every sector.</em>
         </h2>
-        <p className="mt-6 max-w-[520px] text-[16px] leading-7 text-white/58">
-          DCL's evaluation is driven by the fundamentals of the opportunity rather than a fixed sector template.
+        <p className="dclIndustries__heading mt-6 max-w-[520px] text-[16px] leading-7 text-white/58">
+          We evaluate opportunities on their own fundamentals, not a fixed sector template, so our perspective travels wherever the work takes us.
         </p>
 
-        <div className="mt-16 grid gap-14 border-t border-white/20 pt-14 lg:grid-cols-[.75fr_1.25fr]">
+        <div className="mt-16 grid gap-14 border-t border-white/20 pt-14 lg:grid-cols-[.75fr_1.25fr] lg:gap-20">
           {isDesktop && (
-            <div data-testid="image-industry-sticky" className="relative aspect-[4/5] w-full self-start overflow-hidden lg:sticky lg:top-24">
-              {industries.map((item, index) => (
-                <img
-                  key={item.name}
-                  src={item.image}
-                  alt=""
-                  className="absolute inset-0 h-full w-full object-cover transition-opacity duration-500"
-                  style={{ opacity: activeIndex === index ? 1 : 0 }}
-                />
-              ))}
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#080a0d] to-transparent p-8">
-                <p data-testid="text-industry-context" className="max-w-[360px] text-[14px] leading-6 text-white/75">
-                  {active.context}
-                </p>
+            <div data-testid="image-industry-sticky" className="lg:sticky lg:top-24 lg:self-start">
+              <div className="dclIndustries__frame relative aspect-[4/5] w-full overflow-hidden">
+                {industries.map((item, index) => (
+                  <img
+                    key={item.name}
+                    src={item.image}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover transition-[opacity,transform] duration-700 ease-out"
+                    style={{
+                      opacity: activeIndex === index ? 1 : 0,
+                      transform: activeIndex === index ? 'scale(1.04)' : 'scale(1)',
+                    }}
+                  />
+                ))}
+              </div>
+              <div className="mt-6 flex items-start gap-4 border-t border-white/15 pt-6">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#8bbfe8]" />
+                <div>
+                  <p className="text-[15px] font-medium text-white">{active.name}</p>
+                  <p data-testid="text-industry-context" className="mt-2 max-w-[360px] text-[14px] leading-6 text-white/55">
+                    {active.context}
+                  </p>
+                </div>
               </div>
             </div>
           )}
-          <div>
+          <div className="sm:columns-2 sm:gap-x-14">
             {industries.map((item, index) => {
               const isActive = isDesktop ? activeIndex === index : true;
               return (
@@ -51,17 +119,16 @@ export function Industries() {
                   tabIndex={isDesktop ? 0 : undefined}
                   onMouseEnter={() => setActiveIndex(index)}
                   onFocus={() => setActiveIndex(index)}
-                  className="border-b border-white/20 py-6 outline-none transition-opacity duration-300 focus-visible:ring-2 focus-visible:ring-[#8bbfe8]"
-                  style={{ opacity: isActive ? 1 : 0.4 }}
+                  className="dclIndustries__item group flex items-center gap-4 break-inside-avoid border-b border-white/20 py-6 outline-none focus-visible:ring-2 focus-visible:ring-[#8bbfe8]"
                 >
-                  <div className="flex items-center gap-4">
-                    <span className="text-[16px] font-medium sm:text-[18px]">{item.name}</span>
-                    <span
-                      className="h-px bg-[#8bbfe8] transition-transform duration-400"
-                      style={{ width: '48px', transform: `scaleX(${isActive ? 1 : 0})`, transformOrigin: 'left center' }}
-                    />
+                  <span
+                    className="h-2 w-2 shrink-0 rounded-full bg-[#8bbfe8] transition-transform duration-300"
+                    style={{ transform: isActive ? 'scale(1.3)' : 'scale(1)', opacity: isActive ? 1 : 0.4 }}
+                  />
+                  <div className="transition-opacity duration-300" style={{ opacity: isActive ? 1 : 0.5 }}>
+                    <span className="text-[17px] font-medium sm:text-[19px]">{item.name}</span>
+                    {!isDesktop && <p className="mt-2 text-[14px] leading-5 text-white/50">{item.context}</p>}
                   </div>
-                  {!isDesktop && <p className="mt-2 text-[14px] leading-5 text-white/50">{item.context}</p>}
                 </div>
               );
             })}

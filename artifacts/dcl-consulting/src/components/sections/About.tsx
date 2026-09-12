@@ -78,6 +78,9 @@ export function About() {
   return (
     <section id="about" ref={rootRef} aria-labelledby="about-title" className="bg-[#f2f4f6] px-6 py-24 sm:px-10 sm:py-32 lg:px-16 lg:py-40">
       <div className="mx-auto max-w-[1440px]">
+        <p data-testid="text-about-eyebrow" className="dclHome__eyebrow dclAbout__fadeUp mb-5 text-[#6b737a]">
+          About us
+        </p>
         <h2 id="about-title" data-testid="text-about-title" className="dclHome__display dclAbout__fadeUp max-w-[820px] text-[clamp(2.6rem,5.4vw,5.4rem)] leading-[.95] tracking-[-.04em] text-[#080a0d]">
           Clarity begins with understanding.
         </h2>

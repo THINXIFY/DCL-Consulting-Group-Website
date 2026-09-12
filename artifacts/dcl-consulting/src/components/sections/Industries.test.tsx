@@ -14,6 +14,15 @@ function mockDesktop(matches: boolean) {
 describe('Industries', () => {
   afterEach(() => vi.restoreAllMocks());
 
+  it('renders the eyebrow and the updated heading', () => {
+    mockDesktop(true);
+    render(<Industries />);
+    expect(screen.getByTestId('text-industries-eyebrow')).toHaveTextContent('Industries we assess');
+    const section = document.getElementById('industries');
+    expect(section?.textContent).toMatch(/insight across/i);
+    expect(section?.textContent).toMatch(/every sector/i);
+  });
+
   it('renders all twelve industries with no numbering', () => {
     mockDesktop(true);
     render(<Industries />);

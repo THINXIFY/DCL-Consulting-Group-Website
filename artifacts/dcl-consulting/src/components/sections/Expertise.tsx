@@ -40,9 +40,14 @@ export function Expertise() {
     <section id="expertise" ref={rootRef} aria-labelledby="expertise-title" className="bg-[#171714] px-6 py-24 text-white sm:px-10 sm:py-32 lg:px-16 lg:py-40">
       <div className="mx-auto max-w-[1440px]">
         <div className="mb-16 flex flex-col justify-between gap-8 md:flex-row md:items-end">
-          <h2 id="expertise-title" className="dclHome__display max-w-[650px] text-[clamp(2.6rem,5.6vw,5.6rem)] leading-[.92] tracking-[-.04em]">
-            Expertise applied to <em className="text-[#c6e3fa] not-italic">the decision.</em>
-          </h2>
+          <div>
+            <p data-testid="text-expertise-eyebrow" className="dclHome__eyebrow mb-5 text-[#8bbfe8]">
+              Our expertise
+            </p>
+            <h2 id="expertise-title" className="dclHome__display max-w-[650px] text-[clamp(2.6rem,5.6vw,5.6rem)] leading-[.92] tracking-[-.04em]">
+              Expertise applied to <em className="text-[#c6e3fa] not-italic">the decision.</em>
+            </h2>
+          </div>
           <p className="max-w-[260px] text-[14px] leading-6 text-white/48">
             Independent perspective across the decisions that shape businesses, portfolios, and markets.
           </p>

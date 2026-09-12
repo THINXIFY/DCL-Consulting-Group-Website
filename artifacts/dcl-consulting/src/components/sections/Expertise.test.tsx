@@ -14,6 +14,12 @@ function mockDesktop(matches: boolean) {
 describe('Expertise', () => {
   afterEach(() => vi.restoreAllMocks());
 
+  it('renders the eyebrow tagline', () => {
+    mockDesktop(true);
+    render(<Expertise />);
+    expect(screen.getByTestId('text-expertise-eyebrow')).toHaveTextContent('Our expertise');
+  });
+
   it('renders all six services with no numbering', () => {
     mockDesktop(true);
     render(<Expertise />);
