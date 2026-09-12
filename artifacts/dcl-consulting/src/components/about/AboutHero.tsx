@@ -37,6 +37,7 @@ export function AboutHero() {
       });
       gsap.to('.dclAboutHero__image', {
         yPercent: 6,
+        scale: 1.14,
         ease: 'none',
         scrollTrigger: { trigger: rootRef.current, start: 'top top', end: 'bottom top', scrub: true },
       });
@@ -46,11 +47,14 @@ export function AboutHero() {
         ease: 'none',
         scrollTrigger: { trigger: rootRef.current, start: 'top top', end: 'bottom top', scrub: true },
       });
+      // Extends while the rule is still on screen (was previously scoped to
+      // 'center top'-'bottom top', by which point the rule - near the very
+      // top of the section - had already scrolled out of view).
       gsap.to('.dclAboutHero__rule', {
         scaleX: 1.6,
         transformOrigin: 'left center',
         ease: 'none',
-        scrollTrigger: { trigger: rootRef.current, start: 'center top', end: 'bottom top', scrub: true },
+        scrollTrigger: { trigger: rootRef.current, start: 'top top', end: '35% top', scrub: true },
       });
     }, rootRef);
 
@@ -61,7 +65,7 @@ export function AboutHero() {
     <section id="about-hero" ref={rootRef} aria-labelledby="about-hero-title" className="relative flex min-h-[100dvh] flex-col overflow-hidden bg-[#080a0d] text-white">
       <Header />
 
-      <div className="relative z-10 flex flex-1 flex-col justify-center px-6 pt-28 sm:px-10 lg:px-16 lg:pt-32">
+      <div className="relative z-10 flex flex-1 flex-col justify-start px-6 pt-28 sm:px-10 lg:px-16 lg:pt-32">
         <div className="flex items-center gap-5">
           <div className="dclAboutHero__rule h-px w-14 origin-left bg-[#8bbfe8]" />
           <p data-testid="text-about-hero-eyebrow" className="dclAboutHero__reveal dclAboutHero__reveal--eyebrow dclHome__eyebrow text-[#c6e3fa]">
@@ -98,12 +102,12 @@ export function AboutHero() {
           alt="Editorial detail of a contemporary financial district building, used as institutional context imagery"
         />
         <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(8,10,13,.6)_0%,transparent_50%)]" />
-        <p
-          data-testid="text-about-hero-meta"
-          className="dclAboutHero__reveal dclAboutHero__reveal--meta absolute inset-x-6 bottom-6 text-[11px] font-semibold uppercase tracking-[.15em] text-white/70 sm:inset-x-10 lg:inset-x-16"
-        >
-          Independent perspective. Disciplined analysis. Clearer decisions.
-        </p>
+        <div className="dclAboutHero__reveal dclAboutHero__reveal--meta absolute inset-x-6 bottom-6 sm:inset-x-10 lg:inset-x-16">
+          <div className="mb-3 h-px w-8 bg-white/35" />
+          <p data-testid="text-about-hero-meta" className="text-[11px] font-semibold uppercase tracking-[.15em] text-white/70">
+            Independent perspective. Disciplined analysis. Clearer decisions.
+          </p>
+        </div>
       </div>
     </section>
   );
