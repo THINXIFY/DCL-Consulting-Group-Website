@@ -84,7 +84,7 @@ export function HowWeThink() {
                 Before forming a view, DCL considers an opportunity from multiple perspectives, establishing the context, examining the fundamentals, challenging assumptions and focusing attention on the factors most likely to influence the outcome.
               </p>
 
-              <div className="dclHowWeThink__intro relative mt-16 min-h-[280px] border-t border-white/12 pt-10">
+              <div className="dclHowWeThink__intro relative mt-16 min-h-[360px] border-t border-white/12 pt-10">
                 {howWeThink.map((chapter, index) => (
                   <div key={chapter.title} className="absolute inset-x-0 top-10 transition-opacity duration-500" style={{ opacity: activeIndex === index ? 1 : 0 }}>
                     <p data-testid={activeIndex === index ? 'text-think-active-label' : undefined} className="dclHome__eyebrow text-[#8bbfe8]">
@@ -92,13 +92,10 @@ export function HowWeThink() {
                     </p>
                     <p
                       data-testid={activeIndex === index ? 'text-think-active-question' : undefined}
-                      className="mt-4 max-w-[420px] font-serif text-[clamp(1.7rem,2.6vw,2.4rem)] leading-[1.25] text-white"
+                      className="dclHome__display mt-5 max-w-[480px] text-[clamp(2.4rem,4vw,4.25rem)] leading-[1.05] tracking-[-.03em] text-white"
                     >
                       {chapter.question}
                     </p>
-                    <div className="mt-7 h-[110px] w-[150px] overflow-hidden">
-                      <img src={chapter.image} alt="" className="h-full w-full object-cover" style={{ objectPosition: `${20 + index * 20}% 50%` }} />
-                    </div>
                   </div>
                 ))}
               </div>
@@ -143,7 +140,7 @@ export function HowWeThink() {
               {howWeThink.map((chapter) => (
                 <div key={chapter.title} data-testid={`think-mobile-${chapter.title.toLowerCase()}`} className="dclHowWeThink__row border-t border-white/12 pt-8">
                   <p className="dclHome__eyebrow text-[#8bbfe8]">{chapter.title}</p>
-                  <p className="mt-4 font-serif text-[1.6rem] leading-[1.25] text-white">{chapter.question}</p>
+                  <p className="dclHome__display mt-4 text-[clamp(1.8rem,7vw,2.4rem)] leading-[1.1] text-white">{chapter.question}</p>
                   <p className="mt-4 max-w-[520px] text-[16px] leading-7 text-white/70">{chapter.copy}</p>
                 </div>
               ))}
@@ -151,9 +148,11 @@ export function HowWeThink() {
           </div>
         )}
 
-        <p className="dclHowWeThink__closing dclHome__display mt-24 max-w-[900px] text-[clamp(2rem,3.6vw,3.2rem)] leading-[1.15] tracking-[-.02em] text-white">
-          Information creates value when it leads to clearer judgement.
-        </p>
+        <div className="dclHowWeThink__closing mt-24 border-t border-white/12 pt-14 lg:mt-32">
+          <p className="dclHome__display max-w-[1040px] text-[clamp(2.2rem,4.4vw,3.8rem)] leading-[1.15] tracking-[-.025em] text-white">
+            Information creates value when it leads to clearer judgement.
+          </p>
+        </div>
       </div>
     </section>
   );

@@ -2,7 +2,6 @@ export interface ThinkChapter {
   title: string;
   question: string;
   copy: string;
-  image: string;
 }
 
 export interface DefiningPrinciple {
@@ -20,36 +19,31 @@ export interface LeadershipFact {
   value: string;
 }
 
-const img = (seed: string, w = 1400, h = 1000) => `https://picsum.photos/seed/${seed}/${w}/${h}?grayscale`;
-
-export const aboutHeroImage = img('dcl-about-hero-facade', 1800, 1400);
-export const whoWeAreImage = img('dcl-who-we-are-office', 1400, 1100);
-export const leadershipImage = img('dcl-leadership-context', 1200, 1500);
+// Verified by manual visual review (picsum's seed/id maps to a fixed
+// pool of stock photos - a seed's name does not describe its content).
+// ID 1076: contemporary structured architecture facade, warm neutral tone.
+export const leadershipImage = 'https://picsum.photos/id/1076/1200/1500';
 
 export const howWeThink: ThinkChapter[] = [
   {
     title: 'Context',
     question: 'What are we actually considering?',
     copy: 'Understand the opportunity, the objective, the decision-makers involved and the wider commercial or strategic context.',
-    image: img('dcl-think-context', 900, 700),
   },
   {
     title: 'Fundamentals',
     question: 'What is creating the underlying value?',
     copy: 'Examine the business model, market position, economics, performance and the factors supporting the opportunity.',
-    image: img('dcl-think-fundamentals', 900, 700),
   },
   {
     title: 'Risk',
     question: 'What could materially change the outcome?',
     copy: 'Challenge assumptions, identify dependencies and consider uncertainties or downside factors that deserve closer scrutiny.',
-    image: img('dcl-think-risk', 900, 700),
   },
   {
     title: 'Judgement',
     question: 'What matters most from here?',
     copy: 'Bring the evidence together, distinguish material issues from background information and focus on what should influence the decision.',
-    image: img('dcl-think-judgement', 900, 700),
   },
 ];
 

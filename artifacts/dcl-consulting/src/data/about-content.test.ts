@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { howWeThink, leadershipApproach, leadershipFacts, whatDefinesDcl } from './about-content';
+import { howWeThink, leadershipApproach, leadershipFacts, leadershipImage, whatDefinesDcl } from './about-content';
 
 const NUMBERING_PATTERN = /\b(0?[1-9]|1[0-2])\s*[/.)-]/;
 const DASH_CHARS = /[–—]/;
@@ -14,15 +14,18 @@ function allStrings(value: unknown): string[] {
 }
 
 describe('about-content', () => {
-  it('has four how-we-think chapters, each with a title, question, copy, and image', () => {
+  it('has four how-we-think chapters, each with a title, question, and copy', () => {
     expect(howWeThink).toHaveLength(4);
     for (const item of howWeThink) {
       expect(item).not.toHaveProperty('number');
       expect(item.title).toBeTruthy();
       expect(item.question).toBeTruthy();
       expect(item.copy).toBeTruthy();
-      expect(item.image).toMatch(/^https:\/\/picsum\.photos\/seed\//);
     }
+  });
+
+  it('uses a verified picsum photo ID (not a random seed) for the leadership context image', () => {
+    expect(leadershipImage).toMatch(/^https:\/\/picsum\.photos\/id\/\d+\//);
   });
 
   it('has four what-defines-dcl principles', () => {
