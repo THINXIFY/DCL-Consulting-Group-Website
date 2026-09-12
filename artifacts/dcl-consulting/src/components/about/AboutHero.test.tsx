@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { AboutHero } from './AboutHero';
 
 describe('AboutHero', () => {
-  it('renders the eyebrow, two-line headline, intro, supporting statement, and meta line', () => {
+  it('renders the eyebrow, two-line headline, intro, supporting statement, and a bottom-anchored meta line', () => {
     render(<AboutHero />);
     const section = document.getElementById('about-hero');
     expect(section).not.toBeNull();
@@ -15,7 +15,13 @@ describe('AboutHero', () => {
 
     expect(screen.getByText(/independent investment consulting and strategic decision support/i)).toBeInTheDocument();
     expect(screen.getByText(/commercial understanding, financial perspective/i)).toBeInTheDocument();
-    expect(screen.getByText(/independent perspective\. disciplined analysis\. clearer decisions\./i)).toBeInTheDocument();
+    expect(screen.getByTestId('text-about-hero-meta')).toHaveTextContent(/independent perspective\. disciplined analysis\. clearer decisions\./i);
+  });
+
+  it('renders a single editorial image (not a full-bleed background)', () => {
+    render(<AboutHero />);
+    const image = screen.getByAltText(/architectural facade/i);
+    expect(image).toBeInTheDocument();
   });
 
   it('contains no numbering or em-dash characters', () => {
