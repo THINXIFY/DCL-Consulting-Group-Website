@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "DCL Consulting"
+description = "A premium institutional investment consulting homepage prototype for DCL Consulting and Investments Limited, focused on disciplined analysis, strategic insight, and independent perspective."
+version = "1.0.0"
+id = "artifacts/dcl-consulting"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23328
+
+[services.development]
+run = "pnpm --filter @workspace/dcl-consulting run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/dcl-consulting", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/dcl-consulting/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23328"
+BASE_PATH = "/"
