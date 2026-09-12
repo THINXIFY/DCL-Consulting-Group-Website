@@ -76,13 +76,13 @@ export function Hero() {
               ref={exploreRef}
               href="#expertise"
               data-testid="link-explore-expertise"
-              className="dclHero__reveal dclHero__reveal--cta group inline-flex items-center gap-4 bg-[#c6e3fa] px-5 py-3 text-[11px] font-semibold uppercase tracking-[.13em] text-black transition-[background-color,box-shadow] duration-300 hover:bg-white hover:shadow-[0_8px_28px_rgba(198,227,250,.35)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+              className="dclHero__reveal dclHero__reveal--cta group inline-flex items-center gap-4 bg-[#c6e3fa] px-5 py-3 text-[11px] font-semibold uppercase tracking-[.13em] text-[#080a0d] transition-[background-color,box-shadow] duration-300 hover:bg-[#8bbfe8] hover:text-[#080a0d] hover:shadow-[0_8px_28px_rgba(139,191,232,.4)] focus:text-[#080a0d] focus-visible:text-[#080a0d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8] active:text-[#080a0d]"
             >
               Explore Our Expertise
               <ArrowDownRight
                 size={15}
                 strokeWidth={1.3}
-                className="transition-transform duration-300 ease-out group-hover:translate-x-1 group-hover:-translate-y-1"
+                className="text-[#080a0d] transition-transform duration-300 ease-out group-hover:translate-x-[3px] group-hover:-translate-y-[3px]"
               />
             </a>
             <a
