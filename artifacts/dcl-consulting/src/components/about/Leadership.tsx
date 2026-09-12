@@ -7,6 +7,12 @@ function slug(label: string) {
   return label.toLowerCase();
 }
 
+const ROW_ALIGN = [
+  'lg:max-w-[720px]',
+  'lg:max-w-[600px] lg:ml-[12%]',
+  'lg:max-w-none',
+];
+
 export function Leadership() {
   const rootRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
@@ -39,13 +45,13 @@ export function Leadership() {
       gsap.fromTo(
         '.dclLeadership__fadeUp',
         { autoAlpha: 0, y: 16 },
-        { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.09, ease: 'power2.out', scrollTrigger: { trigger: '.dclLeadership__reading', start: 'top 78%' } },
+        { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.09, ease: 'power2.out', scrollTrigger: { trigger: '.dclLeadership__body', start: 'top 78%' } },
       );
 
       gsap.fromTo(
         '.dclLeadership__imageWrap',
         { clipPath: 'inset(0 0 100% 0)' },
-        { clipPath: 'inset(0 0 0% 0)', duration: 1, ease: 'power3.out', scrollTrigger: { trigger: '.dclLeadership__imageWrap', start: 'top 82%' } },
+        { clipPath: 'inset(0 0 0% 0)', duration: 1, ease: 'power3.out', scrollTrigger: { trigger: '.dclLeadership__imageWrap', start: 'top 85%' } },
       );
       gsap.to('.dclLeadership__image', {
         yPercent: 6,
@@ -56,7 +62,7 @@ export function Leadership() {
       gsap.fromTo(
         '.dclLeadership__principle',
         { autoAlpha: 0, y: 18 },
-        { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.12, ease: 'power2.out', scrollTrigger: { trigger: '.dclLeadership__principles', start: 'top 85%' } },
+        { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.14, ease: 'power2.out', scrollTrigger: { trigger: '.dclLeadership__principles', start: 'top 82%' } },
       );
     }, rootRef);
 
@@ -75,52 +81,65 @@ export function Leadership() {
           <span className="block overflow-hidden"><span className="dclLeadership__revealLine block">in considered judgement.</span></span>
         </h2>
 
-        <div className="mt-14 flex flex-col gap-2 border-t border-[#080a0d]/15 pt-10 sm:flex-row sm:items-baseline sm:justify-between">
-          <p data-testid="text-leadership-name" className="dclLeadership__revealLine overflow-hidden text-[2.1rem] font-medium leading-none text-[#080a0d] sm:text-[2.4rem]" style={{ fontFamily: 'var(--app-font-sans)' }}>
+        {/* Name is the major typographic anchor; role sits precisely alongside it, not stacked below as a caption. */}
+        <div className="mt-16 flex flex-col gap-4 border-t border-[#080a0d]/15 pt-10 lg:flex-row lg:items-baseline lg:justify-between lg:gap-10">
+          <p
+            data-testid="text-leadership-name"
+            className="dclLeadership__revealLine overflow-hidden text-[clamp(2.6rem,5.4vw,4.6rem)] font-medium leading-[.96] tracking-[-.03em] text-[#080a0d]"
+            style={{ fontFamily: 'var(--app-font-sans)' }}
+          >
             David Christopher Lebond
           </p>
-          <p data-testid="text-leadership-role" className="dclLeadership__fadeUp text-[10px] font-semibold uppercase tracking-[.15em] text-[#6b737a] sm:text-right sm:text-[11px]">
+          <p data-testid="text-leadership-role" className="dclLeadership__fadeUp shrink-0 text-[11px] font-semibold uppercase tracking-[.15em] text-[#6b737a] lg:text-right">
             Director
-            <br className="sm:hidden" /> DCL Consulting and Investments Limited
+            <br /> DCL Consulting and Investments Limited
           </p>
         </div>
 
-        <div className="mt-16 grid grid-cols-1 gap-y-12 lg:grid-cols-12 lg:gap-x-10">
-          <div className="dclLeadership__reading lg:col-span-6">
+        <div className="dclLeadership__body mt-16 grid grid-cols-1 gap-y-12 lg:grid-cols-12 lg:gap-x-10">
+          <div className="lg:col-span-5">
             <p className="dclLeadership__fadeUp text-[19px] leading-8 text-[#171714]">
               DCL Consulting and Investments Limited is led by David Christopher Lebond.
             </p>
-            <p className="dclLeadership__fadeUp mt-6 max-w-[480px] text-[16px] leading-7 text-[#35404a]">
+            <p className="dclLeadership__fadeUp mt-6 max-w-[440px] text-[16px] leading-7 text-[#35404a]">
               The company's approach centres on disciplined analysis, commercial understanding and clear decision support, bringing a considered perspective to investment and strategic questions.
             </p>
+          </div>
 
-            <div className="dclLeadership__fadeUp mt-10 flex flex-wrap gap-x-8 gap-y-2">
+          <div className="lg:col-span-3 lg:col-start-6">
+            <div className="dclLeadership__fadeUp flex flex-col gap-6 border-l border-[#080a0d]/12 pl-6">
               {leadershipFacts.map((fact) => (
-                <div key={fact.label} data-testid={`leadership-fact-${slug(fact.label)}`} className="text-[10px] font-semibold uppercase tracking-[.13em] text-[#8a939b] sm:text-[11px]">
-                  {fact.label} <span className="text-[#080a0d]">{fact.value}</span>
+                <div key={fact.label} data-testid={`leadership-fact-${slug(fact.label)}`}>
+                  <p className="text-[10px] font-semibold uppercase tracking-[.13em] text-[#8a939b]">{fact.label}</p>
+                  <p className="mt-1 text-[15px] leading-6 text-[#080a0d]">{fact.value}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="lg:col-span-5 lg:col-start-8 lg:mt-16">
-            <div className="dclLeadership__imageWrap aspect-[4/5] w-full overflow-hidden bg-[#171714]">
+          <div className="lg:col-span-3 lg:col-start-10">
+            <div className="dclLeadership__imageWrap aspect-[3/4] w-full overflow-hidden bg-[#171714] lg:mt-3">
               <img
                 data-testid="img-leadership-context"
-                className="dclLeadership__image h-full w-full scale-110 object-cover opacity-85"
+                className="dclLeadership__image h-full w-full scale-110 object-cover opacity-90"
                 src={leadershipImage}
-                alt="Contemporary architectural interior used as contextual imagery, not a photograph of DCL's leadership"
+                alt="Contemporary architectural facade used as contextual imagery for the leadership section"
               />
             </div>
           </div>
         </div>
 
-        <div className="dclLeadership__principles mt-24 grid grid-cols-1 gap-y-10 border-t border-[#080a0d]/15 pt-10 sm:grid-cols-3 sm:gap-x-10 lg:mt-32">
+        {/* Deliberately unequal widths and alignment, not a three-column feature triptych. */}
+        <div className="dclLeadership__principles mt-24 border-t border-[#080a0d]/15 pt-12 lg:mt-32">
           {leadershipApproach.map((item, index) => (
-            <div key={item.title} data-testid={`leadership-principle-${index}`} className="dclLeadership__principle">
+            <div
+              key={item.title}
+              data-testid={`leadership-principle-${index}`}
+              className={`dclLeadership__principle border-b border-[#080a0d]/12 py-9 ${ROW_ALIGN[index] ?? ''}`}
+            >
               <div className="dclLeadership__rule h-px w-10 bg-[#8bbfe8]" />
-              <p className="dclHome__display mt-5 text-[1.4rem] leading-snug text-[#080a0d]">{item.title}</p>
-              <p className="mt-3 max-w-[300px] text-[15px] leading-6 text-[#35404a]">{item.copy}</p>
+              <p className="dclHome__display mt-5 text-[clamp(1.6rem,2.6vw,2.2rem)] leading-snug text-[#080a0d]">{item.title}</p>
+              <p className="mt-3 max-w-[420px] text-[15px] leading-6 text-[#35404a]">{item.copy}</p>
             </div>
           ))}
         </div>
