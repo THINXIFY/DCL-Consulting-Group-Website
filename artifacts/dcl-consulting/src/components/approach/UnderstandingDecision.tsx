@@ -170,10 +170,10 @@ export function UnderstandingDecision() {
                     >
                       {area.question}
                     </p>
-                    <div className="mt-4 h-px bg-[#8bbfe8] transition-all duration-500" style={{ width: active ? '56px' : '0px' }} />
-                    <div className="overflow-hidden transition-[max-height,opacity] duration-500 ease-out" style={{ maxHeight: active || !isDesktop ? '160px' : '0px', opacity: active || !isDesktop ? 1 : 0 }}>
-                      <p className="mt-4 max-w-[54ch] text-[16px] leading-7 text-[#35404a] sm:text-[17px]">{area.copy}</p>
-                    </div>
+                    <div className="mt-4 h-px bg-[#8bbfe8] transition-all duration-500" style={{ width: active ? '56px' : '20px' }} />
+                    <p className="mt-4 max-w-[54ch] text-[16px] leading-7 transition-colors duration-400 sm:text-[17px]" style={{ color: active ? '#35404a' : '#9aa3ab' }}>
+                      {area.copy}
+                    </p>
                   </div>
                 );
               })}

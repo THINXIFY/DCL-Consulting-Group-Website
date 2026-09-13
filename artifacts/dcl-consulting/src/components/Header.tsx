@@ -99,7 +99,7 @@ export function Header() {
         </button>
       </div>
       {open && (
-        <nav className="border-t border-white/10 bg-[#080a0d]/95 px-6 py-5 md:hidden" aria-label="Mobile navigation">
+        <nav className="border-t border-white/10 bg-[#080a0d] px-6 py-5 md:hidden" aria-label="Mobile navigation">
           {NAV_LINKS.map(([label, href]) => {
             const isActive = !href.startsWith('#') && location === href;
             return (

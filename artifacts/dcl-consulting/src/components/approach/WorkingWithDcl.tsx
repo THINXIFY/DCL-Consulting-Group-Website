@@ -111,16 +111,16 @@ export function WorkingWithDcl() {
                     className="dclWorking__row relative cursor-pointer border-b border-[#080a0d]/14 py-9 outline-none transition-colors duration-400 focus-visible:ring-2 focus-visible:ring-[#8bbfe8]"
                     style={{ marginLeft: isDesktop ? OFFSET[index] : undefined }}
                   >
-                    <div className="h-px bg-[#8bbfe8] transition-all duration-500" style={{ width: active ? '48px' : '0px' }} />
+                    <div className="h-px bg-[#8bbfe8] transition-all duration-500" style={{ width: active ? '48px' : '20px' }} />
                     <p
                       className="dclHome__display mt-4 leading-[1.06] tracking-[-.02em] transition-colors duration-400"
                       style={{ fontSize: 'clamp(1.5rem,2.4vw,2rem)', color: active ? '#080a0d' : '#8a939b' }}
                     >
                       {item.title}
                     </p>
-                    <div className="overflow-hidden transition-[max-height,opacity] duration-500 ease-out" style={{ maxHeight: active || !isDesktop ? '120px' : '0px', opacity: active || !isDesktop ? 1 : 0 }}>
-                      <p className="mt-3 max-w-[52ch] text-[16px] leading-7 text-[#35404a] sm:text-[17px]">{item.copy}</p>
-                    </div>
+                    <p className="mt-3 max-w-[52ch] text-[16px] leading-7 transition-colors duration-400 sm:text-[17px]" style={{ color: active ? '#35404a' : '#9aa3ab' }}>
+                      {item.copy}
+                    </p>
                   </div>
                 );
               })}

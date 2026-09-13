@@ -88,9 +88,14 @@ export function EvaluationProcess() {
   const statementRef = useRef<HTMLParagraphElement>(null);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
+  const isWide = useMediaQuery('(min-width: 1440px)');
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
   const [activeIndex, setActiveIndex] = useState(0);
   const activeIndexRef = useRef(0);
+  // Below 1440px the right-hand column is too narrow for the full-width
+  // planes and their horizontal drift together - scale drift down so the
+  // architecture never pushes past the viewport on laptop widths.
+  const xScale = isWide ? 1 : 0.5;
 
   useEffect(() => {
     if (!driverRef.current || !isDesktop || prefersReducedMotion) return;
@@ -121,7 +126,7 @@ export function EvaluationProcess() {
       if (!el) return;
       const target = states[i];
       if (!target) return;
-      gsap.to(el, { xPercent: -50, yPercent: -50, y: BAND_Y[i], ...target, duration: 0.9, ease: 'power3.out' });
+      gsap.to(el, { xPercent: -50, yPercent: -50, ...target, x: target.x * xScale, y: BAND_Y[i], duration: 0.9, ease: 'power3.out' });
     });
     bandTextRefs.current.forEach((el, i) => {
       if (!el) return;
@@ -133,7 +138,7 @@ export function EvaluationProcess() {
     if (descriptionRef.current) {
       gsap.fromTo(descriptionRef.current, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out' });
     }
-  }, [activeIndex, isDesktop, prefersReducedMotion]);
+  }, [activeIndex, isDesktop, isWide, prefersReducedMotion]);
 
   useEffect(() => {
     if (!rootRef.current) return;
@@ -255,7 +260,7 @@ export function EvaluationProcess() {
                         }}
                         data-testid={`evaluation-band-${stage.name.toLowerCase()}`}
                         data-emphasis={isEmphasis}
-                        className="absolute left-1/2 top-1/2 flex w-[400px] flex-col justify-center gap-2 border border-white/18 bg-white/[.04] px-7 py-4"
+                        className="absolute left-1/2 top-1/2 flex w-[240px] flex-col justify-center gap-2 border border-white/18 bg-white/[.04] px-6 py-4 xl:w-[300px] xl:px-7 2xl:w-[400px]"
                       >
                         <div ref={(el) => { bandTextRefs.current[index] = el; }}>
                           <div className="flex items-center gap-3">
