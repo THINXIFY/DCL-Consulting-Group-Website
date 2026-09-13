@@ -14,7 +14,7 @@ function mockDesktop(matches: boolean) {
 describe('AboutPage', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('renders the header and all seven About sections in order, and no footer', () => {
+  it('renders the header, all seven About sections in order, and the global footer', () => {
     mockDesktop(true);
     render(<AboutPage />);
     expect(screen.getByTestId('link-home')).toBeInTheDocument();
@@ -29,6 +29,6 @@ describe('AboutPage', () => {
       'company-foundations',
       'about-final-cta',
     ]);
-    expect(document.querySelector('footer')).not.toBeInTheDocument();
+    expect(document.querySelector('footer')).toBeInTheDocument();
   });
 });

@@ -14,7 +14,7 @@ function mockDesktop(matches: boolean) {
 describe('ExpertisePage', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('renders the header and all five Expertise sections in order, and no footer', () => {
+  it('renders the header, all five Expertise sections in order, and the global footer', () => {
     mockDesktop(true);
     render(<ExpertisePage />);
     expect(screen.getByTestId('link-home')).toBeInTheDocument();
@@ -27,6 +27,6 @@ describe('ExpertisePage', () => {
       'where-expertise-applies',
       'expertise-final-cta',
     ]);
-    expect(document.querySelector('footer')).not.toBeInTheDocument();
+    expect(document.querySelector('footer')).toBeInTheDocument();
   });
 });

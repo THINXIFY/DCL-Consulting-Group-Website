@@ -14,6 +14,7 @@ import { DclAtAGlance } from '@/components/sections/DclAtAGlance';
 import { OurPhilosophy } from '@/components/sections/OurPhilosophy';
 import { Faq } from '@/components/sections/Faq';
 import { FinalCta } from '@/components/sections/FinalCta';
+import { Footer } from '@/components/Footer';
 import AboutPage from '@/pages/about';
 import ExpertisePage from '@/pages/expertise';
 import NotFound from '@/pages/not-found';
@@ -24,19 +25,22 @@ const queryClient = new QueryClient();
 
 function Home() {
   return (
-    <main>
-      <Hero />
-      <About />
-      <Expertise />
-      <Approach />
-      <Industries />
-      <WhoWeAdvise />
-      <WhyDcl />
-      <DclAtAGlance />
-      <OurPhilosophy />
-      <Faq />
-      <FinalCta />
-    </main>
+    <>
+      <main>
+        <Hero />
+        <About />
+        <Expertise />
+        <Approach />
+        <Industries />
+        <WhoWeAdvise />
+        <WhyDcl />
+        <DclAtAGlance />
+        <OurPhilosophy />
+        <Faq />
+        <FinalCta />
+      </main>
+      <Footer />
+    </>
   );
 }
 
