@@ -76,8 +76,9 @@ export const understandingDecision = {
 };
 
 export const evaluationProcess = {
+  eyebrow: 'Our evaluation process',
   headlineLines: ['A disciplined path', 'from information to insight.'],
-  intro: "DCL's evaluation process brings structure to complex opportunities by moving through five connected stages of understanding and judgement.",
+  intro: "DCL's evaluation process brings structure to complex opportunities by moving through connected stages of understanding and judgement.",
   stages: [
     {
       name: 'Understand',
@@ -86,22 +87,22 @@ export const evaluationProcess = {
     },
     {
       name: 'Analyse',
-      statement: 'Look beneath the surface of the opportunity.',
+      statement: 'Examine what actually drives the opportunity.',
       description: 'Examine the commercial, financial and strategic fundamentals most relevant to the opportunity.',
     },
     {
       name: 'Challenge',
-      statement: 'Test what the opportunity depends upon.',
+      statement: 'Test what must be true.',
       description: 'Test assumptions, question dependencies and identify areas where further scrutiny may materially change the view.',
     },
     {
       name: 'Assess',
-      statement: 'Weigh what matters against what remains uncertain.',
+      statement: 'Separate what matters from what does not.',
       description: 'Consider opportunity alongside uncertainty, distinguishing the factors that matter most from those that are less relevant.',
     },
     {
       name: 'Advise',
-      statement: 'Turn analysis into a clear point of view.',
+      statement: 'Turn analysis into a clearer decision.',
       description:
         'Bring the analysis together into a clear, decision-focused perspective that communicates what matters, what remains uncertain and where attention should be directed.',
     },
