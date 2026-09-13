@@ -6,52 +6,58 @@ import { useMediaQuery } from '@/hooks/use-media-query';
 
 interface BandState {
   x: number;
-  y: number;
   z: number;
   rotateY: number;
   opacity: number;
 }
 
-// Indexed [activeStage][bandIndex]. Understand: bands open and separated.
-// Analyse: they begin aligning. Challenge: one band (index 2, Challenge
-// itself) shifts hard against the others. Assess: one band (index 3,
-// Assess) surfaces above the rest. Advise: all five resolve into one
-// precise, aligned structure. Never labelled as such on screen.
+// Each band keeps a fixed vertical slot (BAND_Y) so the five planes can
+// never collide, whatever a stage's opacity/emphasis does. Stages instead
+// differentiate themselves through horizontal drift, depth and rotation.
+// Understand: gentle depth separation across all five. Analyse: they
+// begin aligning (rotation relaxes toward zero). Challenge: one band
+// (index 2, Challenge itself) shifts hard forward against the others.
+// Assess: one band (index 3, Assess) surfaces above the rest via depth.
+// Advise: all five flatten into one precise, aligned structure,
+// differentiated only by rising opacity toward the final band. Never
+// labelled as such on screen.
+const BAND_Y = [-176, -88, 0, 88, 176];
+
 const STAGE_BAND_STATES: BandState[][] = [
   [
-    { x: -60, y: -150, z: 50, rotateY: -8, opacity: 0.5 },
-    { x: 42, y: -75, z: -16, rotateY: 6, opacity: 0.4 },
-    { x: -32, y: 0, z: 26, rotateY: -5, opacity: 0.55 },
-    { x: 46, y: 75, z: -20, rotateY: 7, opacity: 0.4 },
-    { x: -26, y: 150, z: 16, rotateY: -4, opacity: 0.5 },
+    { x: -60, z: 50, rotateY: -8, opacity: 0.5 },
+    { x: 42, z: -16, rotateY: 6, opacity: 0.4 },
+    { x: -32, z: 26, rotateY: -5, opacity: 0.55 },
+    { x: 46, z: -20, rotateY: 7, opacity: 0.4 },
+    { x: -26, z: 16, rotateY: -4, opacity: 0.5 },
   ],
   [
-    { x: -26, y: -110, z: 20, rotateY: -3, opacity: 0.55 },
-    { x: 18, y: -55, z: -10, rotateY: 2, opacity: 0.5 },
-    { x: -16, y: 0, z: 12, rotateY: -2, opacity: 0.6 },
-    { x: 20, y: 55, z: -12, rotateY: 3, opacity: 0.5 },
-    { x: -12, y: 110, z: 10, rotateY: -1.5, opacity: 0.55 },
+    { x: -26, z: 20, rotateY: -3, opacity: 0.55 },
+    { x: 18, z: -10, rotateY: 2, opacity: 0.5 },
+    { x: -16, z: 12, rotateY: -2, opacity: 0.6 },
+    { x: 20, z: -12, rotateY: 3, opacity: 0.5 },
+    { x: -12, z: 10, rotateY: -1.5, opacity: 0.55 },
   ],
   [
-    { x: -12, y: -85, z: 10, rotateY: -1.5, opacity: 0.4 },
-    { x: 8, y: -42, z: -6, rotateY: 1, opacity: 0.4 },
-    { x: 84, y: 10, z: 65, rotateY: 15, opacity: 1 },
-    { x: 12, y: 42, z: -8, rotateY: 2, opacity: 0.4 },
-    { x: -8, y: 85, z: 6, rotateY: -1, opacity: 0.4 },
+    { x: -12, z: 10, rotateY: -1.5, opacity: 0.4 },
+    { x: 8, z: -6, rotateY: 1, opacity: 0.4 },
+    { x: 84, z: 65, rotateY: 15, opacity: 1 },
+    { x: 12, z: -8, rotateY: 2, opacity: 0.4 },
+    { x: -8, z: 6, rotateY: -1, opacity: 0.4 },
   ],
   [
-    { x: -6, y: -62, z: -16, rotateY: -0.5, opacity: 0.35 },
-    { x: 4, y: -31, z: -8, rotateY: 0.5, opacity: 0.4 },
-    { x: -4, y: 0, z: -6, rotateY: -0.3, opacity: 0.35 },
-    { x: 0, y: 26, z: 48, rotateY: 0, opacity: 1 },
-    { x: 3, y: 68, z: -10, rotateY: 0.3, opacity: 0.45 },
+    { x: -6, z: -16, rotateY: -0.5, opacity: 0.35 },
+    { x: 4, z: -8, rotateY: 0.5, opacity: 0.4 },
+    { x: -4, z: -6, rotateY: -0.3, opacity: 0.35 },
+    { x: 0, z: 48, rotateY: 0, opacity: 1 },
+    { x: 3, z: -10, rotateY: 0.3, opacity: 0.45 },
   ],
   [
-    { x: 0, y: -72, z: 0, rotateY: 0, opacity: 0.75 },
-    { x: 0, y: -36, z: 0, rotateY: 0, opacity: 0.85 },
-    { x: 0, y: 0, z: 0, rotateY: 0, opacity: 0.92 },
-    { x: 0, y: 36, z: 0, rotateY: 0, opacity: 0.97 },
-    { x: 0, y: 72, z: 0, rotateY: 0, opacity: 1 },
+    { x: 0, z: 0, rotateY: 0, opacity: 0.75 },
+    { x: 0, z: 0, rotateY: 0, opacity: 0.85 },
+    { x: 0, z: 0, rotateY: 0, opacity: 0.92 },
+    { x: 0, z: 0, rotateY: 0, opacity: 0.97 },
+    { x: 0, z: 0, rotateY: 0, opacity: 1 },
   ],
 ];
 
@@ -115,7 +121,7 @@ export function EvaluationProcess() {
       if (!el) return;
       const target = states[i];
       if (!target) return;
-      gsap.to(el, { xPercent: -50, yPercent: -50, ...target, duration: 0.9, ease: 'power3.out' });
+      gsap.to(el, { xPercent: -50, yPercent: -50, y: BAND_Y[i], ...target, duration: 0.9, ease: 'power3.out' });
     });
     bandTextRefs.current.forEach((el, i) => {
       if (!el) return;
@@ -249,7 +255,7 @@ export function EvaluationProcess() {
                         }}
                         data-testid={`evaluation-band-${stage.name.toLowerCase()}`}
                         data-emphasis={isEmphasis}
-                        className="absolute left-1/2 top-1/2 flex h-[84px] w-[400px] flex-col justify-center gap-2 border border-white/18 bg-white/[.04] px-7 py-5"
+                        className="absolute left-1/2 top-1/2 flex w-[400px] flex-col justify-center gap-2 border border-white/18 bg-white/[.04] px-7 py-4"
                       >
                         <div ref={(el) => { bandTextRefs.current[index] = el; }}>
                           <div className="flex items-center gap-3">
