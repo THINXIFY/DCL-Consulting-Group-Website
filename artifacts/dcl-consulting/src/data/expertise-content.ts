@@ -15,6 +15,12 @@ export interface ExpertiseArea {
   description: string;
 }
 
+export interface DecisionContext {
+  title: string;
+  supportingLine: string;
+  description: string;
+}
+
 export const expertiseHero = {
   eyebrow: 'Expertise',
   headlineLines: ['Expertise applied', 'to the decision.'],
@@ -103,4 +109,53 @@ export const coreExpertise = {
     },
   ] satisfies ExpertiseArea[],
   closingLines: ['Expertise is most valuable', 'when it brings the decision into focus.'],
+};
+
+export const whereExpertiseApplies = {
+  eyebrow: 'Where it applies',
+  headlineLines: ['Where perspective', 'becomes valuable.'],
+  intro:
+    "DCL's expertise can be applied across a range of investment and strategic situations where greater clarity, deeper analysis and independent judgement can support the decision.",
+  contexts: [
+    {
+      title: 'Investment Opportunities',
+      supportingLine: 'A clearer view before capital is committed.',
+      description: 'Assess the commercial case, relevant assumptions, risks and strategic considerations surrounding a potential investment.',
+    },
+    {
+      title: 'Acquisitions',
+      supportingLine: 'Understanding what sits behind the transaction.',
+      description: 'Develop a clearer view of the business, its underlying fundamentals and the issues that may influence an acquisition decision.',
+    },
+    {
+      title: 'Growth & Expansion',
+      supportingLine: 'Evaluating opportunity beyond the immediate upside.',
+      description: 'Consider new markets, expansion opportunities and the commercial, financial and strategic factors behind growth.',
+    },
+    {
+      title: 'Strategic Partnerships',
+      supportingLine: 'Assessing fit, rationale and dependency.',
+      description: 'Examine the strategic fit, commercial logic, dependencies and potential implications of a proposed partnership.',
+    },
+    {
+      title: 'Business Assessment',
+      supportingLine: 'Looking beneath headline performance.',
+      description: 'Review relevant business fundamentals, operating characteristics and financial or commercial considerations to build a clearer understanding of the organisation.',
+    },
+    {
+      title: 'Complex Strategic Decisions',
+      supportingLine: 'Structure when several factors matter at once.',
+      description: 'Bring independent perspective to decisions shaped by uncertainty, competing priorities or multiple commercial and strategic considerations.',
+    },
+  ] satisfies DecisionContext[],
+  closingLines: ['Different situations.', 'The same need for clarity.'],
+};
+
+export const expertiseFinalCta = {
+  headlineLines: ['A clearer view', 'before the next decision.'],
+  supporting:
+    'Discuss an investment opportunity, strategic question or business assessment with DCL and explore where independent perspective may add value.',
+  primaryCta: { label: 'Start a Conversation', href: '/#about' },
+  secondaryCta: { label: 'Contact DCL', href: '/#about' },
+  closing: 'Clarity Before Capital.',
 };

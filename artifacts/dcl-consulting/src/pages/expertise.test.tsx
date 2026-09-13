@@ -14,13 +14,19 @@ function mockDesktop(matches: boolean) {
 describe('ExpertisePage', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('renders the header and the first three Expertise sections in order, and no footer', () => {
+  it('renders the header and all five Expertise sections in order, and no footer', () => {
     mockDesktop(true);
     render(<ExpertisePage />);
     expect(screen.getByTestId('link-home')).toBeInTheDocument();
 
     const sectionIds = Array.from(document.querySelectorAll('main > section')).map((el) => el.id);
-    expect(sectionIds).toEqual(['expertise-hero', 'how-we-add-perspective', 'core-expertise']);
+    expect(sectionIds).toEqual([
+      'expertise-hero',
+      'how-we-add-perspective',
+      'core-expertise',
+      'where-expertise-applies',
+      'expertise-final-cta',
+    ]);
     expect(document.querySelector('footer')).not.toBeInTheDocument();
   });
 });

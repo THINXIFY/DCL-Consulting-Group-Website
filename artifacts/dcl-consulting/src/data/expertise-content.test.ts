@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { coreExpertise, expertiseHero, howWeAddPerspective } from './expertise-content';
+import { coreExpertise, expertiseFinalCta, expertiseHero, howWeAddPerspective, whereExpertiseApplies } from './expertise-content';
 
 const NUMBERING_PATTERN = /\b(0?[1-9]|1[0-2])\s*[/.)-]/;
 const DASH_CHARS = /[–—]/;
@@ -41,8 +41,30 @@ describe('expertise-content', () => {
     }
   });
 
+  it('has exactly six decision contexts, each with a title, supporting line, and description', () => {
+    expect(whereExpertiseApplies.contexts).toHaveLength(6);
+    for (const context of whereExpertiseApplies.contexts) {
+      expect(context).not.toHaveProperty('number');
+      expect(context.title).toBeTruthy();
+      expect(context.supportingLine).toBeTruthy();
+      expect(context.description).toBeTruthy();
+    }
+  });
+
+  it('has final CTA content with both CTAs pointing at a homepage anchor', () => {
+    expect(expertiseFinalCta.primaryCta.href).toBe('/#about');
+    expect(expertiseFinalCta.secondaryCta.href).toBe('/#about');
+    expect(expertiseFinalCta.closing).toBe('Clarity Before Capital.');
+  });
+
   it('contains no numbering or em-dash characters anywhere', () => {
-    const strings = [...allStrings(expertiseHero), ...allStrings(howWeAddPerspective), ...allStrings(coreExpertise)];
+    const strings = [
+      ...allStrings(expertiseHero),
+      ...allStrings(howWeAddPerspective),
+      ...allStrings(coreExpertise),
+      ...allStrings(whereExpertiseApplies),
+      ...allStrings(expertiseFinalCta),
+    ];
     for (const s of strings) {
       expect(s).not.toMatch(NUMBERING_PATTERN);
       expect(s).not.toMatch(DASH_CHARS);
