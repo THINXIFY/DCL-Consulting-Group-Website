@@ -15,6 +15,7 @@ import { OurPhilosophy } from '@/components/sections/OurPhilosophy';
 import { Faq } from '@/components/sections/Faq';
 import { FinalCta } from '@/components/sections/FinalCta';
 import AboutPage from '@/pages/about';
+import ExpertisePage from '@/pages/expertise';
 import NotFound from '@/pages/not-found';
 import { useScrollTriggerRefresh } from '@/hooks/use-scroll-trigger-refresh';
 import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
@@ -45,6 +46,7 @@ function Router() {
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/about" component={AboutPage} />
+        <Route path="/expertise" component={ExpertisePage} />
         <Route component={NotFound} />
       </Switch>
     </RoutedErrorBoundary>
