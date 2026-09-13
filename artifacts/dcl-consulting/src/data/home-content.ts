@@ -16,8 +16,9 @@ export interface IndustryItem {
   image: string;
 }
 
-const img = (seed: string, w = 1400, h = 1000) =>
-  `https://picsum.photos/seed/${seed}/${w}/${h}?grayscale`;
+// Placeholder image - swap for the real photo before launch.
+const PLACEHOLDER_IMAGE = 'https://media.ourwebprojects.pro/wp-content/uploads/2026/09/approach-img.webp';
+const img = (_seed: string) => PLACEHOLDER_IMAGE;
 
 export const expertise: ExpertiseItem[] = [
   {

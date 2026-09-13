@@ -5,7 +5,8 @@ import { ensureGsapRegistered, gsap } from '@/lib/gsap';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { useMagnetic } from '@/hooks/use-magnetic';
 
-const HERO_IMAGE = 'https://picsum.photos/seed/dcl-hero-facade/1600/2000?grayscale';
+// Placeholder image - swap for the real photo before launch.
+const HERO_IMAGE = 'https://media.ourwebprojects.pro/wp-content/uploads/2026/09/approach-img.webp';
 
 export function Hero() {
   const rootRef = useRef<HTMLElement>(null);

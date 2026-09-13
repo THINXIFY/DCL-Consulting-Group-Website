@@ -2,7 +2,8 @@ import { useEffect, useRef } from 'react';
 import { ensureGsapRegistered, gsap } from '@/lib/gsap';
 import { useMediaQuery } from '@/hooks/use-media-query';
 
-const ABOUT_IMAGE = 'https://picsum.photos/seed/dcl-about-office/1200/1400?grayscale';
+// Placeholder image - swap for the real photo before launch.
+const ABOUT_IMAGE = 'https://media.ourwebprojects.pro/wp-content/uploads/2026/09/approach-img.webp';
 
 const FACTS = [
   'DCL Consulting and Investments Limited',
