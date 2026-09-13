@@ -27,12 +27,23 @@ describe('Header', () => {
     expect(screen.getByTestId('link-mobile-about-us')).toBeInTheDocument();
   });
 
-  it('links the logo home, "About us" to /about, and "Expertise" to /expertise, keeping the rest as same-page anchors', () => {
+  it('links the logo home, "About us" to /about, "Expertise" to /expertise, and "Our approach" to /approach, keeping Industries as a same-page anchor', () => {
     render(<Header />);
     expect(screen.getByTestId('link-home')).toHaveAttribute('href', '/');
     expect(screen.getByTestId('link-nav-about-us')).toHaveAttribute('href', '/about');
     expect(screen.getByTestId('link-nav-expertise')).toHaveAttribute('href', '/expertise');
-    expect(screen.getByTestId('link-nav-our-approach')).toHaveAttribute('href', '#approach');
+    expect(screen.getByTestId('link-nav-our-approach')).toHaveAttribute('href', '/approach');
+    expect(screen.getByTestId('link-nav-industries')).toHaveAttribute('href', '#industries');
+  });
+
+  it('marks Our approach as the active nav item when on /approach', () => {
+    setPath('/approach');
+    render(<Header />);
+    expect(screen.getByTestId('link-nav-our-approach')).toHaveAttribute('aria-current', 'page');
+    expect(screen.getByTestId('link-nav-about-us')).not.toHaveAttribute('aria-current');
+
+    fireEvent.click(screen.getByTestId('button-mobile-menu'));
+    expect(screen.getByTestId('link-mobile-our-approach')).toHaveAttribute('aria-current', 'page');
   });
 
   it('marks Expertise as the active nav item when on /expertise, on both desktop and mobile nav', () => {

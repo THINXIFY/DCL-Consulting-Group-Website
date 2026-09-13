@@ -4,7 +4,7 @@ import { companyFacts } from '@/data/home-content';
 const NAV_LINKS: Array<[string, string]> = [
   ['About us', '/about'],
   ['Expertise', '/expertise'],
-  ['Our approach', '/#approach'],
+  ['Our approach', '/approach'],
   ['Industries', '/#industries'],
 ];
 
