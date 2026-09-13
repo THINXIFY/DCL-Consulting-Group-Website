@@ -14,6 +14,11 @@ export interface EvaluationStage {
   description: string;
 }
 
+export interface EvaluationBand {
+  label: string;
+  phrase: string;
+}
+
 export interface ChallengeQuestion {
   question: string;
   copy: string;
@@ -107,6 +112,46 @@ export const evaluationProcess = {
         'Bring the analysis together into a clear, decision-focused perspective that communicates what matters, what remains uncertain and where attention should be directed.',
     },
   ] satisfies EvaluationStage[],
+  // Indexed [stageIndex][bandIndex] - the terminology the architectural
+  // bands display, evolving as the active stage changes. Concise and
+  // real, never a fake metric or dashboard label.
+  bandsByStage: [
+    [
+      { label: 'Decision Objective', phrase: 'What needs to be decided?' },
+      { label: 'Commercial Context', phrase: 'The environment around the opportunity' },
+      { label: 'Available Evidence', phrase: 'What is currently known' },
+      { label: 'Key Assumptions', phrase: 'What the initial view depends upon' },
+      { label: 'Decision Priorities', phrase: 'What deserves attention first' },
+    ],
+    [
+      { label: 'Business Model', phrase: 'How value is created' },
+      { label: 'Financial Drivers', phrase: 'The economics behind the opportunity' },
+      { label: 'Market Position', phrase: 'Competitive and commercial context' },
+      { label: 'Operating Reality', phrase: 'How the opportunity works in practice' },
+      { label: 'Strategic Fit', phrase: 'How it aligns with the wider objective' },
+    ],
+    [
+      { label: 'Assumptions', phrase: 'What must be true?' },
+      { label: 'Dependencies', phrase: 'What does the outcome rely upon?' },
+      { label: 'Information Gaps', phrase: 'What is still unknown?' },
+      { label: 'Downside Factors', phrase: 'What could materially change the view?' },
+      { label: 'Areas For Scrutiny', phrase: 'Where deeper examination may matter' },
+    ],
+    [
+      { label: 'Material Factors', phrase: 'What actually influences the decision' },
+      { label: 'Opportunity', phrase: 'Where value may exist' },
+      { label: 'Uncertainty', phrase: 'What remains unresolved' },
+      { label: 'Trade-offs', phrase: 'What must be weighed against what' },
+      { label: 'Priority Issues', phrase: 'What deserves the greatest attention' },
+    ],
+    [
+      { label: 'Key Findings', phrase: 'What the analysis indicates' },
+      { label: 'What Matters', phrase: 'The factors most relevant to the decision' },
+      { label: 'What Remains Uncertain', phrase: 'Important unresolved considerations' },
+      { label: 'Recommended Focus', phrase: 'Where attention should now be directed' },
+      { label: 'Next Decision', phrase: 'What the analysis should help inform' },
+    ],
+  ] satisfies EvaluationBand[][],
   closingLines: ['The process is structured.', 'The judgement remains considered.'],
 };
 

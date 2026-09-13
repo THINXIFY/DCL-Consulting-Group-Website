@@ -48,6 +48,19 @@ describe('approach-content', () => {
     }
   });
 
+  it('has five architectural bands of real terminology for every one of the five stages, no fake metrics', () => {
+    expect(evaluationProcess.bandsByStage).toHaveLength(5);
+    for (const bands of evaluationProcess.bandsByStage) {
+      expect(bands).toHaveLength(5);
+      for (const band of bands) {
+        expect(band.label).toBeTruthy();
+        expect(band.phrase).toBeTruthy();
+        expect(band.label).not.toMatch(/\d|%/);
+        expect(band.phrase).not.toMatch(/\d|%/);
+      }
+    }
+  });
+
   it('has four challenge questions, each with a question and copy', () => {
     expect(challengeAssumptions.questions).toHaveLength(4);
     for (const item of challengeAssumptions.questions) {

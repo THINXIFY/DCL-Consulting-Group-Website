@@ -57,10 +57,28 @@ const STAGE_BAND_STATES: BandState[][] = [
 
 const TONES = ['#080a0d', '#0a0c10', '#0c0e12', '#0a0c10', '#08090c'];
 
+// The band carrying the highest opacity in a stage's states is the one
+// the architectural shift is built around - reuse that as the single
+// "relevant" plane the text/rule should highlight, so the emphasis
+// always matches what the geometry is already doing.
+function emphasisIndexFor(stageIndex: number) {
+  const states = STAGE_BAND_STATES[stageIndex] ?? STAGE_BAND_STATES[0]!;
+  let maxOpacity = -1;
+  let index = 0;
+  states.forEach((state, i) => {
+    if (state.opacity > maxOpacity) {
+      maxOpacity = state.opacity;
+      index = i;
+    }
+  });
+  return index;
+}
+
 export function EvaluationProcess() {
   const rootRef = useRef<HTMLElement>(null);
   const driverRef = useRef<HTMLDivElement>(null);
   const bandRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const bandTextRefs = useRef<Array<HTMLDivElement | null>>([]);
   const statementRef = useRef<HTMLParagraphElement>(null);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
@@ -98,6 +116,10 @@ export function EvaluationProcess() {
       const target = states[i];
       if (!target) return;
       gsap.to(el, { xPercent: -50, yPercent: -50, ...target, duration: 0.9, ease: 'power3.out' });
+    });
+    bandTextRefs.current.forEach((el, i) => {
+      if (!el) return;
+      gsap.fromTo(el, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.45, ease: 'power3.out', delay: i * 0.03 });
     });
     if (statementRef.current) {
       gsap.fromTo(statementRef.current, { clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 0% 0)', duration: 0.65, ease: 'power3.out' });
@@ -147,6 +169,8 @@ export function EvaluationProcess() {
   }
 
   const active = evaluationProcess.stages[activeIndex] ?? evaluationProcess.stages[0]!;
+  const activeBands = evaluationProcess.bandsByStage[activeIndex] ?? evaluationProcess.bandsByStage[0]!;
+  const emphasisIndex = emphasisIndexFor(activeIndex);
 
   return (
     <section
@@ -214,27 +238,59 @@ export function EvaluationProcess() {
 
               <div className="relative col-span-4 col-start-9 h-[64%] lg:[perspective:1800px]">
                 <div className="pointer-events-none relative h-full w-full [transform-style:preserve-3d]">
-                  {evaluationProcess.stages.map((stage, index) => (
-                    <div
-                      key={stage.name}
-                      ref={(el) => {
-                        bandRefs.current[index] = el;
-                      }}
-                      data-testid={`evaluation-band-${stage.name.toLowerCase()}`}
-                      className="absolute left-1/2 top-1/2 h-[58px] w-[380px] border border-white/18 bg-white/[.04]"
-                    />
-                  ))}
+                  {evaluationProcess.stages.map((stage, index) => {
+                    const band = activeBands[index]!;
+                    const isEmphasis = index === emphasisIndex;
+                    return (
+                      <div
+                        key={stage.name}
+                        ref={(el) => {
+                          bandRefs.current[index] = el;
+                        }}
+                        data-testid={`evaluation-band-${stage.name.toLowerCase()}`}
+                        data-emphasis={isEmphasis}
+                        className="absolute left-1/2 top-1/2 flex h-[84px] w-[400px] flex-col justify-center gap-2 border border-white/18 bg-white/[.04] px-7 py-5"
+                      >
+                        <div ref={(el) => { bandTextRefs.current[index] = el; }}>
+                          <div className="flex items-center gap-3">
+                            <div className="h-px w-4 shrink-0 transition-colors duration-400" style={{ backgroundColor: isEmphasis ? '#8bbfe8' : 'rgba(255,255,255,.3)' }} />
+                            <p
+                              data-testid={`evaluation-band-label-${index}`}
+                              className="text-[12px] font-semibold uppercase tracking-[.12em] transition-colors duration-400"
+                              style={{ fontFamily: 'var(--app-font-sans)', color: isEmphasis ? '#8bbfe8' : 'rgba(255,255,255,.5)' }}
+                            >
+                              {band.label}
+                            </p>
+                          </div>
+                          <p
+                            data-testid={`evaluation-band-phrase-${index}`}
+                            className="mt-2 text-[15px] leading-snug transition-colors duration-400"
+                            style={{ color: isEmphasis ? 'rgba(255,255,255,.82)' : 'rgba(255,255,255,.35)' }}
+                          >
+                            {band.phrase}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
           </div>
         ) : (
           <div className="mt-14 flex flex-col gap-12">
-            {evaluationProcess.stages.map((stage) => (
+            {evaluationProcess.stages.map((stage, index) => (
               <div key={stage.name} data-testid={`evaluation-mobile-${stage.name.toLowerCase()}`} className="dclEvaluation__mobileStage border-t border-white/12 pt-8">
                 <p className="dclHome__eyebrow text-[#8bbfe8]">{stage.name}</p>
                 <p className="dclHome__display mt-3 text-[clamp(1.9rem,7vw,2.4rem)] leading-[1.12] text-white">{stage.statement}</p>
                 <p className="mt-4 text-[16px] leading-7 text-white/70">{stage.description}</p>
+                <div data-testid={`evaluation-mobile-bands-${stage.name.toLowerCase()}`} className="mt-5 flex flex-wrap gap-x-4 gap-y-2">
+                  {(evaluationProcess.bandsByStage[index] ?? []).map((band) => (
+                    <span key={band.label} className="text-[11px] font-semibold uppercase tracking-[.12em] text-white/40">
+                      {band.label}
+                    </span>
+                  ))}
+                </div>
               </div>
             ))}
           </div>

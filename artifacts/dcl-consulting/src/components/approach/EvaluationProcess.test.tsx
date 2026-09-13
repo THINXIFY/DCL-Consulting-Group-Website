@@ -45,6 +45,27 @@ describe('EvaluationProcess', () => {
     expect(() => fireEvent.click(screen.getByTestId('evaluation-nav-challenge'))).not.toThrow();
   });
 
+  it('shows real, concise terminology inside every band for the default (Understand) stage, no fake metrics', () => {
+    mockDesktop(true);
+    render(<EvaluationProcess />);
+    expect(screen.getByTestId('evaluation-band-label-0')).toHaveTextContent('Decision Objective');
+    expect(screen.getByTestId('evaluation-band-phrase-0')).toHaveTextContent('What needs to be decided?');
+    expect(screen.getByTestId('evaluation-band-label-1')).toHaveTextContent('Commercial Context');
+    expect(screen.getByTestId('evaluation-band-label-2')).toHaveTextContent('Available Evidence');
+    expect(screen.getByTestId('evaluation-band-label-3')).toHaveTextContent('Key Assumptions');
+    expect(screen.getByTestId('evaluation-band-label-4')).toHaveTextContent('Decision Priorities');
+
+    const section = document.getElementById('evaluation-process');
+    expect(section?.textContent).not.toMatch(/\d|%/);
+  });
+
+  it('marks exactly one band as the emphasised plane for the default stage', () => {
+    mockDesktop(true);
+    render(<EvaluationProcess />);
+    const emphasised = STAGES.map((stage) => screen.getByTestId(`evaluation-band-${stage}`)).filter((el) => el.getAttribute('data-emphasis') === 'true');
+    expect(emphasised).toHaveLength(1);
+  });
+
   it('shows every stage fully self-contained on mobile with the new presentation statements, no sticky/scroll dependency', () => {
     mockDesktop(false);
     render(<EvaluationProcess />);
