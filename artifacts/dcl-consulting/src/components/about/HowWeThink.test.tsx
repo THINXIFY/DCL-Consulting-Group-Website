@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { HowWeThink } from './HowWeThink';
 
@@ -45,6 +45,16 @@ describe('HowWeThink', () => {
       const chapter = screen.getByTestId(`think-mobile-${key}`);
       expect(chapter).toHaveTextContent(question);
     }
+  });
+
+  it('lets a visitor jump chapters via the progress dots', () => {
+    mockDesktop(true);
+    render(<HowWeThink />);
+    const dots = screen.getAllByTestId(/^think-dot-/);
+    expect(dots).toHaveLength(4);
+    expect(dots[0]).toHaveAttribute('aria-current', 'true');
+    fireEvent.click(screen.getByTestId('think-dot-2'));
+    expect(screen.getByTestId('think-dot-2')).toHaveAttribute('aria-label', 'Go to Risk');
   });
 
   it('contains no numbering or em-dash characters', () => {

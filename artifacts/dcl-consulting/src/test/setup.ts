@@ -33,3 +33,5 @@ if (typeof window.requestAnimationFrame === 'undefined') {
   window.requestAnimationFrame = (callback: FrameRequestCallback) => setTimeout(() => callback(Date.now()), 16) as unknown as number;
   window.cancelAnimationFrame = (handle: number) => clearTimeout(handle);
 }
+
+window.scrollTo = (() => {}) as unknown as typeof window.scrollTo;
