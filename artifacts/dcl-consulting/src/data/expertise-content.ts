@@ -102,4 +102,5 @@ export const coreExpertise = {
         'Support in organising and examining relevant information, assumptions, dependencies and unresolved questions as part of a broader decision-making or due-diligence process.',
     },
   ] satisfies ExpertiseArea[],
+  closingLines: ['Expertise is most valuable', 'when it brings the decision into focus.'],
 };
