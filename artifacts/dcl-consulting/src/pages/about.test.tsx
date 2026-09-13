@@ -14,12 +14,21 @@ function mockDesktop(matches: boolean) {
 describe('AboutPage', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('renders the header and the first three About sections in order', () => {
+  it('renders the header and all seven About sections in order, and no footer', () => {
     mockDesktop(true);
     render(<AboutPage />);
     expect(screen.getByTestId('link-home')).toBeInTheDocument();
 
     const sectionIds = Array.from(document.querySelectorAll('main > section')).map((el) => el.id);
-    expect(sectionIds).toEqual(['about-hero', 'who-we-are', 'how-we-think']);
+    expect(sectionIds).toEqual([
+      'about-hero',
+      'who-we-are',
+      'how-we-think',
+      'what-defines-dcl',
+      'leadership',
+      'company-foundations',
+      'about-final-cta',
+    ]);
+    expect(document.querySelector('footer')).not.toBeInTheDocument();
   });
 });

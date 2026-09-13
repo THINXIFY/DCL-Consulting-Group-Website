@@ -1,6 +1,10 @@
 import { AboutHero } from '@/components/about/AboutHero';
 import { WhoWeAre } from '@/components/about/WhoWeAre';
 import { HowWeThink } from '@/components/about/HowWeThink';
+import { WhatDefinesDcl } from '@/components/about/WhatDefinesDcl';
+import { Leadership } from '@/components/about/Leadership';
+import { CompanyFoundations } from '@/components/about/CompanyFoundations';
+import { AboutFinalCta } from '@/components/about/AboutFinalCta';
 
 export default function AboutPage() {
   return (
@@ -8,6 +12,10 @@ export default function AboutPage() {
       <AboutHero />
       <WhoWeAre />
       <HowWeThink />
+      <WhatDefinesDcl />
+      <Leadership />
+      <CompanyFoundations />
+      <AboutFinalCta />
     </main>
   );
 }

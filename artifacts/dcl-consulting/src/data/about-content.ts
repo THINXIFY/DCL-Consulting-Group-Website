@@ -9,6 +9,21 @@ export interface ThinkChapter {
   planePhrase: string;
 }
 
+export interface DefiningPrinciple {
+  title: string;
+  copy: string;
+}
+
+export interface LeadershipPrinciple {
+  title: string;
+  copy: string;
+}
+
+export interface CompanyFact {
+  label: string;
+  value: string;
+}
+
 export const aboutHero = {
   eyebrow: 'About DCL',
   headlineLines: ['Clarity begins', 'with understanding.'],
@@ -70,4 +85,68 @@ export const howWeThink = {
     },
   ] satisfies ThinkChapter[],
   closing: 'Information creates value when it leads to clearer judgement.',
+};
+
+export const whatDefinesDcl = {
+  headlineLines: ['The quality of the view', 'depends on the standard behind it.'],
+  intro:
+    "DCL's work is guided by a small number of principles that shape how opportunities are examined and how conclusions are communicated.",
+  brandStatement: 'Clarity Before Capital.',
+  principles: [
+    {
+      title: 'Independent Perspective',
+      copy: 'A considered view shaped by the opportunity and the available evidence rather than a predetermined conclusion.',
+    },
+    {
+      title: 'Analytical Discipline',
+      copy: 'Structured evaluation focused on the commercial, financial and strategic factors most relevant to the decision.',
+    },
+    {
+      title: 'Commercial Understanding',
+      copy: 'Attention to how businesses, markets and opportunities work in practice, not only how they appear on paper.',
+    },
+    {
+      title: 'Clear Communication',
+      copy: 'Complex information translated into a clearer understanding of what matters, what remains uncertain and what deserves attention.',
+    },
+  ] satisfies DefiningPrinciple[],
+  closingLines: ['Independent thinking.', 'Structured judgement.', 'Clear communication.'],
+};
+
+export const leadership = {
+  eyebrow: 'Leadership',
+  headlineLines: ['Leadership grounded', 'in considered judgement.'],
+  name: 'David Christopher Lebond',
+  role: 'Director',
+  company: 'DCL Consulting and Investments Limited',
+  bodyOne: 'DCL Consulting and Investments Limited is led by David Christopher Lebond.',
+  bodyTwo:
+    "The company's approach centres on disciplined analysis, commercial understanding and clear decision support, bringing a considered perspective to investment and strategic questions.",
+  principles: [
+    { title: 'Understand before concluding.', copy: 'Establish the context and the important facts before forming a view.' },
+    { title: 'Challenge where necessary.', copy: 'Question assumptions and identify areas that require greater scrutiny.' },
+    { title: 'Communicate what matters clearly.', copy: 'Translate analysis into a perspective that is relevant to the decision.' },
+  ] satisfies LeadershipPrinciple[],
+};
+
+export const companyFoundations = {
+  headline: 'Built on a clear foundation.',
+  intro: 'DCL Consulting and Investments Limited is a private limited company registered in England and Wales.',
+  facts: [
+    { label: 'Company', value: 'DCL Consulting and Investments Limited' },
+    { label: 'Company Type', value: 'Private Limited Company' },
+    { label: 'Registered In', value: 'England & Wales' },
+    { label: 'Company Number', value: '10086906' },
+    { label: 'Director', value: 'David Christopher Lebond' },
+  ] satisfies CompanyFact[],
+  anchorLines: ['DCL Consulting', 'and Investments Limited'],
+};
+
+export const finalCta = {
+  headlineLines: ['Bring greater clarity', 'to the next decision.'],
+  supporting:
+    'Whether considering an investment opportunity, business decision or strategic question, DCL can provide an independent perspective focused on what matters.',
+  primaryCta: { label: 'Start a Conversation', href: '/#about' },
+  secondaryCta: { label: 'Explore Our Expertise', href: '/#expertise' },
+  closing: 'Clarity Before Capital.',
 };

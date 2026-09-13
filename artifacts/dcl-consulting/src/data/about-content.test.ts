@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { aboutHero, heroDocumentPlanes, howWeThink, whoWeAre } from './about-content';
+import { aboutHero, companyFoundations, finalCta, heroDocumentPlanes, howWeThink, leadership, whatDefinesDcl, whoWeAre } from './about-content';
 
 const NUMBERING_PATTERN = /\b(0?[1-9]|1[0-2])\s*[/.)-]/;
 const DASH_CHARS = /[–—]/;
@@ -41,8 +41,49 @@ describe('about-content', () => {
     }
   });
 
+  it('has four what-defines-dcl principles and a three-line closing statement', () => {
+    expect(whatDefinesDcl.principles).toHaveLength(4);
+    for (const item of whatDefinesDcl.principles) {
+      expect(item).not.toHaveProperty('number');
+      expect(item.title).toBeTruthy();
+      expect(item.copy).toBeTruthy();
+    }
+    expect(whatDefinesDcl.closingLines).toHaveLength(3);
+  });
+
+  it('has leadership content with three principles, nothing invented', () => {
+    expect(leadership.name).toBe('David Christopher Lebond');
+    expect(leadership.role).toBe('Director');
+    expect(leadership.principles).toHaveLength(3);
+  });
+
+  it('has exactly the five confirmed company facts, nothing invented', () => {
+    expect(companyFoundations.facts).toEqual([
+      { label: 'Company', value: 'DCL Consulting and Investments Limited' },
+      { label: 'Company Type', value: 'Private Limited Company' },
+      { label: 'Registered In', value: 'England & Wales' },
+      { label: 'Company Number', value: '10086906' },
+      { label: 'Director', value: 'David Christopher Lebond' },
+    ]);
+  });
+
+  it('has final CTA content with both CTAs pointing at homepage anchors', () => {
+    expect(finalCta.primaryCta.href).toBe('/#about');
+    expect(finalCta.secondaryCta.href).toBe('/#expertise');
+    expect(finalCta.closing).toBe('Clarity Before Capital.');
+  });
+
   it('contains no numbering or em-dash characters anywhere', () => {
-    const strings = [...allStrings(aboutHero), ...allStrings(heroDocumentPlanes), ...allStrings(whoWeAre), ...allStrings(howWeThink)];
+    const strings = [
+      ...allStrings(aboutHero),
+      ...allStrings(heroDocumentPlanes),
+      ...allStrings(whoWeAre),
+      ...allStrings(howWeThink),
+      ...allStrings(whatDefinesDcl),
+      ...allStrings(leadership),
+      ...allStrings(companyFoundations),
+      ...allStrings(finalCta),
+    ];
     for (const s of strings) {
       expect(s).not.toMatch(NUMBERING_PATTERN);
       expect(s).not.toMatch(DASH_CHARS);
