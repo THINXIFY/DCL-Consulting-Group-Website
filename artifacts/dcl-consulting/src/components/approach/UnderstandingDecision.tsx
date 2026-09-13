@@ -4,6 +4,8 @@ import { ensureGsapRegistered, gsap, ScrollTrigger } from '@/lib/gsap';
 import { getActiveIndex } from '@/lib/scroll-active-index';
 import { useMediaQuery } from '@/hooks/use-media-query';
 
+const PLACEHOLDER_IMAGE = 'https://media.ourwebprojects.pro/wp-content/uploads/2026/09/approach-img.webp';
+
 interface FrameState {
   rotateY: number;
   scaleX: number;
@@ -11,7 +13,7 @@ interface FrameState {
 }
 
 // Objective: open and wide. Context: narrows. Information: shifts depth.
-// Priorities: aligns precisely. A single restrained frame, not a diagram.
+// Priorities: aligns precisely. The image itself carries the shift.
 const FRAME_STATES: FrameState[] = [
   { rotateY: -6, scaleX: 1.06, z: 0 },
   { rotateY: -2, scaleX: 0.9, z: 10 },
@@ -26,7 +28,7 @@ function slug(label: string) {
 export function UnderstandingDecision() {
   const rootRef = useRef<HTMLElement>(null);
   const rowsRef = useRef<HTMLDivElement>(null);
-  const frameRef = useRef<HTMLDivElement>(null);
+  const imageStageRef = useRef<HTMLDivElement>(null);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
 
@@ -57,10 +59,10 @@ export function UnderstandingDecision() {
   }, [isDesktop, prefersReducedMotion]);
 
   useEffect(() => {
-    if (!isDesktop || prefersReducedMotion || !frameRef.current) return;
+    if (!isDesktop || prefersReducedMotion || !imageStageRef.current) return;
     ensureGsapRegistered();
     const target = FRAME_STATES[activeIndex] ?? FRAME_STATES[0]!;
-    gsap.to(frameRef.current, { ...target, duration: 0.75, ease: 'power3.out' });
+    gsap.to(imageStageRef.current, { ...target, duration: 0.75, ease: 'power3.out' });
   }, [activeIndex, isDesktop, prefersReducedMotion]);
 
   useEffect(() => {
@@ -68,7 +70,10 @@ export function UnderstandingDecision() {
     ensureGsapRegistered();
     const ctx = gsap.context(() => {
       if (prefersReducedMotion) {
-        gsap.set(['.dclUnderstand__revealLine', '.dclUnderstand__fadeUp', '.dclUnderstand__row', '.dclUnderstand__datum', '.dclUnderstand__closingLine'], { clearProps: 'all' });
+        gsap.set(
+          ['.dclUnderstand__revealLine', '.dclUnderstand__fadeUp', '.dclUnderstand__row', '.dclUnderstand__datum', '.dclUnderstand__imageWrap', '.dclUnderstand__closingLine'],
+          { clearProps: 'all' },
+        );
         return;
       }
 
@@ -82,6 +87,16 @@ export function UnderstandingDecision() {
         { autoAlpha: 0, y: 16 },
         { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power2.out', scrollTrigger: { trigger: rootRef.current, start: 'top 70%' } },
       );
+      gsap.fromTo(
+        '.dclUnderstand__imageWrap',
+        { clipPath: 'inset(0 0 100% 0)' },
+        { clipPath: 'inset(0 0 0% 0)', duration: 1, ease: 'power3.out', scrollTrigger: { trigger: '.dclUnderstand__imageWrap', start: 'top 85%' } },
+      );
+      gsap.to('.dclUnderstand__image', {
+        yPercent: 6,
+        ease: 'none',
+        scrollTrigger: { trigger: '.dclUnderstand__imageWrap', start: 'top bottom', end: 'bottom top', scrub: true },
+      });
       gsap.fromTo(
         '.dclUnderstand__row',
         { autoAlpha: 0, y: 16 },
@@ -114,41 +129,55 @@ export function UnderstandingDecision() {
           <p className="dclUnderstand__fadeUp max-w-[420px] text-[17px] leading-7 text-[#35404a] lg:text-right">{understandingDecision.intro}</p>
         </div>
 
-        <div className="relative mt-4 lg:[perspective:1400px]">
-          <div ref={frameRef} aria-hidden="true" className="pointer-events-none absolute inset-y-6 right-0 hidden w-[46%] border border-[#080a0d]/10 bg-[#f7f9fa] lg:block" />
+        <div className="mt-12 grid grid-cols-1 gap-y-10 lg:mt-16 lg:grid-cols-12 lg:gap-x-12">
+          <div className="order-1 lg:order-2 lg:col-span-5 lg:col-start-8">
+            <div className="dclUnderstand__imageWrap relative aspect-[4/5] w-full overflow-hidden lg:sticky lg:top-28 lg:[perspective:1400px]">
+              <div ref={imageStageRef} className="h-full w-full">
+                <img
+                  data-testid="img-understand"
+                  className="dclUnderstand__image h-full w-full scale-105 object-cover object-center"
+                  src={PLACEHOLDER_IMAGE}
+                  alt="Placeholder institutional image, to be replaced"
+                />
+              </div>
+              <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[#080a0d]/10" />
+            </div>
+          </div>
 
-          <div ref={rowsRef} className="relative border-t border-[#080a0d]/14">
-            <div className="dclUnderstand__datum absolute -left-6 top-0 hidden h-full w-px bg-[#8bbfe8] lg:block" aria-hidden="true" />
-            {understandingDecision.areas.map((area, index) => {
-              const active = isDesktop ? activeIndex === index : true;
-              return (
-                <div
-                  key={area.label}
-                  data-testid={`understand-row-${slug(area.label)}`}
-                  data-active={active}
-                  tabIndex={isDesktop ? 0 : undefined}
-                  onMouseEnter={() => isDesktop && setHoverIndex(index)}
-                  onMouseLeave={() => isDesktop && setHoverIndex(null)}
-                  onFocus={() => isDesktop && setHoverIndex(index)}
-                  onBlur={() => isDesktop && setHoverIndex(null)}
-                  className="dclUnderstand__row relative cursor-pointer border-b border-[#080a0d]/14 py-9 outline-none transition-colors duration-400 focus-visible:ring-2 focus-visible:ring-[#8bbfe8] lg:py-11"
-                >
-                  <p className="dclHome__eyebrow transition-colors duration-400" style={{ color: active ? '#4a8fc2' : '#8a939b' }}>
-                    {area.label}
-                  </p>
-                  <p
-                    className="dclHome__display mt-3 max-w-[760px] leading-[1.08] tracking-[-.02em] transition-colors duration-400"
-                    style={{ fontSize: 'clamp(1.7rem,3vw,2.5rem)', color: active ? '#080a0d' : '#8a939b' }}
+          <div ref={rowsRef} className="order-2 lg:order-1 lg:col-span-7 lg:col-start-1">
+            <div className="relative border-t border-[#080a0d]/14">
+              <div className="dclUnderstand__datum absolute -left-6 top-0 hidden h-full w-px bg-[#8bbfe8] lg:block" aria-hidden="true" />
+              {understandingDecision.areas.map((area, index) => {
+                const active = isDesktop ? activeIndex === index : true;
+                return (
+                  <div
+                    key={area.label}
+                    data-testid={`understand-row-${slug(area.label)}`}
+                    data-active={active}
+                    tabIndex={isDesktop ? 0 : undefined}
+                    onMouseEnter={() => isDesktop && setHoverIndex(index)}
+                    onMouseLeave={() => isDesktop && setHoverIndex(null)}
+                    onFocus={() => isDesktop && setHoverIndex(index)}
+                    onBlur={() => isDesktop && setHoverIndex(null)}
+                    className="dclUnderstand__row relative cursor-pointer border-b border-[#080a0d]/14 py-9 outline-none transition-colors duration-400 focus-visible:ring-2 focus-visible:ring-[#8bbfe8] lg:py-11"
                   >
-                    {area.question}
-                  </p>
-                  <div className="mt-4 h-px bg-[#8bbfe8] transition-all duration-500" style={{ width: active ? '56px' : '0px' }} />
-                  <div className="overflow-hidden transition-[max-height,opacity] duration-500 ease-out" style={{ maxHeight: active || !isDesktop ? '160px' : '0px', opacity: active || !isDesktop ? 1 : 0 }}>
-                    <p className="mt-4 max-w-[62ch] text-[16px] leading-7 text-[#35404a] sm:text-[17px]">{area.copy}</p>
+                    <p className="dclHome__eyebrow transition-colors duration-400" style={{ color: active ? '#4a8fc2' : '#8a939b' }}>
+                      {area.label}
+                    </p>
+                    <p
+                      className="dclHome__display mt-3 max-w-[560px] leading-[1.08] tracking-[-.02em] transition-colors duration-400"
+                      style={{ fontSize: 'clamp(1.6rem,2.6vw,2.2rem)', color: active ? '#080a0d' : '#8a939b' }}
+                    >
+                      {area.question}
+                    </p>
+                    <div className="mt-4 h-px bg-[#8bbfe8] transition-all duration-500" style={{ width: active ? '56px' : '0px' }} />
+                    <div className="overflow-hidden transition-[max-height,opacity] duration-500 ease-out" style={{ maxHeight: active || !isDesktop ? '160px' : '0px', opacity: active || !isDesktop ? 1 : 0 }}>
+                      <p className="mt-4 max-w-[54ch] text-[16px] leading-7 text-[#35404a] sm:text-[17px]">{area.copy}</p>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
 

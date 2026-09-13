@@ -16,7 +16,7 @@ const LABELS = ['The Objective', 'The Context', 'The Information', 'The Prioriti
 describe('UnderstandingDecision', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('renders the headline, intro, all four areas, and the closing statement', () => {
+  it('renders the headline, intro, all four areas, the image, and the closing statement', () => {
     mockDesktop(true);
     render(<UnderstandingDecision />);
     expect(screen.getByText(/before analysis/i)).toBeInTheDocument();
@@ -24,6 +24,7 @@ describe('UnderstandingDecision', () => {
     for (const label of LABELS) {
       expect(screen.getByTestId(`understand-row-${label.toLowerCase().replaceAll(' ', '-')}`)).toHaveTextContent(label);
     }
+    expect(screen.getByTestId('img-understand')).toHaveAttribute('src', 'https://media.ourwebprojects.pro/wp-content/uploads/2026/09/approach-img.webp');
     const closing = screen.getByTestId('text-understand-closing');
     expect(closing).toHaveTextContent('Clarity begins by defining');
     expect(closing).toHaveTextContent('the question correctly.');
