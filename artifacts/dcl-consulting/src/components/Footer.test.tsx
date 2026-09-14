@@ -9,7 +9,7 @@ describe('Footer', () => {
     expect(screen.getByTestId('link-footer-about-us')).toHaveAttribute('href', '/about');
     expect(screen.getByTestId('link-footer-expertise')).toHaveAttribute('href', '/expertise');
     expect(screen.getByTestId('link-footer-our-approach')).toHaveAttribute('href', '/approach');
-    expect(screen.getByTestId('link-footer-industries')).toHaveAttribute('href', '/#industries');
+    expect(screen.getByTestId('link-footer-industries')).toHaveAttribute('href', '/industries');
   });
 
   it('renders only the exact confirmed company registration facts, nothing invented', () => {

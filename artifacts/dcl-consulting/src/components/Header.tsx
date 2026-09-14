@@ -15,7 +15,7 @@ const NAV_LINKS: Array<[string, string]> = [
   ['About us', '/about'],
   ['Expertise', '/expertise'],
   ['Our approach', '/approach'],
-  ['Industries', '#industries'],
+  ['Industries', '/industries'],
 ];
 
 const DESKTOP_LINK_BASE =
@@ -64,7 +64,7 @@ export function Header() {
     <header className="absolute inset-x-0 top-0 z-20">
       <div className="mx-auto flex max-w-[1440px] items-center justify-between px-6 py-6 sm:px-10 lg:px-16">
         <Link href="/" data-testid="link-home"><Mark /></Link>
-        <nav className="hidden items-center gap-8 md:flex" aria-label="Primary navigation">
+        <nav className="hidden items-center gap-8 lg:flex" aria-label="Primary navigation">
           {NAV_LINKS.map(([label, href]) => {
             const isActive = !href.startsWith('#') && location === href;
             return (
@@ -93,13 +93,13 @@ export function Header() {
           aria-label={open ? 'Close navigation' : 'Open navigation'}
           aria-expanded={open}
           onClick={() => setOpen(!open)}
-          className="text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8] md:hidden"
+          className="text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8] lg:hidden"
         >
           {open ? <X size={21} strokeWidth={1.5} /> : <Menu size={21} strokeWidth={1.5} />}
         </button>
       </div>
       {open && (
-        <nav className="border-t border-white/10 bg-[#080a0d] px-6 py-5 md:hidden" aria-label="Mobile navigation">
+        <nav className="border-t border-white/10 bg-[#080a0d] px-6 py-5 lg:hidden" aria-label="Mobile navigation">
           {NAV_LINKS.map(([label, href]) => {
             const isActive = !href.startsWith('#') && location === href;
             return (

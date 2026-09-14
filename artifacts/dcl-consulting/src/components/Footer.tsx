@@ -5,7 +5,7 @@ const NAV_LINKS: Array<[string, string]> = [
   ['About us', '/about'],
   ['Expertise', '/expertise'],
   ['Our approach', '/approach'],
-  ['Industries', '/#industries'],
+  ['Industries', '/industries'],
 ];
 
 const REGISTRATION_FACTS = companyFacts.filter((fact) => fact.label !== 'Director');
