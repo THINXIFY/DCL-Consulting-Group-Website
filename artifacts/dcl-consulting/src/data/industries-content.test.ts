@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { industriesHero, industriesWeAssess, sectorAgnostic } from './industries-content';
+import {
+  crossSectorPerspective,
+  industriesFinalCta,
+  industriesHero,
+  industriesWeAssess,
+  sectorAgnostic,
+  sectorPerspectiveMatters,
+  whatWeLookFor,
+} from './industries-content';
 
 const NUMBERING_PATTERN = /\b(0?[1-9]|1[0-2])\s*[/.)-]/;
 const DASH_CHARS = /[–—]/;
@@ -58,8 +66,50 @@ describe('industries-content', () => {
     }
   });
 
+  it('has exactly six fundamental areas, each with a name, question and description, no numbering', () => {
+    expect(whatWeLookFor.areas).toHaveLength(6);
+    for (const area of whatWeLookFor.areas) {
+      expect(area).not.toHaveProperty('number');
+      expect(area.name).toBeTruthy();
+      expect(area.question).toBeTruthy();
+      expect(area.description).toBeTruthy();
+    }
+    expect(whatWeLookFor.closingLines).toEqual(['Different industries require different emphasis.', 'The discipline of the questions remains.']);
+  });
+
+  it('has exactly six decision contexts, each with a name and description, no numbering', () => {
+    expect(sectorPerspectiveMatters.contexts).toHaveLength(6);
+    for (const context of sectorPerspectiveMatters.contexts) {
+      expect(context).not.toHaveProperty('number');
+      expect(context.name).toBeTruthy();
+      expect(context.description).toBeTruthy();
+    }
+    expect(sectorPerspectiveMatters.closingLines).toEqual(['The decision may be familiar.', 'The environment rarely is.']);
+  });
+
+  it('has cross-sector perspective content with two to three background terms and a three-line closing statement', () => {
+    expect(crossSectorPerspective.backgroundTerms.length).toBeGreaterThanOrEqual(2);
+    expect(crossSectorPerspective.backgroundTerms.length).toBeLessThanOrEqual(3);
+    expect(crossSectorPerspective.body).toHaveLength(2);
+    expect(crossSectorPerspective.closingLines).toEqual(['Broader perspective.', 'Sharper questions.', 'Clearer judgement.']);
+  });
+
+  it('has final CTA content with both CTAs pointing at real destinations', () => {
+    expect(industriesFinalCta.primaryCta.href).toBe('/#about');
+    expect(industriesFinalCta.secondaryCta.href).toBe('/expertise');
+    expect(industriesFinalCta.closing).toBe('Clarity Before Capital.');
+  });
+
   it('contains no numbering or em-dash characters anywhere', () => {
-    const strings = [...allStrings(industriesHero), ...allStrings(sectorAgnostic), ...allStrings(industriesWeAssess)];
+    const strings = [
+      ...allStrings(industriesHero),
+      ...allStrings(sectorAgnostic),
+      ...allStrings(industriesWeAssess),
+      ...allStrings(whatWeLookFor),
+      ...allStrings(sectorPerspectiveMatters),
+      ...allStrings(crossSectorPerspective),
+      ...allStrings(industriesFinalCta),
+    ];
     for (const s of strings) {
       expect(s).not.toMatch(NUMBERING_PATTERN);
       expect(s).not.toMatch(DASH_CHARS);
