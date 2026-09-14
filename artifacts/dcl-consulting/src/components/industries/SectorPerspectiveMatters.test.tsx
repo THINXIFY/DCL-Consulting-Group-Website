@@ -16,7 +16,7 @@ const CONTEXT_IDS = ['investment-opportunities', 'acquisitions', 'market-entry',
 describe('SectorPerspectiveMatters', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('renders the eyebrow, headline, intro, all six decision contexts, and the closing statement', () => {
+  it('renders the headline, intro, all six decision contexts, and the closing statement', () => {
     mockDesktop(true);
     render(<SectorPerspectiveMatters />);
     expect(screen.getByText(/industry context matters/i)).toBeInTheDocument();

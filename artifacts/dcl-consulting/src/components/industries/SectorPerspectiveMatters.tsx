@@ -11,10 +11,12 @@ interface ContextPlacement {
 
 // Six large typographic objects placed as alternating left / centre /
 // right zones rather than a list or a grid - varying spans and type
-// scale so each reads as a distinct editorial weight, not a repeated row.
+// scale so each reads as a distinct editorial weight, not a repeated
+// row. Spans are kept no narrower than 5 columns so descriptions stay
+// comfortable at 1024-1366 laptop widths, not just on large desktop.
 const PLACEMENTS: ContextPlacement[] = [
   { span: 'lg:col-span-7 lg:col-start-1', size: 'clamp(1.9rem,3.4vw,2.9rem)' },
-  { span: 'lg:col-span-4 lg:col-start-9 lg:mt-16', size: 'clamp(1.5rem,2.4vw,2.1rem)' },
+  { span: 'lg:col-span-5 lg:col-start-8 lg:mt-16', size: 'clamp(1.5rem,2.4vw,2.1rem)' },
   { span: 'lg:col-span-6 lg:col-start-4 lg:mt-10', size: 'clamp(1.7rem,2.8vw,2.4rem)' },
   { span: 'lg:col-span-8 lg:col-start-5 lg:mt-16', size: 'clamp(1.8rem,3vw,2.6rem)' },
   { span: 'lg:col-span-5 lg:col-start-1 lg:mt-10', size: 'clamp(1.6rem,2.6vw,2.2rem)' },
@@ -78,6 +80,29 @@ export function SectorPerspectiveMatters() {
     };
   }, [activeIndex, isDesktop, prefersReducedMotion]);
 
+  // Cursor-tracked glow on the active item - fine pointers only, skipped
+  // under reduced motion. Reuses the same pattern already proven on the
+  // Industries We Assess cards elsewhere on this page, for a consistent
+  // "premium interactive" feel rather than a one-off effect.
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    if (prefersReducedMotion) return;
+
+    const cleanups: Array<() => void> = [];
+    itemRefs.current.forEach((item) => {
+      if (!item) return;
+      function handleMove(event: MouseEvent) {
+        const rect = item!.getBoundingClientRect();
+        item!.style.setProperty('--x', `${((event.clientX - rect.left) / rect.width) * 100}%`);
+        item!.style.setProperty('--y', `${((event.clientY - rect.top) / rect.height) * 100}%`);
+      }
+      item.addEventListener('pointermove', handleMove);
+      cleanups.push(() => item.removeEventListener('pointermove', handleMove));
+    });
+    return () => cleanups.forEach((cleanup) => cleanup());
+  }, [prefersReducedMotion]);
+
   useEffect(() => {
     if (!rootRef.current) return;
     ensureGsapRegistered();
@@ -114,15 +139,14 @@ export function SectorPerspectiveMatters() {
     <section id="sector-perspective-matters" ref={rootRef} aria-labelledby="decision-title" className="bg-[#080a0d] px-6 py-24 text-white sm:px-10 sm:py-32 lg:px-16 lg:py-32">
       <div className="mx-auto max-w-[1440px]">
         <div className="max-w-[680px]">
-          <p className="dclHome__eyebrow dclDecision__revealLine text-[#8bbfe8]">{sectorPerspectiveMatters.eyebrow}</p>
-          <h2 id="decision-title" className="dclHome__display mt-6 text-[clamp(2.4rem,4.6vw,3.9rem)] leading-[1.03] tracking-[-.035em]">
+          <h2 id="decision-title" className="dclHome__display text-[clamp(2.4rem,4.6vw,3.9rem)] leading-[1.03] tracking-[-.035em]">
             <span className="block overflow-hidden"><span className="dclDecision__revealLine block">{sectorPerspectiveMatters.headlineLines[0]}</span></span>
             <span className="block overflow-hidden"><span className="dclDecision__revealLine block">{sectorPerspectiveMatters.headlineLines[1]}</span></span>
           </h2>
           <p className="dclDecision__fadeUp mt-6 text-[19px] leading-[1.6] text-white/65">{sectorPerspectiveMatters.intro}</p>
         </div>
 
-        <div ref={fieldRef} className="mt-16 grid grid-cols-1 gap-y-12 lg:mt-24 lg:grid-cols-12 lg:gap-x-8 lg:[perspective:1400px]">
+        <div ref={fieldRef} className="mt-16 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-10 lg:mt-24 lg:grid-cols-12 lg:gap-x-8 lg:[perspective:1400px]">
           {sectorPerspectiveMatters.contexts.map((context, index) => {
             const active = isDesktop ? activeIndex === index : true;
             const placement = PLACEMENTS[index] ?? PLACEMENTS[0]!;
@@ -139,16 +163,25 @@ export function SectorPerspectiveMatters() {
                 onMouseLeave={() => isDesktop && setHoverIndex(null)}
                 onFocus={() => isDesktop && setHoverIndex(index)}
                 onBlur={() => isDesktop && setHoverIndex(null)}
-                className={`dclDecision__item cursor-pointer border-t border-white/14 pt-6 outline-none focus-visible:ring-2 focus-visible:ring-[#8bbfe8] ${placement.span}`}
+                className={`dclDecision__item group relative cursor-pointer overflow-hidden border-t border-white/14 pt-6 outline-none focus-visible:ring-2 focus-visible:ring-[#8bbfe8] ${placement.span}`}
               >
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                  style={{ background: 'radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(139,191,232,.14), transparent 60%)' }}
+                />
+                <div className="relative h-px w-6 bg-white/25 transition-colors duration-400 group-hover:bg-[#8bbfe8]" />
                 <p
-                  className="dclHome__display leading-[1.12] tracking-[-.02em] transition-colors duration-400"
+                  className="dclHome__display relative mt-4 leading-[1.12] tracking-[-.02em] transition-colors duration-400"
                   style={{ fontSize: placement.size, color: active ? '#ffffff' : 'rgba(255,255,255,.4)' }}
                 >
                   {context.name}
                 </p>
-                <div className="mt-4 h-px bg-[#8bbfe8] transition-all duration-500" style={{ width: active ? '48px' : '18px' }} />
-                <p className="mt-4 max-w-[46ch] text-[16px] leading-7 transition-colors duration-400 sm:text-[17px]" style={{ color: active ? 'rgba(255,255,255,.75)' : 'rgba(255,255,255,.32)' }}>
+                <div className="relative mt-4 h-px bg-[#8bbfe8] transition-all duration-500" style={{ width: active ? '48px' : '18px' }} />
+                <p
+                  className="relative mt-4 max-w-[46ch] text-[16px] leading-7 transition-colors duration-400 sm:text-[17px]"
+                  style={{ color: active ? 'rgba(255,255,255,.75)' : 'rgba(255,255,255,.32)' }}
+                >
                   {context.description}
                 </p>
               </div>

@@ -13,9 +13,9 @@ interface TermConfig {
 // behind the copy - never a diagram, never labelled, just a reminder
 // that the same underlying themes recur across sectors.
 const TERM_CONFIG: TermConfig[] = [
-  { top: '12%', left: '58%', speed: -30 },
-  { top: '48%', left: '8%', speed: 20 },
-  { top: '78%', left: '62%', speed: -16 },
+  { top: '10%', left: '62%', speed: -30 },
+  { top: '46%', left: '6%', speed: 20 },
+  { top: '80%', left: '58%', speed: -16 },
 ];
 
 export function CrossSectorPerspective() {
@@ -50,7 +50,7 @@ export function CrossSectorPerspective() {
         gsap.fromTo(
           '.dclCrossSector__term',
           { autoAlpha: 0 },
-          { autoAlpha: 0.08, duration: 1, ease: 'power2.out', scrollTrigger: { trigger: rootRef.current, start: 'top 70%' } },
+          { autoAlpha: 0.08, duration: 1, ease: 'power2.out', scrollTrigger: { trigger: rootRef.current, start: 'top bottom' } },
         );
         // A plain onUpdate + gsap.set drift (no `scrub`) - matches the
         // scroll-linked pattern used everywhere else on this site. GSAP's
@@ -110,15 +110,17 @@ export function CrossSectorPerspective() {
       )}
 
       <div className="relative mx-auto max-w-[1440px]">
-        <div className="grid grid-cols-1 gap-y-10 lg:grid-cols-12 lg:gap-x-10">
-          <h2 id="cross-sector-title" className="dclHome__display lg:col-span-5 text-[clamp(2.4rem,4.4vw,3.7rem)] leading-[1.05] tracking-[-.03em] text-[#080a0d]">
-            <span className="block overflow-hidden"><span className="dclCrossSector__revealLine block">{crossSectorPerspective.headlineLines[0]}</span></span>
-            <span className="block overflow-hidden"><span className="dclCrossSector__revealLine block">{crossSectorPerspective.headlineLines[1]}</span></span>
-          </h2>
+        <h2 id="cross-sector-title" className="dclHome__display max-w-[720px] text-[clamp(2.6rem,5vw,4.2rem)] leading-[1.04] tracking-[-.03em] text-[#080a0d]">
+          <span className="block overflow-hidden"><span className="dclCrossSector__revealLine block">{crossSectorPerspective.headlineLines[0]}</span></span>
+          <span className="block overflow-hidden"><span className="dclCrossSector__revealLine block">{crossSectorPerspective.headlineLines[1]}</span></span>
+        </h2>
 
-          <div className="lg:col-span-5 lg:col-start-8">
-            <p className="dclCrossSector__fadeUp text-[19px] leading-[1.6] text-[#35404a]">{crossSectorPerspective.lead}</p>
-            <p className="dclCrossSector__fadeUp mt-6 text-[16px] leading-7 text-[#35404a] sm:text-[17px]">{crossSectorPerspective.body[0]}</p>
+        <div className="mt-14 grid grid-cols-1 lg:mt-20 lg:grid-cols-12">
+          <p className="dclCrossSector__fadeUp dclHome__display lg:col-span-8 lg:col-start-4 text-[clamp(1.5rem,2.6vw,2.1rem)] leading-[1.35] tracking-[-.01em] text-[#080a0d]">
+            {crossSectorPerspective.lead}
+          </p>
+          <div className="lg:col-span-6 lg:col-start-4">
+            <p className="dclCrossSector__fadeUp mt-8 text-[16px] leading-7 text-[#35404a] sm:text-[17px]">{crossSectorPerspective.body[0]}</p>
             <p className="dclCrossSector__fadeUp mt-5 text-[16px] leading-7 text-[#35404a] sm:text-[17px]">{crossSectorPerspective.body[1]}</p>
           </div>
         </div>
