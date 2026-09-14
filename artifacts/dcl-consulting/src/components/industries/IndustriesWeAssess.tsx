@@ -1,17 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { industriesWeAssess } from '@/data/industries-content';
+import { industriesWeAssess, type Sector } from '@/data/industries-content';
 import { ensureGsapRegistered, gsap, ScrollTrigger } from '@/lib/gsap';
 import { getActiveIndex } from '@/lib/scroll-active-index';
 import { useMediaQuery } from '@/hooks/use-media-query';
 
 const PLACEHOLDER_IMAGE = 'https://media.ourwebprojects.pro/wp-content/uploads/2026/09/approach-img.webp';
 
-// Varying spans across a 6-column canvas so the field reads as designed
-// typography rather than a mechanically uniform grid - longer sector
-// names naturally claim more width. Each row's pair always sums to 6 so
-// the canvas never leaves an unexplained gap on the right.
-const SECTOR_SPANS = [4, 2, 3, 3, 2, 4, 2, 4, 3, 3, 4, 2];
+// Three staggered editorial columns (5/3/4 of 12) rather than an equal
+// three-up grid, each offset vertically at desktop so the index reads as
+// composed rather than mechanical. Sectors stay in approved reading
+// order, chunked column by column.
+const COLUMN_SPAN_CLASSES = ['md:col-span-1 lg:col-span-5', 'md:col-span-1 lg:col-span-3 lg:mt-24', 'md:col-span-2 lg:col-span-4 lg:mt-12'];
+const COLUMN_RANGES: Array<[number, number]> = [
+  [0, 4],
+  [4, 8],
+  [8, 12],
+];
 
 // One shared placeholder image, differentiated per sector only by crop
 // focal point until real sector photography is supplied - swap in a
@@ -33,6 +38,48 @@ const FOCAL_POSITIONS = [
 
 function slug(name: string) {
   return name.toLowerCase().replaceAll(' & ', '-').replaceAll(' ', '-');
+}
+
+interface SectorItemProps {
+  sector: Sector;
+  index: number;
+  isActive: boolean;
+  isDesktop: boolean;
+  onEnter: (index: number) => void;
+  onLeave: () => void;
+  onClick: (index: number) => void;
+}
+
+function SectorItem({ sector, index, isActive, isDesktop, onEnter, onLeave, onClick }: SectorItemProps) {
+  return (
+    <button
+      type="button"
+      data-testid={`sector-field-${slug(sector.name)}`}
+      data-active={isActive}
+      onMouseEnter={() => onEnter(index)}
+      onMouseLeave={onLeave}
+      onFocus={() => onEnter(index)}
+      onBlur={onLeave}
+      onClick={() => onClick(index)}
+      className="dclSectors__field border-t border-white/14 py-6 text-left outline-none transition-transform duration-500 first:border-t-0 focus-visible:ring-2 focus-visible:ring-[#8bbfe8]"
+      style={{ transform: isActive && isDesktop ? 'translateX(6px)' : 'translateX(0)' }}
+    >
+      <span className="dclSectors__rule block h-px w-6 bg-white/25" />
+      <span
+        className="dclHome__display mt-4 block leading-[1.15] transition-colors duration-400"
+        style={{ fontSize: 'clamp(1.15rem,1.7vw,1.55rem)', color: isActive ? '#ffffff' : 'rgba(255,255,255,.42)' }}
+      >
+        {sector.name}
+      </span>
+      <span className="mt-3 block h-px transition-all duration-500" style={{ width: isActive ? '32px' : '0px', backgroundColor: '#8bbfe8' }} />
+      <span
+        className="mt-2 block overflow-hidden text-[13px] font-medium leading-5 text-[#8bbfe8] transition-all duration-400"
+        style={{ maxHeight: isActive ? '20px' : '0px', opacity: isActive ? 1 : 0 }}
+      >
+        {sector.supportingLine}
+      </span>
+    </button>
+  );
 }
 
 export function IndustriesWeAssess() {
@@ -90,21 +137,21 @@ export function IndustriesWeAssess() {
     if (!mountedImageRef.current) {
       mountedImageRef.current = true;
       img.style.objectPosition = focal;
-      gsap.set(img, { autoAlpha: 1, scale: 1 });
+      gsap.set(img, { autoAlpha: 1, scale: 1, clipPath: 'inset(0 0 0% 0)' });
       return;
     }
 
-    // A single layer, always killed and re-targeted rather than a
-    // two-layer crossfade - immune to ending up fully hidden if scroll
-    // fires several index changes before an earlier transition settles.
+    // Single layer, always killed and re-targeted - immune to ending up
+    // fully hidden if scroll fires several sector changes in a row
+    // before an earlier transition settles.
     gsap.killTweensOf(img);
     gsap
       .timeline()
-      .to(img, { autoAlpha: 0, scale: 1.02, duration: 0.3, ease: 'power2.out' })
+      .to(img, { autoAlpha: 0, y: -6, duration: 0.2, ease: 'power2.out' })
       .call(() => {
         img.style.objectPosition = focal;
       })
-      .fromTo(img, { scale: 1.04 }, { autoAlpha: 1, scale: 1, duration: 0.45, ease: 'power3.out' });
+      .fromTo(img, { clipPath: 'inset(0 0 100% 0)', scale: 1.04 }, { clipPath: 'inset(0 0 0% 0)', scale: 1, autoAlpha: 1, y: 0, duration: 0.55, ease: 'power3.out' });
   }, [activeIndex, isDesktop, prefersReducedMotion]);
 
   useEffect(() => {
@@ -112,10 +159,10 @@ export function IndustriesWeAssess() {
     ensureGsapRegistered();
     const ctx = gsap.context(() => {
       if (prefersReducedMotion) {
-        gsap.set(['.dclSectors__revealLine', '.dclSectors__fadeUp', '.dclSectors__closingLine'], { clearProps: 'all' });
-        // Field buttons carry their own React-managed gridColumn/transform
-        // inline styles - clearProps:'all' would wipe those too, so only
-        // the animated opacity is reset here, not the whole style attribute.
+        gsap.set(['.dclSectors__revealLine', '.dclSectors__fadeUp', '.dclSectors__closingLine', '.dclSectors__rule'], { clearProps: 'all' });
+        // Field buttons carry their own React-managed transform inline
+        // style - clearProps:'all' would wipe that too, so only the
+        // animated opacity is reset here, not the whole style attribute.
         gsap.set('.dclSectors__field', { clearProps: 'opacity,visibility' });
         return;
       }
@@ -136,7 +183,12 @@ export function IndustriesWeAssess() {
       gsap.fromTo(
         '.dclSectors__field',
         { autoAlpha: 0 },
-        { autoAlpha: 1, duration: 0.55, stagger: 0.03, ease: 'power2.out', scrollTrigger: { trigger: fieldRef.current, start: 'top 82%' } },
+        { autoAlpha: 1, duration: 0.5, stagger: 0.025, ease: 'power2.out', scrollTrigger: { trigger: fieldRef.current, start: 'top 82%' } },
+      );
+      gsap.fromTo(
+        '.dclSectors__rule',
+        { scaleX: 0 },
+        { scaleX: 1, duration: 0.9, stagger: 0.05, ease: 'power2.out', transformOrigin: 'left center', scrollTrigger: { trigger: fieldRef.current, start: 'top 82%' } },
       );
       gsap.fromTo(
         '.dclSectors__closingLine',
@@ -146,6 +198,17 @@ export function IndustriesWeAssess() {
     }, rootRef);
     return () => ctx.revert();
   }, [prefersReducedMotion]);
+
+  function handleEnter(index: number) {
+    setHoverIndex(index);
+  }
+  function handleLeave() {
+    setHoverIndex(null);
+  }
+  function handleClick(index: number) {
+    setClickIndex(index);
+    setHoverIndex(null);
+  }
 
   return (
     <section id="industries-we-assess" ref={rootRef} aria-labelledby="industries-we-assess-title" className="bg-[#171714] px-6 py-24 text-white sm:px-10 sm:py-32 lg:px-16 lg:py-32">
@@ -159,49 +222,29 @@ export function IndustriesWeAssess() {
 
         {isTabletUp ? (
           <>
-            <div
-              ref={fieldRef}
-              className="mt-16 grid grid-cols-2 gap-x-8 lg:mt-20 lg:grid-cols-6 lg:[perspective:1400px]"
-              aria-label="Industries DCL assesses"
-            >
-              {industriesWeAssess.sectors.map((sector, index) => {
-                const isActive = activeIndex === index;
-                return (
-                  <button
-                    key={sector.name}
-                    type="button"
-                    data-testid={`sector-field-${slug(sector.name)}`}
-                    data-active={isActive}
-                    onMouseEnter={() => setHoverIndex(index)}
-                    onMouseLeave={() => setHoverIndex(null)}
-                    onFocus={() => setHoverIndex(index)}
-                    onBlur={() => setHoverIndex(null)}
-                    onClick={() => {
-                      setClickIndex(index);
-                      setHoverIndex(null);
-                    }}
-                    className="dclSectors__field group border-t border-white/14 py-5 text-left outline-none transition-transform duration-500 focus-visible:ring-2 focus-visible:ring-[#8bbfe8] lg:py-6"
-                    style={{ gridColumn: isDesktop ? `span ${SECTOR_SPANS[index] ?? 3}` : undefined, transform: isActive && isDesktop ? 'translateX(6px)' : 'translateX(0)' }}
-                  >
-                    <span
-                      className="dclHome__display block text-[clamp(1.15rem,1.9vw,1.6rem)] leading-[1.15] transition-colors duration-400"
-                      style={{ color: isActive ? '#ffffff' : 'rgba(255,255,255,.4)' }}
-                    >
-                      {sector.name}
-                    </span>
-                    <span className="mt-3 block h-px transition-all duration-500" style={{ width: isActive ? '40px' : '16px', backgroundColor: isActive ? '#8bbfe8' : 'rgba(255,255,255,.2)' }} />
-                    <span
-                      className="mt-3 block text-[13px] font-medium leading-5 text-[#8bbfe8] transition-opacity duration-400"
-                      style={{ opacity: isActive ? 1 : 0 }}
-                    >
-                      {sector.supportingLine}
-                    </span>
-                  </button>
-                );
-              })}
+            <div ref={fieldRef} className="mt-16 grid grid-cols-1 gap-x-10 gap-y-14 md:mt-20 md:grid-cols-2 lg:grid-cols-12" aria-label="Industries DCL assesses">
+              {COLUMN_RANGES.map(([start, end], colIndex) => (
+                <div key={colIndex} className={`flex flex-col ${COLUMN_SPAN_CLASSES[colIndex]}`}>
+                  {industriesWeAssess.sectors.slice(start, end).map((sector, i) => {
+                    const index = start + i;
+                    return (
+                      <SectorItem
+                        key={sector.name}
+                        sector={sector}
+                        index={index}
+                        isActive={activeIndex === index}
+                        isDesktop={isDesktop}
+                        onEnter={handleEnter}
+                        onLeave={handleLeave}
+                        onClick={handleClick}
+                      />
+                    );
+                  })}
+                </div>
+              ))}
             </div>
 
-            <div className="relative mt-16 grid grid-cols-1 gap-y-10 bg-white/[.03] px-6 py-12 sm:px-10 lg:mt-20 lg:grid-cols-12 lg:items-center lg:gap-x-12 lg:px-12">
+            <div className="mt-20 grid grid-cols-1 gap-y-10 border-t border-white/14 pt-14 lg:mt-24 lg:grid-cols-12 lg:items-center lg:gap-x-14">
               <div className="lg:col-span-7" aria-live="polite">
                 <p data-testid="sector-detail-supporting" className="text-[13px] font-medium uppercase tracking-[.1em] text-[#8bbfe8]">
                   {active.supportingLine}
