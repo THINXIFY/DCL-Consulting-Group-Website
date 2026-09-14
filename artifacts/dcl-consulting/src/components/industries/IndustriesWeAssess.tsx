@@ -11,6 +11,7 @@ function slug(name: string) {
 export function IndustriesWeAssess() {
   const rootRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<Array<HTMLDivElement | null>>([]);
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
 
   useEffect(() => {
@@ -18,7 +19,7 @@ export function IndustriesWeAssess() {
     ensureGsapRegistered();
     const ctx = gsap.context(() => {
       if (prefersReducedMotion) {
-        gsap.set(['.dclSectors__revealLine', '.dclSectors__fadeUp', '.dclSectors__card', '.dclSectors__closingLine'], { clearProps: 'all' });
+        gsap.set(['.dclSectors__revealLine', '.dclSectors__fadeUp', '.dclSectors__card', '.dclSectors__cardRule', '.dclSectors__closingLine'], { clearProps: 'all' });
         return;
       }
       gsap.fromTo(
@@ -33,8 +34,13 @@ export function IndustriesWeAssess() {
       );
       gsap.fromTo(
         '.dclSectors__card',
-        { autoAlpha: 0, y: 22 },
-        { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.06, ease: 'power2.out', scrollTrigger: { trigger: gridRef.current, start: 'top 85%' } },
+        { autoAlpha: 0, y: 30, scale: 0.96 },
+        { autoAlpha: 1, y: 0, scale: 1, duration: 0.7, stagger: 0.07, ease: 'power3.out', scrollTrigger: { trigger: gridRef.current, start: 'top 85%' } },
+      );
+      gsap.fromTo(
+        '.dclSectors__cardRule',
+        { scaleX: 0 },
+        { scaleX: 1, duration: 0.6, stagger: 0.07, ease: 'power2.out', transformOrigin: 'left center', scrollTrigger: { trigger: gridRef.current, start: 'top 82%' } },
       );
       gsap.fromTo(
         '.dclSectors__closingLine',
@@ -43,6 +49,50 @@ export function IndustriesWeAssess() {
       );
     }, rootRef);
     return () => ctx.revert();
+  }, [prefersReducedMotion]);
+
+  // Cursor-tracked glow plus a light lift/scale on hover - fine pointers
+  // only, and skipped entirely under reduced motion. GSAP owns the card's
+  // transform exclusively here (never a CSS hover:translate utility) so
+  // the lift and the entrance tween never fight for the same property.
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    if (prefersReducedMotion) return;
+    ensureGsapRegistered();
+
+    const cleanups: Array<() => void> = [];
+    cardRefs.current.forEach((card) => {
+      if (!card) return;
+
+      // A single gsap.to() per transition, not separate quickTo() calls
+      // per property - quickTo's 'scale' cache did not compose reliably
+      // alongside a concurrent 'y' quickTo on the same element in testing.
+      // Enter/leave fire rarely, so quickTo's perf benefit isn't needed here.
+      function handleEnter() {
+        gsap.to(card, { y: -6, scale: 1.015, duration: 0.45, ease: 'power3.out' });
+      }
+      function handleMove(event: MouseEvent) {
+        const rect = card!.getBoundingClientRect();
+        card!.style.setProperty('--x', `${((event.clientX - rect.left) / rect.width) * 100}%`);
+        card!.style.setProperty('--y', `${((event.clientY - rect.top) / rect.height) * 100}%`);
+      }
+      function handleLeave() {
+        gsap.to(card, { y: 0, scale: 1, duration: 0.45, ease: 'power3.out' });
+      }
+
+      card.addEventListener('pointerenter', handleEnter);
+      card.addEventListener('pointermove', handleMove);
+      card.addEventListener('pointerleave', handleLeave);
+      cleanups.push(() => {
+        card.removeEventListener('pointerenter', handleEnter);
+        card.removeEventListener('pointermove', handleMove);
+        card.removeEventListener('pointerleave', handleLeave);
+        gsap.set(card, { clearProps: 'transform' });
+      });
+    });
+
+    return () => cleanups.forEach((cleanup) => cleanup());
   }, [prefersReducedMotion]);
 
   return (
@@ -56,25 +106,33 @@ export function IndustriesWeAssess() {
         <p className="dclSectors__fadeUp mt-6 max-w-[62ch] text-[16px] leading-7 text-white/60 sm:text-[17px]">{industriesWeAssess.intro}</p>
 
         <div ref={gridRef} className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:mt-20 lg:grid-cols-3 lg:gap-7">
-          {industriesWeAssess.sectors.map((sector) => (
+          {industriesWeAssess.sectors.map((sector, index) => (
             <div
               key={sector.name}
+              ref={(el) => {
+                cardRefs.current[index] = el;
+              }}
               data-testid={`sector-card-${slug(sector.name)}`}
               tabIndex={0}
-              className="dclSectors__card group flex flex-col border border-white/14 bg-white/[.03] p-8 outline-none transition-all duration-400 hover:-translate-y-1 hover:border-[#8bbfe8]/50 hover:bg-white/[.05] focus-visible:ring-2 focus-visible:ring-[#8bbfe8]"
+              className="dclSectors__card group relative flex flex-col overflow-hidden border border-white/14 bg-white/[.03] p-8 outline-none transition-colors duration-400 will-change-transform hover:border-[#8bbfe8]/50 hover:bg-white/[.05] focus-visible:ring-2 focus-visible:ring-[#8bbfe8]"
             >
-              <div className="flex items-start justify-between gap-4">
-                <div className="h-px w-8 bg-white/25 transition-colors duration-400 group-hover:bg-[#8bbfe8]" />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                style={{ background: 'radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(139,191,232,.16), transparent 62%)' }}
+              />
+              <div className="relative flex items-start justify-between gap-4">
+                <div className="dclSectors__cardRule h-px w-8 bg-white/25 transition-[width,background-color] duration-400 group-hover:w-12 group-hover:bg-[#8bbfe8]" />
                 <ArrowUpRight
                   size={18}
                   strokeWidth={1.4}
                   aria-hidden="true"
-                  className="shrink-0 text-white/25 transition-all duration-400 group-hover:translate-x-[2px] group-hover:-translate-y-[2px] group-hover:text-[#8bbfe8]"
+                  className="shrink-0 text-white/25 transition-all duration-400 ease-out group-hover:translate-x-[4px] group-hover:-translate-y-[4px] group-hover:rotate-45 group-hover:text-[#8bbfe8]"
                 />
               </div>
-              <p className="dclHome__display mt-6 text-[1.4rem] leading-[1.18] text-white">{sector.name}</p>
-              <p className="mt-3 text-[13px] font-semibold uppercase tracking-[.08em] text-[#8bbfe8]">{sector.supportingLine}</p>
-              <p className="mt-4 max-w-[42ch] text-[16px] leading-7 text-white/65">{sector.description}</p>
+              <p className="dclHome__display relative mt-6 text-[1.4rem] leading-[1.18] text-white">{sector.name}</p>
+              <p className="relative mt-3 text-[13px] font-semibold uppercase tracking-[.08em] text-[#8bbfe8]">{sector.supportingLine}</p>
+              <p className="relative mt-4 max-w-[42ch] text-[16px] leading-7 text-white/65 transition-colors duration-400 group-hover:text-white/80">{sector.description}</p>
             </div>
           ))}
         </div>
