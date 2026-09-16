@@ -20,15 +20,18 @@ services:
     name: dcl-frontend
     runtime: static
     branch: main
-    buildCommand: >-
-      corepack enable &&
-      corepack prepare pnpm@10.33.2 --activate &&
-      pnpm install --frozen-lockfile &&
-      pnpm --filter @workspace/dcl-consulting run build
+    buildCommand: pnpm install --frozen-lockfile && pnpm --filter @workspace/dcl-consulting run build
     staticPublishPath: artifacts/dcl-consulting/dist/public
     envVars:
       - key: NODE_VERSION
         value: "24"
+      # Render's build image already ships its own pnpm at a read-only
+      # system path - running `corepack enable`/`corepack prepare` there
+      # fails with EROFS trying to relink it. PNPM_VERSION is Render's
+      # own supported way to pin the version instead, with no corepack
+      # involved.
+      - key: PNPM_VERSION
+        value: "10.33.2"
       # vite.config.ts requires both of these to even load the config,
       # including for `vite build` - not just for the dev/preview server.
       # Their values don't matter for a static build beyond being valid.
@@ -61,11 +64,7 @@ services:
     runtime: node
     plan: starter # cheapest plan with persistent disk support
     branch: main
-    buildCommand: >-
-      corepack enable &&
-      corepack prepare pnpm@10.33.2 --activate &&
-      pnpm install --frozen-lockfile &&
-      pnpm --filter @workspace/api-server run build
+    buildCommand: pnpm install --frozen-lockfile && pnpm --filter @workspace/api-server run build
     startCommand: node --enable-source-maps artifacts/api-server/dist/index.mjs
     healthCheckPath: /api/healthz
     disk:
@@ -75,6 +74,9 @@ services:
     envVars:
       - key: NODE_VERSION
         value: "24"
+      # See the frontend service's PNPM_VERSION comment above - same fix.
+      - key: PNPM_VERSION
+        value: "10.33.2"
       - key: NODE_ENV
         value: production
       # Render injects PORT automatically for web services - the app
