@@ -109,7 +109,7 @@ export function CompanyInformation() {
               type="button"
               data-testid="button-request-more-info"
               onClick={() => setRequestInfoOpen(true)}
-              className="dclCompanyInfo__fadeUp group mt-5 inline-flex w-fit items-center gap-2 text-[11px] font-semibold uppercase tracking-[.13em] text-[#080a0d] transition-colors duration-300 hover:text-[#171714]/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+              className="dclCompanyInfo__fadeUp group mt-5 inline-flex w-fit items-center gap-2 border border-[#8bbfe8] bg-[#8bbfe8]/10 px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[.13em] text-[#080a0d] transition-colors duration-300 hover:bg-[#8bbfe8]/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
             >
               Request More Info
               <ArrowUpRight size={14} strokeWidth={1.3} className="transition-transform duration-300 ease-out group-hover:translate-x-[3px] group-hover:-translate-y-[3px]" />
