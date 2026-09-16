@@ -4,8 +4,14 @@ import { ensureGsapRegistered, gsap } from '@/lib/gsap';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { useMagnetic } from '@/hooks/use-magnetic';
 
+const FINAL_CTA_IMAGE = {
+  src: '/images/home/home-final-cta.webp',
+  alt: 'Warmly lit office corridor with glass partitions and reflective wood flooring at dusk',
+};
+
 export function FinalCta() {
   const rootRef = useRef<HTMLElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
   const startRef = useRef<HTMLAnchorElement>(null);
   const exploreRef = useRef<HTMLAnchorElement>(null);
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
@@ -31,14 +37,41 @@ export function FinalCta() {
         .fromTo('.dclFinal__fadeUp', { autoAlpha: 0, y: 18 }, { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.08 }, '-=0.5')
         .fromTo('.dclFinal__rule', { scaleX: 0 }, { scaleX: 1, transformOrigin: 'left center', duration: 0.7 }, '-=0.3')
         .fromTo('.dclFinal__cta', { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.08 }, '-=0.3');
+
+      if (imageRef.current) {
+        gsap.fromTo(
+          imageRef.current,
+          { autoAlpha: 0, scale: 1.12 },
+          {
+            autoAlpha: 0.5,
+            scale: 1.02,
+            duration: 1.4,
+            ease: 'power2.out',
+            scrollTrigger: { trigger: rootRef.current, start: 'top 80%' },
+          },
+        );
+      }
     }, rootRef);
 
     return () => ctx.revert();
   }, [prefersReducedMotion]);
 
   return (
-    <section id="final-cta" ref={rootRef} aria-labelledby="final-cta-title" className="bg-[#080a0d] px-6 py-24 text-center text-white sm:px-10 sm:py-32 lg:px-16 lg:py-40">
-      <div className="mx-auto max-w-[900px]">
+    <section id="final-cta" ref={rootRef} aria-labelledby="final-cta-title" className="relative overflow-hidden bg-[#080a0d] px-6 py-24 text-center text-white sm:px-10 sm:py-32 lg:px-16 lg:py-40">
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+        <img
+          ref={imageRef}
+          data-testid="img-final-cta-background"
+          className="h-full w-full scale-105 object-cover opacity-50"
+          src={FINAL_CTA_IMAGE.src}
+          alt=""
+          loading="lazy"
+          decoding="async"
+        />
+        <div className="absolute inset-0 bg-[#080a0d]/70" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#080a0d] via-transparent to-[#080a0d]/60" />
+      </div>
+      <div className="relative z-10 mx-auto max-w-[900px]">
         <h2 id="final-cta-title" data-testid="text-final-title" className="dclHome__display text-[clamp(2.6rem,6vw,5.6rem)] leading-[.95] tracking-[-.04em]">
           <span className="block overflow-hidden"><span className="dclFinal__revealLine block">Bring greater clarity</span></span>
           <span className="block overflow-hidden"><span className="dclFinal__revealLine block text-[#c6e3fa]">to the next decision.</span></span>

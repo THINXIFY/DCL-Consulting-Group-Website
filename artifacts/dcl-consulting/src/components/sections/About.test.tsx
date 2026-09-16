@@ -12,6 +12,15 @@ describe('About', () => {
     expect(screen.getByText('Company no. 10086906')).toBeInTheDocument();
   });
 
+  it('renders the three principles and the real supporting image', () => {
+    render(<About />);
+    for (const title of ['Independent', 'Disciplined', 'Considered']) {
+      expect(screen.getByTestId(`about-principle-${title.toLowerCase()}`)).toHaveTextContent(title);
+    }
+    const img = document.querySelector('.dclAbout__imageWrap img');
+    expect(img).toHaveAttribute('src', expect.stringContaining('/images/home/'));
+  });
+
   it('contains no em-dash characters', () => {
     render(<About />);
     const section = document.getElementById('about');

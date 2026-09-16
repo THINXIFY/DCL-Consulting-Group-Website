@@ -2,8 +2,9 @@ import { useEffect, useRef } from 'react';
 import { ensureGsapRegistered, gsap } from '@/lib/gsap';
 import { useMediaQuery } from '@/hooks/use-media-query';
 
-// Placeholder image - swap for the real photo before launch.
-const ABOUT_IMAGE = 'https://media.ourwebprojects.pro/wp-content/uploads/2026/09/approach-img.webp';
+import { aboutContent } from '@/data/home-content';
+
+const ABOUT_IMAGE = aboutContent.image.src;
 
 const FACTS = [
   'DCL Consulting and Investments Limited',
@@ -12,12 +13,7 @@ const FACTS = [
   'Company no. 10086906',
 ];
 
-const BODY = [
-  'DCL Consulting and Investments Limited provides independent investment consulting and strategic decision support.',
-  'We help investors and businesses understand opportunities more clearly by examining commercial fundamentals, financial considerations, material risks, and strategic context.',
-  'Our role is to bring shape to the uncertain. We combine rigorous research with commercial understanding to reveal what matters, what is missing, and what should happen next.',
-  "Quietly independent and deliberately close to the work, we operate as a trusted extension of our clients' thinking.",
-];
+const BODY = aboutContent.body;
 
 export function About() {
   const rootRef = useRef<HTMLElement>(null);
@@ -106,9 +102,23 @@ export function About() {
               ))}
             </div>
             <div className="dclAbout__imageWrap aspect-[4/5] w-full overflow-hidden">
-              <img className="h-full w-full object-cover" src={ABOUT_IMAGE} alt="Quietly lit contemporary office interior with long architectural lines" />
+              <img
+                className="h-full w-full object-cover"
+                src={ABOUT_IMAGE}
+                alt={aboutContent.image.alt}
+                loading="lazy"
+                decoding="async"
+              />
             </div>
           </div>
+        </div>
+        <div className="dclAbout__fadeUp mt-16 grid gap-10 border-t border-[#080a0d]/15 pt-12 sm:grid-cols-3 lg:mt-20">
+          {aboutContent.principles.map((principle) => (
+            <div key={principle.title} data-testid={`about-principle-${principle.title.toLowerCase()}`}>
+              <h3 className="dclHome__display text-[1.6rem] leading-none tracking-[-.03em] text-[#080a0d]">{principle.title}</h3>
+              <p className="mt-3 max-w-[280px] text-[14px] leading-6 text-[#6b737a]">{principle.copy}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>

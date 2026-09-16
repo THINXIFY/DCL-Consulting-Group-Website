@@ -1,58 +1,63 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
+import { expertiseSection } from '@/data/home-content';
 import { Expertise } from './Expertise';
 
-function mockDesktop(matches: boolean) {
-  window.matchMedia = vi.fn().mockImplementation((query: string) => ({
-    matches,
-    media: query,
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-  })) as unknown as typeof window.matchMedia;
-}
-
 describe('Expertise', () => {
-  afterEach(() => vi.restoreAllMocks());
-
-  it('renders the eyebrow tagline', () => {
-    mockDesktop(true);
+  it('renders the eyebrow, two-line headline, body, and primary CTA', () => {
     render(<Expertise />);
-    expect(screen.getByTestId('text-expertise-eyebrow')).toHaveTextContent('Our expertise');
+    const section = document.getElementById('expertise');
+    expect(section).not.toBeNull();
+    expect(screen.getByTestId('text-expertise-eyebrow')).toHaveTextContent('Our Expertise');
+    expect(section?.textContent).toMatch(/different expertise/i);
+    expect(section?.textContent).toMatch(/a clearer view/i);
+
+    const cta = screen.getByTestId('link-expertise-explore');
+    expect(cta).toHaveTextContent('Explore Our Expertise');
+    expect(cta).toHaveAttribute('href', '/expertise');
   });
 
-  it('renders all six services with no numbering', () => {
-    mockDesktop(true);
+  it('renders the real supporting image with the overlay statement', () => {
     render(<Expertise />);
-    for (const title of [
-      'Investment Consulting',
-      'Opportunity Analysis',
-      'Risk & Opportunity Assessment',
-      'Business & Financial Analysis',
-      'Strategic Advisory',
-      'Due Diligence Support',
-    ]) {
-      const row = screen.getByTestId(`row-expertise-${title.toLowerCase().replaceAll(/[^a-z]+/g, '-').replace(/(^-|-$)/g, '')}`);
-      expect(row).toHaveTextContent(title);
+    const img = document.querySelector('.dclExpertise__imageWrap img');
+    expect(img).toHaveAttribute('src', expect.stringContaining('/images/home/'));
+    expect(img).toHaveAttribute('alt', expect.stringMatching(/./));
+    for (const line of expertiseSection.imageStatementLines) {
+      expect(screen.getByText(line)).toBeInTheDocument();
     }
-    expect(screen.queryByText(/^0[1-6]$/)).not.toBeInTheDocument();
   });
 
-  it('marks a row active on focus (desktop)', () => {
-    mockDesktop(true);
+  it('renders all four expertise areas as real links, each with icon, label, headline, copy, and a learn-more link', () => {
     render(<Expertise />);
-    const row = screen.getByTestId('row-expertise-investment-consulting');
-    fireEvent.focus(row);
-    expect(row).toHaveAttribute('data-active', 'true');
-    fireEvent.blur(row);
-    expect(row).toHaveAttribute('data-active', 'false');
+    for (const area of expertiseSection.areas) {
+      const link = screen.getByTestId(`link-expertise-area-${area.label.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`);
+      expect(link).toHaveAttribute('href', area.href);
+      expect(link).toHaveTextContent(area.label);
+      expect(link).toHaveTextContent(area.headlineLines.join(''));
+      expect(link).toHaveTextContent(area.copy);
+      expect(link).toHaveTextContent('Learn more');
+    }
   });
 
-  it('renders an accessible accordion on mobile', () => {
-    mockDesktop(false);
+  it('renders no decorative numbering anywhere in the section', () => {
     render(<Expertise />);
-    const trigger = screen.getByTestId('button-expertise-investment-consulting');
-    expect(trigger).toHaveAttribute('aria-expanded', 'false');
-    fireEvent.click(trigger);
-    expect(trigger).toHaveAttribute('aria-expanded', 'true');
+    const section = document.getElementById('expertise');
+    expect(section?.textContent).not.toMatch(/\b0[1-4]\b/);
+  });
+
+  it('renders the bottom editorial strip with eyebrow, statement, copy, and approach link', () => {
+    render(<Expertise />);
+    const section = document.getElementById('expertise');
+    expect(section?.textContent).toMatch(/our approach in practice/i);
+    expect(section?.textContent).toMatch(/expertise is most valuable/i);
+    const link = screen.getByTestId('link-expertise-strip-approach');
+    expect(link).toHaveAttribute('href', '/approach');
+    expect(link).toHaveTextContent('Our Approach');
+  });
+
+  it('contains no em-dash characters', () => {
+    render(<Expertise />);
+    const section = document.getElementById('expertise');
+    expect(section?.textContent).not.toMatch(/[–—]/);
   });
 });

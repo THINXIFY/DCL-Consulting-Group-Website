@@ -19,6 +19,14 @@ describe('FinalCta', () => {
     expect(secondary).toHaveAttribute('href', '#expertise');
   });
 
+  it('renders the decorative background image, hidden from assistive tech', () => {
+    render(<FinalCta />);
+    const img = screen.getByTestId('img-final-cta-background');
+    expect(img).toHaveAttribute('alt', '');
+    expect(img).toHaveAttribute('src', expect.stringContaining('/images/home/'));
+    expect(img.closest('[aria-hidden="true"]')).not.toBeNull();
+  });
+
   it('contains no em-dash characters', () => {
     render(<FinalCta />);
     const section = document.getElementById('final-cta');

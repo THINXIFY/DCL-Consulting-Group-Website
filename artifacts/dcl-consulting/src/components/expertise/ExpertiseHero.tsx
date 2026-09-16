@@ -1,140 +1,126 @@
 import { useEffect, useRef } from 'react';
+import { ArrowUpRight } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { expertiseHero } from '@/data/expertise-content';
 import { ensureGsapRegistered, gsap } from '@/lib/gsap';
 import { useMediaQuery } from '@/hooks/use-media-query';
-import { usePointerTilt } from '@/hooks/use-pointer-tilt';
 
-interface StackConfig {
-  z: number;
-  x: number;
-  y: number;
-  rotateY: number;
-  rotateX: number;
-}
-
-// A diagonal, cascading depth field rather than the About page's
-// symmetric radial fan - each lens sits further back and further along
-// the diagonal than the one before it.
-const STACK_CONFIG: StackConfig[] = [
-  { z: 64, x: 0, y: 0, rotateY: -4, rotateX: 1.4 },
-  { z: 22, x: 58, y: 46, rotateY: -1.4, rotateX: 0.6 },
-  { z: -20, x: 40, y: 100, rotateY: 3, rotateX: -1 },
-  { z: -62, x: 96, y: 156, rotateY: 1.2, rotateX: -1.6 },
-];
+const SECTION_IMAGE = '/images/general/expertise-hero.webp';
 
 export function ExpertiseHero() {
   const rootRef = useRef<HTMLElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
-  const isMobile = useMediaQuery('(max-width: 767px)');
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
-
-  usePointerTilt(stageRef, { maxRotateX: 1.6, maxRotateY: 2.4 });
-
-  const lensCount = isMobile ? 2 : isDesktop ? 4 : 3;
-  const lenses = expertiseHero.lenses.slice(0, lensCount);
 
   useEffect(() => {
     if (!rootRef.current) return;
     ensureGsapRegistered();
 
     const ctx = gsap.context(() => {
-      const planeEls = gsap.utils.toArray<HTMLElement>('.dclExpHero__plane');
-      const magnitude = isDesktop ? 1 : isMobile ? 0.4 : 0.7;
-      const settled = {
-        z: (i: number) => (STACK_CONFIG[i]?.z ?? 0) * magnitude,
-        x: (i: number) => (STACK_CONFIG[i]?.x ?? 0) * magnitude,
-        y: (i: number) => (STACK_CONFIG[i]?.y ?? 0) * magnitude,
-        rotateY: (i: number) => (STACK_CONFIG[i]?.rotateY ?? 0) * magnitude,
-        rotateX: (i: number) => STACK_CONFIG[i]?.rotateX ?? 0,
-      };
-
       if (prefersReducedMotion) {
-        gsap.set(['.dclExpHero__revealLine', '.dclExpHero__fadeUp', '.dclExpHero__rule', '.dclExpHero__closing'], { clearProps: 'all' });
-        gsap.set(planeEls, { ...settled, opacity: 1 });
+        gsap.set(
+          ['.dclExpHero__label', '.dclExpHero__rule', '.dclExpHero__revealLine', '.dclExpHero__fadeUp', '.dclExpHero__imageWrap', '.dclExpHero__cta', '.dclExpHero__statement'],
+          { clearProps: 'all' },
+        );
+        if (imageRef.current) gsap.set(imageRef.current, { clearProps: 'transform' });
         return;
       }
 
-      gsap.set(planeEls, { ...settled, opacity: 0 });
+      gsap.set(imageRef.current, { scale: 1.06 });
 
-      const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
-      tl.fromTo('.dclExpHero__eyebrow', { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.6 })
-        .fromTo('.dclExpHero__rule', { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: 'power2.out' }, '-=0.3')
-        .fromTo('.dclExpHero__revealLine', { yPercent: 112 }, { yPercent: 0, duration: 1, stagger: 0.1 }, '-=0.35')
-        .fromTo('.dclExpHero__intro', { autoAlpha: 0, y: 18 }, { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.5')
-        .to(planeEls, { opacity: 1, duration: 0.8, stagger: 0.1, ease: 'power3.out' }, '-=0.5')
-        .fromTo('.dclExpHero__supporting', { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.4')
-        .fromTo('.dclExpHero__closing', { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.6, ease: 'power2.out', stagger: 0.06 }, '-=0.25');
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      tl.fromTo('.dclExpHero__label', { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.55 })
+        .fromTo('.dclExpHero__rule', { scaleX: 0 }, { scaleX: 1, duration: 0.6 }, '-=0.25')
+        .fromTo('.dclExpHero__revealLine', { yPercent: 112 }, { yPercent: 0, duration: 1, stagger: 0.08 }, '-=0.25')
+        .fromTo('.dclExpHero__fadeUp', { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.65, stagger: 0.08 }, '-=0.5')
+        .fromTo('.dclExpHero__cta', { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.08 }, '-=0.35')
+        .fromTo(
+          '.dclExpHero__imageWrap',
+          { clipPath: 'inset(0 0 100% 0)' },
+          { clipPath: 'inset(0 0 0% 0)', duration: 1.2, ease: 'power4.out' },
+          '-=0.75',
+        )
+        .to(imageRef.current, { scale: 1, duration: 1.3, ease: 'power3.out' }, '<')
+        .fromTo('.dclExpHero__statement', { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.05 }, '-=0.4');
 
-      if (!isMobile && planeEls.length) {
-        gsap.timeline({
+      if (isDesktop) {
+        gsap.to(imageRef.current, {
+          yPercent: 4,
+          ease: 'none',
           scrollTrigger: { trigger: rootRef.current, start: 'top top', end: 'bottom top', scrub: 1 },
-        }).to(planeEls, { z: 0, x: 0, y: (i: number) => i * 10, rotateX: 0, rotateY: 0, duration: 1 }, 0);
+        });
       }
     }, rootRef);
 
     return () => ctx.revert();
-  }, [prefersReducedMotion, isDesktop, isMobile, lensCount]);
+  }, [prefersReducedMotion, isDesktop]);
 
   return (
     <section id="expertise-hero" ref={rootRef} aria-labelledby="expertise-hero-title" className="relative min-h-[100dvh] overflow-hidden bg-[#080a0d] text-white">
       <Header />
-      <div className="relative mx-auto flex min-h-[100dvh] max-w-[1560px] flex-col px-6 pb-8 pt-28 sm:px-10 lg:px-16">
-        <div className="grid flex-1 grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-6">
-          <div className="lg:col-span-7">
-            <div className="flex items-center gap-5">
-              <p data-testid="text-expertise-hero-eyebrow" className="dclHome__eyebrow dclExpHero__eyebrow text-[#9ca3aa]">
-                {expertiseHero.eyebrow}
-              </p>
-              <div className="dclExpHero__rule h-px w-16 origin-left bg-[#8bbfe8]" />
-            </div>
-
+      <div className="relative mx-auto flex min-h-[100dvh] max-w-[1560px] flex-col px-6 pb-12 pt-32 sm:px-10 lg:px-16 lg:pb-16 lg:pt-28">
+        <div className="grid flex-1 grid-cols-1 gap-10 lg:grid-cols-12 lg:items-center lg:gap-8">
+          <div className="relative z-10 flex flex-col justify-center lg:col-span-5">
+            <p data-testid="text-expertise-hero-label" className="dclHome__eyebrow dclExpHero__label text-[#8bbfe8]">
+              {expertiseHero.label}
+            </p>
+            <div className="dclExpHero__rule mt-5 h-px w-12 origin-left bg-[#8bbfe8]" />
             <h1
               id="expertise-hero-title"
               data-testid="text-expertise-hero-title"
-              className="dclHome__display mt-8 text-[clamp(3rem,6.4vw,6.2rem)] leading-[.98] tracking-[-.03em]"
+              className="dclHome__display mt-6 text-[clamp(3rem,6.2vw,5.6rem)] leading-[.98] tracking-[-.03em]"
             >
               <span className="block overflow-hidden"><span className="dclExpHero__revealLine block">{expertiseHero.headlineLines[0]}</span></span>
               <span className="block overflow-hidden"><span className="dclExpHero__revealLine block">{expertiseHero.headlineLines[1]}</span></span>
             </h1>
-
-            <p data-testid="text-expertise-hero-intro" className="dclExpHero__intro mt-8 max-w-[560px] text-[19px] leading-[1.6] text-white/75 sm:text-[21px]">
-              {expertiseHero.intro}
+            <p data-testid="text-expertise-hero-lead" className="dclExpHero__fadeUp mt-7 max-w-[460px] text-[19px] leading-[1.55] text-white/80 sm:text-[21px]">
+              {expertiseHero.lead}
             </p>
-          </div>
+            <p data-testid="text-expertise-hero-supporting" className="dclExpHero__fadeUp mt-4 max-w-[440px] text-[16px] leading-7 text-white/50">
+              {expertiseHero.supporting}
+            </p>
 
-          <div className="relative lg:col-span-5 lg:flex lg:items-end lg:justify-end">
-            <div className="relative mx-auto h-[280px] w-[280px] [perspective:1900px] sm:h-[340px] sm:w-[340px] lg:mx-0 lg:h-[380px] lg:w-[420px]">
-              <div ref={stageRef} className="relative h-full w-full [transform-style:preserve-3d]">
-                {lenses.map((lens, index) => (
-                  <div
-                    key={lens.category}
-                    data-testid={`hero-lens-${index}`}
-                    className="dclExpHero__plane absolute left-0 top-0 flex h-[168px] w-[240px] flex-col justify-between border border-white/22 bg-[#14171d] p-5 shadow-[0_24px_56px_rgba(0,0,0,.5)] sm:h-[190px] sm:w-[270px]"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="h-[2px] w-6 bg-[#8bbfe8]" />
-                      <p className="dclHome__eyebrow text-white/40">{lens.category}</p>
-                    </div>
-                    <p className="dclHome__display text-[1rem] leading-snug text-white/90 sm:text-[1.1rem]">{lens.phrase}</p>
-                  </div>
-                ))}
-              </div>
+            <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-5">
+              <a
+                href={expertiseHero.primaryCta.href}
+                data-testid="link-expertise-hero-primary"
+                className="dclExpHero__cta group inline-flex items-center gap-3 bg-[#c6e3fa] px-6 py-4 text-[11px] font-semibold uppercase tracking-[.13em] text-[#080a0d] transition-[background-color] duration-300 hover:bg-[#8bbfe8] hover:text-[#080a0d] focus:text-[#080a0d] focus-visible:text-[#080a0d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8] active:text-[#080a0d]"
+              >
+                {expertiseHero.primaryCta.label}
+                <ArrowUpRight size={15} strokeWidth={1.3} className="text-[#080a0d] transition-transform duration-300 ease-out group-hover:translate-x-[4px] group-hover:-translate-y-[4px]" />
+              </a>
+              <a
+                href={expertiseHero.secondaryCta.href}
+                data-testid="link-expertise-hero-secondary"
+                className="dclExpHero__cta group inline-flex items-center gap-2 border-b border-white/40 px-1 py-2 text-[11px] font-semibold uppercase tracking-[.13em] text-white/75 transition-colors duration-300 hover:border-[#c6e3fa] hover:text-[#c6e3fa] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+              >
+                {expertiseHero.secondaryCta.label}
+              </a>
             </div>
           </div>
-        </div>
 
-        <div className="mt-10 flex flex-col gap-6 border-t border-white/12 pt-6 sm:flex-row sm:items-center sm:justify-between lg:mt-6">
-          <p data-testid="text-expertise-hero-supporting" className="dclExpHero__supporting max-w-[640px] text-[16px] leading-7 text-white/55">
-            {expertiseHero.supporting}
-          </p>
-          <div data-testid="text-expertise-hero-closing" className="shrink-0 text-right">
-            {expertiseHero.closingLines.map((line) => (
-              <p key={line} className="dclExpHero__closing text-[11px] font-semibold uppercase tracking-[.15em] text-white/60">
-                {line}
-              </p>
-            ))}
+          <div className="relative lg:col-span-5">
+            <div className="dclExpHero__imageWrap relative aspect-[4/5] w-full overflow-hidden sm:aspect-[16/10] lg:aspect-[3/4]">
+              <img
+                ref={imageRef}
+                data-testid="img-expertise-hero"
+                className="h-full w-full object-cover object-center"
+                src={SECTION_IMAGE}
+                alt="Dark geometric roofline of angled architectural fins silhouetted against a dusk sky"
+              />
+              <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#080a0d]/40 via-transparent to-transparent" />
+            </div>
+          </div>
+
+          <div className="flex flex-row items-start justify-between gap-8 border-t border-white/10 pt-6 lg:col-span-2 lg:h-full lg:flex-col lg:justify-center lg:border-l lg:border-t-0 lg:pl-7 lg:pt-2">
+            <div data-testid="text-expertise-hero-statement">
+              {expertiseHero.imageStatementLines.map((line) => (
+                <p key={line} className="dclExpHero__statement text-[11px] font-semibold uppercase leading-[1.6] tracking-[.13em] text-white/55">
+                  {line}
+                </p>
+              ))}
+            </div>
           </div>
         </div>
       </div>

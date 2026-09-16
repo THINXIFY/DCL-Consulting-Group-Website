@@ -14,7 +14,7 @@ function mockDesktop(matches: boolean) {
 describe('ExpertisePage', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('renders the header, all five Expertise sections in order, and the global footer', () => {
+  it('renders the header, all six Expertise sections in order, and the global footer', () => {
     mockDesktop(true);
     render(<ExpertisePage />);
     expect(screen.getByTestId('link-home')).toBeInTheDocument();
@@ -22,9 +22,10 @@ describe('ExpertisePage', () => {
     const sectionIds = Array.from(document.querySelectorAll('main > section')).map((el) => el.id);
     expect(sectionIds).toEqual([
       'expertise-hero',
-      'how-we-add-perspective',
+      'four-lenses',
       'core-expertise',
       'where-expertise-applies',
+      'why-dcl-expertise',
       'expertise-final-cta',
     ]);
     expect(document.querySelector('footer')).toBeInTheDocument();

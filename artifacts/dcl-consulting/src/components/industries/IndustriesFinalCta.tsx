@@ -38,8 +38,7 @@ export function IndustriesFinalCta() {
       // silently leaves the entrance animation stuck at its initial
       // hidden state forever.
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' }, scrollTrigger: { trigger: rootRef.current, start: 'top bottom' } });
-      tl.fromTo('.dclIndustriesFinal__smallStatement', { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.06 })
-        .fromTo('.dclIndustriesFinal__revealLine', { yPercent: 112 }, { yPercent: 0, duration: 0.9, stagger: 0.1 }, '-=0.25')
+      tl.fromTo('.dclIndustriesFinal__revealLine', { yPercent: 112 }, { yPercent: 0, duration: 0.9, stagger: 0.1 })
         .fromTo(
           '.dclIndustriesFinal__verticalRule',
           { xPercent: -50, scaleY: 0 },
@@ -63,14 +62,7 @@ export function IndustriesFinalCta() {
         />
         <div className="grid grid-cols-1 gap-y-14 lg:grid-cols-12 lg:items-center lg:gap-x-16">
           <div className="lg:col-span-5">
-            <div data-testid="text-industries-final-statement" className="text-[11px] font-semibold uppercase tracking-[.15em] text-[#8bbfe8]">
-              {industriesFinalCta.smallStatementLines.map((line) => (
-                <p key={line} className="dclIndustriesFinal__smallStatement">
-                  {line}
-                </p>
-              ))}
-            </div>
-            <h2 id="industries-final-title" data-testid="text-industries-final-title" className="dclHome__display mt-6 text-[clamp(2.6rem,5.6vw,4.8rem)] leading-[.98] tracking-[-.035em]">
+            <h2 id="industries-final-title" data-testid="text-industries-final-title" className="dclHome__display text-[clamp(2.6rem,5.6vw,4.8rem)] leading-[.98] tracking-[-.035em]">
               <span className="block overflow-hidden"><span className="dclIndustriesFinal__revealLine block">{industriesFinalCta.headlineLines[0]}</span></span>
               <span className="block overflow-hidden"><span className="dclIndustriesFinal__revealLine block">{industriesFinalCta.headlineLines[1]}</span></span>
             </h2>

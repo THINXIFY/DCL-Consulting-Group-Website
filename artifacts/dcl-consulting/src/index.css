@@ -120,3 +120,53 @@ body::before {
   .dclHero__image { animation: none; }
   .dclApproach__row:hover { padding-left: 0; }
 }
+
+/* Hero ambient background system */
+.dclHeroBg__lines {
+  position: absolute;
+  inset: -15%;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(198, 227, 250, 0.11) 0px,
+    rgba(198, 227, 250, 0.11) 1px,
+    transparent 1px,
+    transparent 140px
+  );
+  animation: dclHeroLines 42s linear infinite;
+}
+@keyframes dclHeroLines {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(99px, 99px, 0); }
+}
+.dclHeroBg__glow {
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(38% 32% at 22% 28%, rgba(198, 227, 250, 0.16), transparent 70%),
+    radial-gradient(30% 26% at 80% 72%, rgba(139, 191, 232, 0.11), transparent 70%);
+  animation: dclHeroGlow 26s ease-in-out infinite;
+}
+@keyframes dclHeroGlow {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(2%, -3%, 0) scale(1.05); }
+}
+.dclHeroBg__particle {
+  position: absolute;
+  border-radius: 9999px;
+  animation: dclHeroParticleDrift var(--p-dur, 24s) linear var(--p-delay, 0s) infinite;
+}
+@keyframes dclHeroParticleDrift {
+  0% { transform: translate3d(0, 0, 0); opacity: var(--p-op-min, 0.05); }
+  50% { transform: translate3d(var(--p-dx, 18px), var(--p-dy, -80px), 0); opacity: var(--p-op-max, 0.18); }
+  100% { transform: translate3d(0, 0, 0); opacity: var(--p-op-min, 0.05); }
+}
+@media (max-width: 767px) {
+  .dclHeroBg__lines { animation-duration: 60s; opacity: 0.4; }
+  .dclHeroBg__glow { animation-duration: 34s; }
+}
+
+/* Image fade-in-on-load (FadeInImage component) - a CSS animation rather
+   than a transition, so it never fights over transition-property with a
+   sibling hover transition (e.g. transition-transform on the same img). */
+.dclFadeInImage { animation: dclFadeIn .7s ease-out; }
+@keyframes dclFadeIn { from { opacity: 0; } to { opacity: 1; } }

@@ -14,7 +14,7 @@ function mockDesktop(matches: boolean) {
 describe('Faq', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('renders the eyebrow, headline, intro, start-a-conversation link, and all eight questions', () => {
+  it('renders the eyebrow, headline, intro, start-a-conversation link, and all five questions', () => {
     mockDesktop(true);
     render(<Faq />);
     expect(screen.getByTestId('text-faq-eyebrow')).toHaveTextContent('FAQ');
@@ -26,13 +26,13 @@ describe('Faq', () => {
     expect(link).toHaveTextContent('Start a Conversation');
     expect(link).toHaveAttribute('href', '#about');
 
-    expect(screen.getAllByRole('button', { name: /./ })).toHaveLength(8);
+    expect(screen.getAllByRole('button', { name: /./ })).toHaveLength(5);
   });
 
   it('opens the first question by default and allows only one open at a time', () => {
     mockDesktop(true);
     render(<Faq />);
-    const first = screen.getByTestId('faq-button-what-does-dcl-consulting-do');
+    const first = screen.getByTestId('faq-button-what-does-dcl-do');
     const second = screen.getByTestId('faq-button-who-does-dcl-work-with');
     expect(first).toHaveAttribute('aria-expanded', 'true');
     expect(second).toHaveAttribute('aria-expanded', 'false');
@@ -45,7 +45,7 @@ describe('Faq', () => {
   it('closes the open question when clicked again', () => {
     mockDesktop(true);
     render(<Faq />);
-    const first = screen.getByTestId('faq-button-what-does-dcl-consulting-do');
+    const first = screen.getByTestId('faq-button-what-does-dcl-do');
     expect(first).toHaveAttribute('aria-expanded', 'true');
     fireEvent.click(first);
     expect(first).toHaveAttribute('aria-expanded', 'false');
@@ -54,7 +54,7 @@ describe('Faq', () => {
   it('wires aria-controls to a real panel element for each question', () => {
     mockDesktop(true);
     render(<Faq />);
-    const button = screen.getByTestId('faq-button-what-does-dcl-consulting-do');
+    const button = screen.getByTestId('faq-button-what-does-dcl-do');
     const panelId = button.getAttribute('aria-controls');
     expect(panelId).toBeTruthy();
     expect(document.getElementById(panelId as string)).not.toBeNull();
@@ -63,7 +63,7 @@ describe('Faq', () => {
   it('works the same way on mobile (no hover dependency)', () => {
     mockDesktop(false);
     render(<Faq />);
-    const first = screen.getByTestId('faq-button-what-does-dcl-consulting-do');
+    const first = screen.getByTestId('faq-button-what-does-dcl-do');
     expect(first).toHaveAttribute('aria-expanded', 'true');
     const second = screen.getByTestId('faq-button-who-does-dcl-work-with');
     fireEvent.click(second);

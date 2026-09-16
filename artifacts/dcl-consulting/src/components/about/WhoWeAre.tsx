@@ -3,8 +3,7 @@ import { whoWeAre } from '@/data/about-content';
 import { ensureGsapRegistered, gsap } from '@/lib/gsap';
 import { useMediaQuery } from '@/hooks/use-media-query';
 
-// Placeholder image - swap for the real photo before launch.
-const WHO_WE_ARE_IMAGE = 'https://media.ourwebprojects.pro/wp-content/uploads/2026/09/approach-img.webp';
+const WHO_WE_ARE_IMAGE = '/images/home/home-about-architecture.webp';
 const CLOSING_EMPHASIS_WORDS = ['uncertain', 'attention'];
 
 function renderClosingLine(line: string) {
@@ -138,7 +137,7 @@ export function WhoWeAre() {
               data-testid="img-whoweare"
               className="dclWhoWeAre__image h-full w-full scale-110 object-cover"
               src={WHO_WE_ARE_IMAGE}
-              alt="Sharp geometric facade of a contemporary building, used as institutional context imagery"
+              alt="Board-formed concrete building corner with an angular roofline against a deep blue sky"
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#080a0d]/45 via-transparent to-transparent" />
           </div>

@@ -29,6 +29,23 @@ if (typeof window.ResizeObserver === 'undefined') {
   window.ResizeObserver = ResizeObserverStub as unknown as typeof ResizeObserver;
 }
 
+// jsdom has no IntersectionObserver implementation. Components that use
+// it (e.g. scrollspy-style table-of-contents highlighting) only need it
+// to not throw in tests - the actual intersection behavior is exercised
+// through real-browser QA, not unit tests.
+class IntersectionObserverStub {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+  takeRecords() {
+    return [];
+  }
+}
+
+if (typeof window.IntersectionObserver === 'undefined') {
+  window.IntersectionObserver = IntersectionObserverStub as unknown as typeof IntersectionObserver;
+}
+
 if (!('matchMedia' in window) || !window.matchMedia) {
   window.matchMedia = ((query: string) => ({
     matches: false,
@@ -48,3 +65,7 @@ if (typeof window.requestAnimationFrame === 'undefined') {
 }
 
 window.scrollTo = (() => {}) as unknown as typeof window.scrollTo;
+
+if (typeof Element.prototype.scrollIntoView === 'undefined') {
+  Element.prototype.scrollIntoView = () => {};
+}

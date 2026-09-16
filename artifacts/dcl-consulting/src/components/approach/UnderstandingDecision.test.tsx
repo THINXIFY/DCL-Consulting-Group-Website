@@ -24,7 +24,7 @@ describe('UnderstandingDecision', () => {
     for (const label of LABELS) {
       expect(screen.getByTestId(`understand-row-${label.toLowerCase().replaceAll(' ', '-')}`)).toHaveTextContent(label);
     }
-    expect(screen.getByTestId('img-understand')).toHaveAttribute('src', 'https://media.ourwebprojects.pro/wp-content/uploads/2026/09/approach-img.webp');
+    expect(screen.getByTestId('img-understand')).toHaveAttribute('src', expect.stringContaining('/images/'));
     const closing = screen.getByTestId('text-understand-closing');
     expect(closing).toHaveTextContent('Clarity begins by defining');
     expect(closing).toHaveTextContent('the question correctly.');

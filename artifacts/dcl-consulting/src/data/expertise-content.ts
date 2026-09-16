@@ -1,161 +1,185 @@
-export interface AnalyticalLens {
-  category: string;
-  phrase: string;
+export interface LensImage {
+  src: string;
+  alt: string;
 }
 
-export interface Perspective {
-  category: string;
-  question: string;
+export interface Lens {
+  title: string;
+  description: string;
+  image: LensImage;
+}
+
+export interface CoreCapability {
+  title: string;
+  headline: string;
   copy: string;
+  ctaLabel: string;
+  href: string;
 }
 
-export interface ExpertiseArea {
-  title: string;
-  supportingLine: string;
-  description: string;
+export interface ApplicationAreaImage {
+  src: string;
+  alt: string;
 }
 
-export interface DecisionContext {
+export interface ApplicationArea {
   title: string;
-  supportingLine: string;
   description: string;
+  href: string;
+  image: ApplicationAreaImage;
 }
 
 export const expertiseHero = {
-  eyebrow: 'Expertise',
-  headlineLines: ['Expertise applied', 'to the decision.'],
-  intro:
-    'DCL Consulting brings together commercial analysis, financial perspective, risk awareness and strategic judgement to help investors and businesses evaluate opportunities with greater clarity.',
-  supporting:
-    'Different opportunities require different questions. Our role is to identify the factors that matter, examine them from the right perspectives and help build a clearer view of the decision.',
-  closingLines: ['Analysis with purpose.', 'Perspective with relevance.'],
-  lenses: [
-    { category: 'Commercial', phrase: 'How does the opportunity work in practice?' },
-    { category: 'Financial', phrase: 'What do the economics indicate?' },
-    { category: 'Risk', phrase: 'What could materially change the outcome?' },
-    { category: 'Strategic', phrase: 'How does it fit the wider objective?' },
-  ] satisfies AnalyticalLens[],
+  label: 'Our Expertise',
+  headlineLines: ['Expertise built', 'for clearer decisions.'],
+  lead: 'DCL brings together investment consulting, strategic advisory, commercial analysis and independent decision support to help private and corporate clients navigate complex opportunities with greater clarity and confidence.',
+  supporting: 'Independent perspective for a more complex world.',
+  primaryCta: { label: 'Our Services', href: '/services' },
+  secondaryCta: { label: 'Explore Our Expertise', href: '#four-lenses' },
+  imageStatementLines: ['Different', 'perspectives.', 'A brighter', 'tomorrow.'],
 };
 
-export const howWeAddPerspective = {
-  headlineLines: ['A broader view', 'of what matters.'],
-  intro:
-    'A strong decision rarely depends on a single factor. DCL examines opportunities through complementary perspectives to build a more complete understanding of what may influence the outcome.',
-  perspectives: [
+export const fourLenses = {
+  label: 'How We Add Perspective',
+  headlineLines: ['Four lenses.', 'A clearer view.'],
+  intro: 'DCL combines different forms of expertise to help clients evaluate what matters most before important investment, commercial and strategic decisions.',
+  lenses: [
     {
-      category: 'Commercial',
-      question: 'How does the opportunity work in practice?',
-      copy: 'Consider the business model, market position, operating environment, commercial logic and the factors that support real-world viability.',
+      title: 'Commercial Analysis',
+      description: 'Assessing business fundamentals, market dynamics and commercial potential.',
+      image: { src: '/images/services/asset-portfolio-secondary.webp', alt: 'Angled close-up of a glass office tower facade with repeating vertical mullions' },
     },
     {
-      category: 'Financial',
-      question: 'What do the economics indicate?',
-      copy: 'Examine the financial characteristics, underlying assumptions, performance considerations and economic factors relevant to the opportunity.',
+      title: 'Financial Review',
+      description: 'Reviewing financial characteristics, economics, resilience and relevant assumptions.',
+      image: { src: '/images/services/due-diligence-secondary.webp', alt: 'Close-up of a sandstone building facade with fine vertical fluting and sharp shadow lines' },
     },
     {
-      category: 'Risk',
-      question: 'What could materially change the outcome?',
-      copy: 'Identify uncertainties, dependencies, downside considerations and assumptions that warrant closer scrutiny before a decision is made.',
+      title: 'Strategic Insight',
+      description: 'Identifying options, testing assumptions and considering the broader strategic context.',
+      image: { src: '/images/services/strategic-advisory-hero.webp', alt: 'Low-angle view of a diagrid glass facade catching warm evening light with a crescent moon visible' },
     },
     {
-      category: 'Strategic',
-      question: 'How does it fit the wider objective?',
-      copy: 'Consider how the opportunity aligns with broader priorities, timing, alternatives and the strategic direction behind the decision.',
+      title: 'Risk Evaluation',
+      description: 'Understanding uncertainty, dependencies, downside factors and potential opportunities.',
+      image: { src: '/images/services/risk-opportunity-hero.webp', alt: 'Silhouette of angled roof fins on a building against a dusk sky gradating from purple to orange' },
     },
-  ] satisfies Perspective[],
-  closingLines: ['Perspective becomes valuable', 'when it changes how the decision is understood.'],
+  ] satisfies Lens[],
 };
 
 export const coreExpertise = {
-  headlineLines: ['Focused expertise', 'for complex decisions.'],
-  intro:
-    'DCL applies structured analysis and independent perspective across a range of investment and strategic questions. Each engagement is shaped around the decision, the available information and the issues that require the greatest attention.',
-  areas: [
+  label: 'Our Core Expertise',
+  headlineLines: ['Specialist expertise.', 'Real-world impact.'],
+  intro: 'DCL brings together complementary advisory capabilities designed to support better-informed decisions across investment, strategy and complex commercial situations.',
+  statementLines: ['Experience.', 'Perspective.', 'Results.'],
+  capabilities: [
     {
       title: 'Investment Consulting',
-      supportingLine: 'Independent perspective throughout the investment decision.',
-      description:
-        'Structured support for investors evaluating significant opportunities, helping clarify the commercial context, relevant assumptions, strategic considerations and questions that deserve closer examination.',
+      headline: 'Investment Consulting',
+      copy: 'Independent advisory perspective around significant investment opportunities, commercial considerations, risk and strategic fit.',
+      ctaLabel: 'Learn More',
+      href: '/services/investment-consulting',
     },
     {
       title: 'Opportunity Analysis',
-      supportingLine: 'Understanding what sits behind the opportunity.',
-      description:
-        'A focused assessment of the underlying proposition, including its commercial logic, market context, key assumptions, potential strengths and areas requiring further scrutiny.',
+      headline: 'Opportunity Analysis',
+      copy: 'A focused assessment of the commercial logic, market context and assumptions behind an opportunity, before it is taken further.',
+      ctaLabel: 'View Our Services',
+      href: '/services',
     },
     {
       title: 'Risk & Opportunity Assessment',
-      supportingLine: 'Considering upside and uncertainty together.',
-      description:
-        'Evaluation of the factors that may support an opportunity alongside the risks, dependencies and uncertainties that could materially influence the outcome.',
+      headline: 'Risk & Opportunity Assessment',
+      copy: 'Balanced analysis of potential upside alongside uncertainty, dependencies and the factors capable of changing an outcome.',
+      ctaLabel: 'Learn More',
+      href: '/services/risk-opportunity-assessment',
     },
     {
       title: 'Business & Financial Analysis',
-      supportingLine: 'A clearer view of the underlying fundamentals.',
-      description:
-        'Review of relevant business and financial considerations to help understand performance, economics, operating characteristics and the factors influencing commercial viability.',
+      headline: 'Business & Financial Analysis',
+      copy: 'Review of relevant business and financial considerations to help understand performance, economics and commercial viability.',
+      ctaLabel: 'View Our Services',
+      href: '/services',
     },
     {
       title: 'Strategic Advisory',
-      supportingLine: 'Connecting the opportunity to the wider objective.',
-      description:
-        'Strategic perspective for businesses and investors considering growth, expansion, partnerships, acquisitions or other important commercial decisions.',
+      headline: 'Strategic Advisory',
+      copy: 'Independent perspective for businesses and investors considering growth, direction and significant strategic change.',
+      ctaLabel: 'Learn More',
+      href: '/services/strategic-advisory',
     },
     {
       title: 'Due Diligence Support',
-      supportingLine: 'Bringing structure to deeper evaluation.',
-      description:
-        'Support in organising and examining relevant information, assumptions, dependencies and unresolved questions as part of a broader decision-making or due-diligence process.',
+      headline: 'Due Diligence Support',
+      copy: 'Structured, independent review of relevant information, assumptions and dependencies before an important decision is made.',
+      ctaLabel: 'Learn More',
+      href: '/services/due-diligence-support',
     },
-  ] satisfies ExpertiseArea[],
-  closingLines: ['Expertise is most valuable', 'when it brings the decision into focus.'],
+  ] satisfies CoreCapability[],
 };
 
 export const whereExpertiseApplies = {
-  eyebrow: 'Where it applies',
-  headlineLines: ['Where perspective', 'becomes valuable.'],
-  intro:
-    "DCL's expertise can be applied across a range of investment and strategic situations where greater clarity, deeper analysis and independent judgement can support the decision.",
-  contexts: [
+  label: 'Where Our Expertise Applies',
+  headlineLines: ['Across markets.', 'Across opportunities.'],
+  copy: 'DCL applies its advisory perspective across a range of sectors, asset classes and strategic situations, from private capital and real estate to corporate growth, acquisitions and international expansion.',
+  link: { label: 'View All Services', href: '/services' },
+  areas: [
     {
-      title: 'Investment Opportunities',
-      supportingLine: 'A clearer view before capital is committed.',
-      description: 'Assess the commercial case, relevant assumptions, risks and strategic considerations surrounding a potential investment.',
+      title: 'Private Capital',
+      description: 'Independent perspective around private investment opportunities and strategic capital decisions.',
+      href: '/services/private-capital-advisory',
+      image: { src: '/images/services/private-capital-secondary.webp', alt: 'Dimly lit concrete stairway leading up to an illuminated glass entrance at night' },
     },
     {
-      title: 'Acquisitions',
-      supportingLine: 'Understanding what sits behind the transaction.',
-      description: 'Develop a clearer view of the business, its underlying fundamentals and the issues that may influence an acquisition decision.',
+      title: 'Real Estate',
+      description: 'Commercial and strategic analysis around property and real-asset opportunities.',
+      href: '/services/real-estate-investment-advisory',
+      image: { src: '/images/services/real-estate-secondary-2.webp', alt: 'Close-up of a curved white concrete building facade with rounded glass bay windows' },
     },
     {
-      title: 'Growth & Expansion',
-      supportingLine: 'Evaluating opportunity beyond the immediate upside.',
-      description: 'Consider new markets, expansion opportunities and the commercial, financial and strategic factors behind growth.',
+      title: 'Corporate Strategy',
+      description: 'Support around growth, transformation and major strategic decisions.',
+      href: '/services/strategic-advisory',
+      image: { src: '/images/services/strategic-advisory-secondary.webp', alt: 'Elevated wide view of a city skyline and river at sunset with clusters of office towers' },
     },
     {
-      title: 'Strategic Partnerships',
-      supportingLine: 'Assessing fit, rationale and dependency.',
-      description: 'Examine the strategic fit, commercial logic, dependencies and potential implications of a proposed partnership.',
+      title: 'Market Entry',
+      description: 'Assessment of new markets, expansion opportunities and routes to growth.',
+      href: '/services/market-entry-expansion-advisory',
+      image: { src: '/images/services/market-entry-hero.webp', alt: 'Low-angle view of two glass skyscrapers connected by enclosed sky bridges' },
     },
     {
-      title: 'Business Assessment',
-      supportingLine: 'Looking beneath headline performance.',
-      description: 'Review relevant business fundamentals, operating characteristics and financial or commercial considerations to build a clearer understanding of the organisation.',
+      title: 'M&A',
+      description: 'Independent perspective across acquisitions and significant corporate transactions.',
+      href: '/services/ma-acquisition-advisory',
+      image: { src: '/images/services/ma-acquisition-secondary.webp', alt: 'Low-angle view of a cream stone building corner where two facades converge under a clear blue sky' },
     },
     {
-      title: 'Complex Strategic Decisions',
-      supportingLine: 'Structure when several factors matter at once.',
-      description: 'Bring independent perspective to decisions shaped by uncertainty, competing priorities or multiple commercial and strategic considerations.',
+      title: 'Cross-Border Opportunities',
+      description: 'Strategic support around international markets and complex cross-border opportunities.',
+      href: '/services',
+      image: { src: '/images/industries/global-perspective.webp', alt: 'Aerial view of a dense downtown business district under an overcast sky with dozens of office towers' },
     },
-  ] satisfies DecisionContext[],
-  closingLines: ['Different situations.', 'The same need for clarity.'],
+  ] satisfies ApplicationArea[],
+};
+
+export const whyDclExpertise = {
+  label: 'Why DCL Expertise',
+  headlineLines: ['A more independent', 'perspective.'],
+  copy: 'DCL combines specialist expertise with an independent mindset, helping clients focus on the factors that matter most and make better-informed decisions with greater clarity.',
+  principles: [
+    { name: 'Independent Perspective', description: "Objective analysis aligned with the client's goals." },
+    { name: 'Analytical Discipline', description: 'Structured thinking and rigorous review.' },
+    { name: 'Commercial Understanding', description: 'Real-world consideration of business and market context.' },
+    { name: 'Clear Communication', description: 'Complex ideas presented in a clear and decision-focused way.' },
+  ],
 };
 
 export const expertiseFinalCta = {
-  headlineLines: ['A clearer view', 'before the next decision.'],
-  supporting:
-    'Discuss an investment opportunity, strategic question or business assessment with DCL and explore where independent perspective may add value.',
-  primaryCta: { label: 'Start a Conversation', href: '/#about' },
-  secondaryCta: { label: 'Contact DCL', href: '/#about' },
-  closing: 'Clarity Before Capital.',
+  label: "Let's Talk",
+  headlineLines: ['Bring clarity', 'to what’s next.'],
+  supporting: 'Speak with DCL about an investment, strategic or commercial decision and explore how independent expertise may support your next move.',
+  primaryCta: { label: 'Discuss Your Goals', href: '/#about' },
+  secondaryCta: { label: 'Explore Our Services', href: '/services' },
+  closingLines: ['Different perspectives.', 'A brighter tomorrow.'],
 };

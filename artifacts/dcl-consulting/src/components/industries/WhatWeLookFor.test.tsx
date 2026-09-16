@@ -1,6 +1,7 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { WhatWeLookFor } from './WhatWeLookFor';
+import { whatWeLookFor } from '@/data/industries-content';
 
 function mockDesktop(matches: boolean) {
   window.matchMedia = vi.fn().mockImplementation((query: string) => ({
@@ -11,47 +12,25 @@ function mockDesktop(matches: boolean) {
   })) as unknown as typeof window.matchMedia;
 }
 
-const AREA_IDS = ['market-context', 'business-model', 'financial-fundamentals', 'competitive-position', 'risk-dependencies', 'strategic-relevance'];
+function slug(name: string) {
+  return name.toLowerCase().replaceAll(' & ', '-').replaceAll('&', '').replaceAll(' ', '-');
+}
 
 describe('WhatWeLookFor', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('renders the eyebrow, headline, intro, all six fundamental bands, and the closing statement', () => {
+  it('renders the headline and all six evaluation factors', () => {
     mockDesktop(true);
     render(<WhatWeLookFor />);
-    expect(screen.getByText(/the sector changes\./i)).toBeInTheDocument();
-    expect(screen.getByText(/every industry has its own operating realities/i)).toBeInTheDocument();
-    for (const id of AREA_IDS) {
-      expect(screen.getByTestId(`fundamental-band-${id}`)).toBeInTheDocument();
-    }
-    const closing = screen.getByTestId('text-fundamentals-closing');
-    expect(closing).toHaveTextContent('Different industries require different emphasis.');
-    expect(closing).toHaveTextContent('The discipline of the questions remains.');
-  });
-
-  it('activates the first band by default on desktop, and previews a different one on hover', () => {
-    mockDesktop(true);
-    render(<WhatWeLookFor />);
-    expect(screen.getByTestId('fundamental-band-market-context')).toHaveAttribute('data-active', 'true');
-
-    fireEvent.mouseEnter(screen.getByTestId('fundamental-band-strategic-relevance'));
-    expect(screen.getByTestId('fundamental-band-strategic-relevance')).toHaveAttribute('data-active', 'true');
-    expect(screen.getByText(/how does the opportunity fit the wider objective/i)).toBeInTheDocument();
-
-    fireEvent.mouseLeave(screen.getByTestId('fundamental-band-strategic-relevance'));
-    expect(screen.getByTestId('fundamental-band-market-context')).toHaveAttribute('data-active', 'true');
-  });
-
-  it('keeps every band accessible without hover on mobile', () => {
-    mockDesktop(false);
-    render(<WhatWeLookFor />);
-    for (const id of AREA_IDS) {
-      expect(screen.getByTestId(`fundamental-band-${id}`)).toHaveAttribute('data-active', 'true');
+    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('The sector changes.');
+    for (const factor of whatWeLookFor.factors) {
+      const el = screen.getByTestId(`look-for-factor-${slug(factor.name)}`);
+      expect(el).toHaveTextContent(factor.name);
+      expect(el).toHaveTextContent(factor.description);
     }
   });
 
   it('does not throw with reduced motion preferred', () => {
-    mockDesktop(true);
     window.matchMedia = vi.fn().mockImplementation(() => ({
       matches: true,
       media: '',

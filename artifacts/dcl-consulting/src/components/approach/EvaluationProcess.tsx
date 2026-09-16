@@ -201,7 +201,7 @@ export function EvaluationProcess() {
           <p className="dclEvaluation__fadeUp mt-6 max-w-[540px] text-[16px] leading-7 text-white/55">{evaluationProcess.intro}</p>
         </div>
 
-        {isDesktop ? (
+        {isDesktop && !prefersReducedMotion ? (
           <div ref={driverRef} className="relative mt-16" style={{ height: '340vh' }}>
             <div className="sticky top-0 grid h-screen grid-cols-12 items-center gap-8">
               <div className="col-span-2 flex flex-col gap-8">

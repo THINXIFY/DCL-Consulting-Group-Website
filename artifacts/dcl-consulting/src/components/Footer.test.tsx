@@ -1,18 +1,100 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Footer } from './Footer';
+import { footerNavLinks, footerServicesViewAll, preFooterCta } from '@/data/footer-content';
+import { allMegaMenuServices } from '@/data/services-nav-content';
+
+function mockMatchMedia(matches: boolean) {
+  window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+    matches,
+    media: query,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+  })) as unknown as typeof window.matchMedia;
+}
+
+function slug(label: string) {
+  return label.toLowerCase().replaceAll(' & ', '-').replaceAll('&', '').replaceAll(' ', '-');
+}
 
 describe('Footer', () => {
-  it('links the mark home and renders the primary navigation', () => {
+  afterEach(() => vi.restoreAllMocks());
+
+  it('renders a decorative full-bleed background image behind the whole footer', () => {
+    mockMatchMedia(false);
+    render(<Footer />);
+    const bg = screen.getByTestId('img-footer-background');
+    expect(bg).toHaveAttribute('src', expect.stringContaining('ChatGPT-Image-Sep-15-2026-02_34_24-PM.webp'));
+    expect(bg).toHaveAttribute('alt', '');
+    expect(bg.closest('[aria-hidden="true"]')).not.toBeNull();
+  });
+
+  it('renders the pre-footer CTA label, headline, supporting copy, both CTAs, vocabulary, image, and image statement', () => {
+    mockMatchMedia(false);
+    render(<Footer />);
+    expect(screen.getByTestId('text-footer-cta-label')).toHaveTextContent(preFooterCta.label);
+    expect(screen.getByTestId('text-footer-cta-headline')).toHaveTextContent(preFooterCta.headlineLines[0]);
+    expect(screen.getByTestId('text-footer-cta-headline')).toHaveTextContent(preFooterCta.headlineLines[1]);
+    expect(screen.getByTestId('text-footer-cta-supporting')).toHaveTextContent(preFooterCta.supporting);
+
+    const primary = screen.getByTestId('link-footer-cta-primary');
+    expect(primary).toHaveTextContent(preFooterCta.primaryCta.label);
+    expect(primary).toHaveAttribute('href', preFooterCta.primaryCta.href);
+    expect(primary.className).not.toMatch(/text-white/);
+
+    const secondary = screen.getByTestId('link-footer-cta-secondary');
+    expect(secondary).toHaveTextContent(preFooterCta.secondaryCta.label);
+    expect(secondary).toHaveAttribute('href', preFooterCta.secondaryCta.href);
+
+    const vocab = screen.getByTestId('text-footer-cta-vocabulary');
+    for (const line of preFooterCta.vocabularyLines) {
+      expect(vocab).toHaveTextContent(line);
+    }
+    expect(vocab).toHaveTextContent(preFooterCta.vocabularyEmphasis);
+
+    expect(screen.getByTestId('img-footer-cta')).toBeInTheDocument();
+    const statement = screen.getByTestId('text-footer-cta-image-statement');
+    for (const line of preFooterCta.imageStatementLines) {
+      expect(statement).toHaveTextContent(line);
+    }
+  });
+
+  it('links the mark home and renders every navigation link with the correct real route', () => {
+    mockMatchMedia(false);
     render(<Footer />);
     expect(screen.getByTestId('link-footer-home')).toHaveAttribute('href', '/');
-    expect(screen.getByTestId('link-footer-about-us')).toHaveAttribute('href', '/about');
-    expect(screen.getByTestId('link-footer-expertise')).toHaveAttribute('href', '/expertise');
-    expect(screen.getByTestId('link-footer-our-approach')).toHaveAttribute('href', '/approach');
-    expect(screen.getByTestId('link-footer-industries')).toHaveAttribute('href', '/industries');
+    for (const link of footerNavLinks) {
+      expect(screen.getByTestId(`link-footer-nav-${slug(link.label)}`)).toHaveAttribute('href', link.href);
+    }
+  });
+
+  it('renders all ten completed service links plus the view-all link, matching the mega-menu data exactly', () => {
+    mockMatchMedia(false);
+    render(<Footer />);
+    expect(allMegaMenuServices).toHaveLength(10);
+    for (const service of allMegaMenuServices) {
+      const link = screen.getByTestId(`link-footer-service-${slug(service.label)}`);
+      expect(link).toHaveTextContent(service.label);
+      expect(link).toHaveAttribute('href', service.href);
+    }
+    const viewAll = screen.getByTestId('link-footer-view-all-services');
+    expect(viewAll).toHaveTextContent(footerServicesViewAll.label);
+    expect(viewAll).toHaveAttribute('href', footerServicesViewAll.href);
+  });
+
+  it('renders a contact intro and a Get in Touch link, with no invented contact details', () => {
+    mockMatchMedia(false);
+    render(<Footer />);
+    const cta = screen.getByTestId('link-footer-contact-cta');
+    expect(cta).toHaveTextContent('Get in Touch');
+    expect(cta).toHaveAttribute('href', '/contact');
+    const footer = document.querySelector('footer');
+    expect(footer?.textContent).not.toMatch(/@[a-z0-9.-]+\.[a-z]{2,}/i);
+    expect(footer?.textContent).not.toMatch(/\+?\d[\d\s()-]{7,}\d/);
   });
 
   it('renders only the exact confirmed company registration facts, nothing invented', () => {
+    mockMatchMedia(false);
     render(<Footer />);
     expect(screen.getByTestId('text-footer-fact-company')).toHaveTextContent('DCL Consulting and Investments Limited');
     expect(screen.getByTestId('text-footer-fact-company-type')).toHaveTextContent('Private Limited Company');
@@ -21,12 +103,41 @@ describe('Footer', () => {
     expect(screen.queryByTestId('text-footer-fact-director')).not.toBeInTheDocument();
   });
 
-  it('renders the current year in the copyright line', () => {
+  it('does not render any social links, since none are verified', () => {
+    mockMatchMedia(false);
+    render(<Footer />);
+    const footer = document.querySelector('footer');
+    for (const term of ['linkedin', 'twitter', 'instagram', 'facebook']) {
+      expect(footer?.innerHTML.toLowerCase()).not.toContain(term);
+    }
+  });
+
+  it('does not render a newsletter signup form', () => {
+    mockMatchMedia(false);
+    render(<Footer />);
+    expect(document.querySelector('footer input')).not.toBeInTheDocument();
+  });
+
+  it('renders the current year and the closing tagline in the legal strip', () => {
+    mockMatchMedia(false);
     render(<Footer />);
     expect(screen.getByTestId('text-footer-copyright')).toHaveTextContent(String(new Date().getFullYear()));
+    expect(screen.getByTestId('text-footer-closing')).toHaveTextContent('Clarity Before Capital.');
+  });
+
+  it('renders a Privacy Policy link in the legal strip, pointing to the real route', () => {
+    mockMatchMedia(false);
+    render(<Footer />);
+    expect(screen.getByTestId('link-footer-legal-privacy-policy')).toHaveAttribute('href', '/privacy-policy');
+  });
+
+  it('does not throw with reduced motion preferred', () => {
+    mockMatchMedia(true);
+    expect(() => render(<Footer />)).not.toThrow();
   });
 
   it('contains no em-dash characters', () => {
+    mockMatchMedia(false);
     render(<Footer />);
     const footer = document.querySelector('footer');
     expect(footer?.textContent).not.toMatch(/[–—]/);

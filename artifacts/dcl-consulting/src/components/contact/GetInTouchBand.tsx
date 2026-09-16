@@ -1,0 +1,135 @@
+import { useEffect, useRef } from 'react';
+import { ArrowUpRight } from 'lucide-react';
+import { getInTouchBand } from '@/data/contact-content';
+import { ensureGsapRegistered, gsap } from '@/lib/gsap';
+import { FadeInImage } from '@/components/ui/fade-in-image';
+
+function slug(label: string) {
+  return label.toLowerCase().replaceAll(' ', '-');
+}
+
+export function GetInTouchBand() {
+  const rootRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!rootRef.current) return;
+    ensureGsapRegistered();
+
+    const ctx = gsap.context(() => {
+      const mm = gsap.matchMedia();
+
+      mm.add('(prefers-reduced-motion: reduce)', () => {
+        gsap.set(
+          ['.dclGetInTouch__revealLine', '.dclGetInTouch__fadeUp', '.dclGetInTouch__imageWrap', '.dclGetInTouch__rule'],
+          { clearProps: 'all' },
+        );
+      });
+
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        const tl = gsap.timeline({ defaults: { ease: 'power3.out' }, scrollTrigger: { trigger: rootRef.current, start: 'top 78%' } });
+        tl.fromTo('.dclGetInTouch__fadeUp--eyebrow', { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.55 })
+          .fromTo('.dclGetInTouch__revealLine', { yPercent: 112 }, { yPercent: 0, duration: 0.85, stagger: 0.08 }, '-=0.3')
+          .fromTo('.dclGetInTouch__fadeUp', { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.08 }, '-=0.5')
+          .fromTo(
+            '.dclGetInTouch__imageWrap',
+            { clipPath: 'inset(0 0 100% 0)' },
+            { clipPath: 'inset(0 0 0% 0)', duration: 1.1, ease: 'power4.out' },
+            '-=0.6',
+          );
+
+        gsap.fromTo(
+          '.dclGetInTouch__rule',
+          { scaleY: 0 },
+          { scaleY: 1, transformOrigin: 'top center', duration: 0.8, ease: 'power2.out', scrollTrigger: { trigger: rootRef.current, start: 'top 70%' } },
+        );
+      });
+    }, rootRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section id="get-in-touch" ref={rootRef} aria-labelledby="get-in-touch-title" className="bg-[#171714] px-6 py-24 text-white sm:px-10 sm:py-28 lg:px-16 lg:py-32">
+      <div className="mx-auto max-w-[1520px]">
+        <div className="grid grid-cols-1 gap-14 md:grid-cols-2 md:gap-x-10 md:gap-y-16 xl:grid-cols-[29%_35%_36%] xl:gap-x-12 xl:gap-y-0">
+          <div className="flex flex-col justify-center">
+            <p data-testid="text-get-in-touch-eyebrow" className="dclHome__eyebrow dclGetInTouch__fadeUp dclGetInTouch__fadeUp--eyebrow text-[#9ca3aa]">
+              {getInTouchBand.label}
+            </p>
+            <h2
+              id="get-in-touch-title"
+              data-testid="text-get-in-touch-headline"
+              className="dclHome__display mt-5 text-[clamp(2.3rem,4vw,3.4rem)] leading-[1.04] tracking-[-.03em] text-white"
+            >
+              {getInTouchBand.headlineLines.map((line) => (
+                <span key={line} className="block overflow-hidden">
+                  <span className="dclGetInTouch__revealLine block">{line}</span>
+                </span>
+              ))}
+            </h2>
+            <p data-testid="text-get-in-touch-body" className="dclGetInTouch__fadeUp mt-6 max-w-[420px] text-[16px] leading-7 text-white/60">
+              {getInTouchBand.body}
+            </p>
+
+            <a
+              href={getInTouchBand.cta.href}
+              data-testid="link-get-in-touch-cta"
+              className="dclGetInTouch__fadeUp group mt-8 inline-flex w-fit items-center gap-3 bg-[#c6e3fa] px-6 py-4 text-[11px] font-semibold uppercase tracking-[.13em] text-[#080a0d] transition-colors duration-300 hover:bg-[#8bbfe8] hover:text-[#080a0d] focus:text-[#080a0d] focus-visible:text-[#080a0d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8] active:text-[#080a0d]"
+            >
+              {getInTouchBand.cta.label}
+              <ArrowUpRight size={15} strokeWidth={1.3} className="text-[#080a0d] transition-transform duration-300 ease-out group-hover:translate-x-[3px] group-hover:-translate-y-[3px]" />
+            </a>
+
+            <div data-testid="text-get-in-touch-statement" className="dclGetInTouch__fadeUp mt-10 flex items-stretch gap-4 border-l border-[#8bbfe8] pl-4">
+              <div className="flex flex-col gap-1.5">
+                {getInTouchBand.statementLines.map((word) => (
+                  <span key={word} className="text-[11px] font-semibold uppercase tracking-[.15em] text-white/40">
+                    {word}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col justify-center border-t border-white/12 pt-10 md:border-t-0 md:pt-0">
+            <p className="dclHome__eyebrow dclGetInTouch__fadeUp text-white/40">Verified Details</p>
+            <div className="dclGetInTouch__rule mt-5 h-16 w-px origin-top scale-y-0 bg-[#8bbfe8]" />
+            {getInTouchBand.verifiedDetails.map((fact) => (
+              <div key={fact.label} data-testid={`get-in-touch-fact-${slug(fact.label)}`} className="dclGetInTouch__fadeUp mt-5">
+                <p className="text-[11px] font-semibold uppercase tracking-[.14em] text-white/40">{fact.label}</p>
+                <address className="mt-3 max-w-[280px] text-[17px] not-italic leading-7 text-white/80">
+                  {fact.lines.map((line) => (
+                    <span key={line} className="block">
+                      {line}
+                    </span>
+                  ))}
+                </address>
+              </div>
+            ))}
+          </div>
+
+          <div className="md:col-span-2 xl:col-span-1">
+            <div className="dclGetInTouch__imageWrap relative aspect-[3/4] w-full overflow-hidden">
+              <FadeInImage
+                data-testid="img-get-in-touch-location"
+                className="h-full w-full object-cover object-center"
+                src={getInTouchBand.locationImage.src}
+                alt={getInTouchBand.locationImage.alt}
+                loading="lazy"
+                decoding="async"
+              />
+              <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#171714]/60 via-transparent to-transparent" />
+            </div>
+            <div data-testid="text-get-in-touch-location-caption" className="dclGetInTouch__fadeUp mt-5">
+              {getInTouchBand.locationCaptionLines.map((line) => (
+                <p key={line} className="text-[11px] font-semibold uppercase leading-[1.7] tracking-[.14em] text-white/50">
+                  {line}
+                </p>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

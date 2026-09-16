@@ -1,8 +1,22 @@
 import { describe, expect, it } from 'vitest';
-import { coreExpertise, expertiseFinalCta, expertiseHero, howWeAddPerspective, whereExpertiseApplies } from './expertise-content';
+import { coreExpertise, expertiseFinalCta, expertiseHero, fourLenses, whereExpertiseApplies, whyDclExpertise } from './expertise-content';
 
-const NUMBERING_PATTERN = /\b(0?[1-9]|1[0-2])\s*[/.)-]/;
+const NUMBERING_PATTERN = /(^|\s)(\d+[.)]|step\s*\d|part\s*\d)/i;
 const DASH_CHARS = /[–—]/;
+
+const REAL_SERVICE_ROUTES = [
+  '/services',
+  '/services/investment-consulting',
+  '/services/asset-portfolio-advisory',
+  '/services/wealth-strategy-advisory',
+  '/services/private-capital-advisory',
+  '/services/real-estate-investment-advisory',
+  '/services/strategic-advisory',
+  '/services/ma-acquisition-advisory',
+  '/services/market-entry-expansion-advisory',
+  '/services/due-diligence-support',
+  '/services/risk-opportunity-assessment',
+];
 
 function allStrings(value: unknown): string[] {
   if (typeof value === 'string') return [value];
@@ -11,63 +25,66 @@ function allStrings(value: unknown): string[] {
   return [];
 }
 
+const ALL_CONTENT = { expertiseHero, fourLenses, coreExpertise, whereExpertiseApplies, whyDclExpertise, expertiseFinalCta };
+
 describe('expertise-content', () => {
-  it('has exactly four analytical lenses on the hero, no fake numbers', () => {
-    expect(expertiseHero.lenses).toHaveLength(4);
-    for (const lens of expertiseHero.lenses) {
-      expect(lens.category).toBeTruthy();
-      expect(lens.phrase).toBeTruthy();
-      expect(lens.phrase).not.toMatch(/\d/);
+  it('hero has the label, two-line headline, lead, supporting line, and both CTAs', () => {
+    expect(expertiseHero.headlineLines).toHaveLength(2);
+    expect(expertiseHero.primaryCta.href).toBe('/services');
+    expect(expertiseHero.secondaryCta.href).toBe('#four-lenses');
+  });
+
+  it('four lenses has exactly four lenses', () => {
+    expect(fourLenses.lenses).toHaveLength(4);
+  });
+
+  it('core expertise has exactly six capabilities, each with a real, valid route', () => {
+    expect(coreExpertise.capabilities).toHaveLength(6);
+    for (const capability of coreExpertise.capabilities) {
+      expect(REAL_SERVICE_ROUTES).toContain(capability.href);
+      expect(capability.title).not.toMatch(NUMBERING_PATTERN);
     }
   });
 
-  it('has four how-we-add-perspective chapters, each with category, question, and copy', () => {
-    expect(howWeAddPerspective.perspectives).toHaveLength(4);
-    for (const item of howWeAddPerspective.perspectives) {
-      expect(item).not.toHaveProperty('number');
-      expect(item.category).toBeTruthy();
-      expect(item.question).toBeTruthy();
-      expect(item.copy).toBeTruthy();
+  it('every core expertise capability with a dedicated service page routes to it directly, not the generic hub', () => {
+    const dedicated = ['Investment Consulting', 'Risk & Opportunity Assessment', 'Strategic Advisory', 'Due Diligence Support'];
+    for (const capability of coreExpertise.capabilities) {
+      if (dedicated.includes(capability.title)) {
+        expect(capability.href).not.toBe('/services');
+      }
     }
   });
 
-  it('has exactly six core expertise areas, each with a title, supporting line, and description', () => {
-    expect(coreExpertise.areas).toHaveLength(6);
-    for (const area of coreExpertise.areas) {
-      expect(area).not.toHaveProperty('number');
-      expect(area.title).toBeTruthy();
-      expect(area.supportingLine).toBeTruthy();
-      expect(area.description).toBeTruthy();
+  it('where expertise applies has exactly six areas, each with a valid route, and a view-all link', () => {
+    expect(whereExpertiseApplies.areas).toHaveLength(6);
+    for (const area of whereExpertiseApplies.areas) {
+      expect(REAL_SERVICE_ROUTES).toContain(area.href);
     }
+    expect(whereExpertiseApplies.link.href).toBe('/services');
   });
 
-  it('has exactly six decision contexts, each with a title, supporting line, and description', () => {
-    expect(whereExpertiseApplies.contexts).toHaveLength(6);
-    for (const context of whereExpertiseApplies.contexts) {
-      expect(context).not.toHaveProperty('number');
-      expect(context.title).toBeTruthy();
-      expect(context.supportingLine).toBeTruthy();
-      expect(context.description).toBeTruthy();
-    }
+  it('why DCL expertise has exactly four principles', () => {
+    expect(whyDclExpertise.principles).toHaveLength(4);
   });
 
-  it('has final CTA content with both CTAs pointing at a homepage anchor', () => {
+  it('final CTA has the label, headline, supporting copy, both CTAs, and closing lines', () => {
+    expect(expertiseFinalCta.label).toBe("Let's Talk");
     expect(expertiseFinalCta.primaryCta.href).toBe('/#about');
-    expect(expertiseFinalCta.secondaryCta.href).toBe('/#about');
-    expect(expertiseFinalCta.closing).toBe('Clarity Before Capital.');
+    expect(expertiseFinalCta.secondaryCta.href).toBe('/services');
+    expect(expertiseFinalCta.closingLines).toHaveLength(2);
+  });
+
+  it('does not imply DCL holds money, has custody, executes trades, or guarantees returns', () => {
+    const text = allStrings(ALL_CONTENT).join(' ').toLowerCase();
+    for (const phrase of ['guarantee', 'guaranteed return', 'we manage your', 'custody of', 'execute trades', 'brokerage', 'discretionary portfolio', 'discretionary management']) {
+      expect(text).not.toContain(phrase);
+    }
   });
 
   it('contains no numbering or em-dash characters anywhere', () => {
-    const strings = [
-      ...allStrings(expertiseHero),
-      ...allStrings(howWeAddPerspective),
-      ...allStrings(coreExpertise),
-      ...allStrings(whereExpertiseApplies),
-      ...allStrings(expertiseFinalCta),
-    ];
-    for (const s of strings) {
-      expect(s).not.toMatch(NUMBERING_PATTERN);
-      expect(s).not.toMatch(DASH_CHARS);
+    for (const value of allStrings(ALL_CONTENT)) {
+      expect(value).not.toMatch(NUMBERING_PATTERN);
+      expect(value).not.toMatch(DASH_CHARS);
     }
   });
 });

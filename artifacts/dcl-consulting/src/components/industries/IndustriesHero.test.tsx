@@ -1,63 +1,64 @@
 import { render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { IndustriesHero } from './IndustriesHero';
+import { industriesHero } from '@/data/industries-content';
 
-function mockViewport({ desktop = false, mobile = false, reducedMotion = false }: { desktop?: boolean; mobile?: boolean; reducedMotion?: boolean }) {
-  window.matchMedia = vi.fn().mockImplementation((query: string) => {
-    let matches = false;
-    if (query.includes('1024')) matches = desktop;
-    else if (query.includes('767')) matches = mobile;
-    else if (query.includes('reduced-motion')) matches = reducedMotion;
-    return {
-      matches,
-      media: query,
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-    };
-  }) as unknown as typeof window.matchMedia;
+function mockDesktop(matches: boolean) {
+  window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+    matches,
+    media: query,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+  })) as unknown as typeof window.matchMedia;
 }
 
 describe('IndustriesHero', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('renders the eyebrow, headline, intro, supporting statement, and the three-line closing statement', () => {
-    mockViewport({ desktop: true });
+  it('renders the label, headline, lead, both CTAs, image, and statement', () => {
+    mockDesktop(true);
     render(<IndustriesHero />);
-    expect(screen.getByTestId('text-industries-hero-eyebrow')).toHaveTextContent('Industries');
-    expect(screen.getByTestId('text-industries-hero-title')).toHaveTextContent('Perspective across');
-    expect(screen.getByTestId('text-industries-hero-title')).toHaveTextContent('different sectors.');
-    expect(screen.getByTestId('text-industries-hero-intro')).toHaveTextContent(/disciplined perspective/i);
-    expect(screen.getByTestId('text-industries-hero-supporting')).toHaveTextContent(/fixed sector template/i);
-    const closing = screen.getByTestId('text-industries-hero-closing');
-    expect(closing).toHaveTextContent('Different sectors.');
-    expect(closing).toHaveTextContent('The same need for clarity.');
-    expect(closing.textContent).not.toMatch(/\d/);
-  });
+    expect(screen.getByTestId('text-industries-hero-label')).toHaveTextContent(industriesHero.label);
+    expect(screen.getByTestId('text-industries-hero-title')).toHaveTextContent(industriesHero.headlineLines[0]);
+    expect(screen.getByTestId('text-industries-hero-title')).toHaveTextContent(industriesHero.headlineLines[1]);
+    expect(screen.getByTestId('text-industries-hero-lead')).toHaveTextContent(industriesHero.lead);
 
-  it('shows six sector slices on desktop, four on tablet, and three on mobile', () => {
-    mockViewport({ desktop: true });
-    const { unmount } = render(<IndustriesHero />);
-    expect(screen.getAllByTestId(/^hero-sector-slice-/)).toHaveLength(6);
-    unmount();
+    const primary = screen.getByTestId('link-industries-hero-primary');
+    expect(primary).toHaveTextContent(industriesHero.primaryCta.label);
+    expect(primary).toHaveAttribute('href', industriesHero.primaryCta.href);
+    expect(primary.className).not.toMatch(/text-white/);
 
-    mockViewport({ desktop: false, mobile: false });
-    const tablet = render(<IndustriesHero />);
-    expect(screen.getAllByTestId(/^hero-sector-slice-/)).toHaveLength(4);
-    tablet.unmount();
+    const secondary = screen.getByTestId('link-industries-hero-secondary');
+    expect(secondary).toHaveTextContent(industriesHero.secondaryCta.label);
+    expect(secondary).toHaveAttribute('href', industriesHero.secondaryCta.href);
 
-    mockViewport({ mobile: true });
-    render(<IndustriesHero />);
-    expect(screen.getAllByTestId(/^hero-sector-slice-/)).toHaveLength(3);
-  });
-
-  it('does not throw with reduced motion preferred', () => {
-    mockViewport({ desktop: true, reducedMotion: true });
-    expect(() => render(<IndustriesHero />)).not.toThrow();
+    expect(screen.getByTestId('img-industries-hero')).toBeInTheDocument();
+    const statement = screen.getByTestId('text-industries-hero-statement');
+    for (const line of industriesHero.imageStatementLines) {
+      expect(statement).toHaveTextContent(line);
+    }
   });
 
   it('renders the header inside the hero', () => {
-    mockViewport({ desktop: true });
+    mockDesktop(true);
     render(<IndustriesHero />);
     expect(screen.getByTestId('link-home')).toBeInTheDocument();
+  });
+
+  it('does not throw with reduced motion preferred', () => {
+    window.matchMedia = vi.fn().mockImplementation(() => ({
+      matches: true,
+      media: '',
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    })) as unknown as typeof window.matchMedia;
+    expect(() => render(<IndustriesHero />)).not.toThrow();
+  });
+
+  it('contains no numbering or em-dash characters', () => {
+    mockDesktop(true);
+    render(<IndustriesHero />);
+    const section = document.getElementById('industries-hero');
+    expect(section?.textContent).not.toMatch(/[–—]/);
   });
 });

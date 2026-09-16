@@ -1,8 +1,11 @@
-export interface ExpertiseItem {
-  title: string;
-  category: string;
+export type ExpertiseIcon = 'commercial-analysis' | 'financial-review' | 'strategic-insight' | 'risk-evaluation';
+
+export interface ExpertiseArea {
+  label: string;
+  headlineLines: [string, string];
   copy: string;
-  image: string;
+  icon: ExpertiseIcon;
+  href: string;
 }
 
 export interface ApproachStage {
@@ -13,79 +16,114 @@ export interface ApproachStage {
 export interface IndustryItem {
   name: string;
   context: string;
-  image: string;
 }
 
-// Placeholder image - swap for the real photo before launch.
-const PLACEHOLDER_IMAGE = 'https://media.ourwebprojects.pro/wp-content/uploads/2026/09/approach-img.webp';
-const img = (_seed: string) => PLACEHOLDER_IMAGE;
+export const heroContent = {
+  eyebrow: 'Independent insight. London and international.',
+  headlineLines: ['Clarity', 'Before Capital.'],
+  lead: 'DCL Consulting helps investors evaluate opportunities with greater clarity through disciplined analysis, strategic insight, and independent perspective.',
+  primaryCta: { label: 'Explore Our Expertise', href: '#expertise' },
+  secondaryCta: { label: 'Start a Conversation', href: '#about' },
+  image: {
+    src: '/images/home/home-hero-architecture.webp',
+    alt: 'Curved glass office tower facade reflecting a dusk sky, London',
+  },
+};
 
-export const expertise: ExpertiseItem[] = [
-  {
-    title: 'Investment Consulting',
-    category: 'Decision support',
-    copy: 'Strategic guidance for evaluating opportunities and identifying the factors that should influence an investment decision.',
-    image: img('dcl-exp-investment'),
+export const aboutContent = {
+  eyebrow: 'About us',
+  title: 'Clarity begins with understanding.',
+  supporting: 'A considered perspective, for decisions that deserve one.',
+  body: [
+    'DCL Consulting and Investments Limited provides independent investment consulting and strategic decision support.',
+    'We help investors and businesses understand opportunities more clearly by examining commercial fundamentals, financial considerations, material risks, and strategic context.',
+    'Our role is to bring shape to the uncertain. We combine rigorous research with commercial understanding to reveal what matters, what is missing, and what should happen next.',
+    "Quietly independent and deliberately close to the work, we operate as a trusted extension of our clients' thinking.",
+  ],
+  image: {
+    src: '/images/home/home-about-architecture.webp',
+    alt: 'Board-formed concrete building corner with an angular roofline against a deep blue sky',
   },
-  {
-    title: 'Opportunity Analysis',
-    category: 'Commercial context',
-    copy: 'Structured assessment of the business, market, and underlying potential behind an opportunity.',
-    image: img('dcl-exp-opportunity'),
+  principles: [
+    { title: 'Independent', copy: 'Perspective free from product or platform interest.' },
+    { title: 'Disciplined', copy: 'Rigorous analysis applied to every material assumption.' },
+    { title: 'Considered', copy: 'Clear judgement, weighed against the wider context.' },
+  ],
+};
+
+export const expertiseSection = {
+  eyebrow: 'Our Expertise',
+  headlineLines: ['Different expertise.', 'A clearer view.'] as [string, string],
+  body: 'We combine commercial insight, analytical discipline and real-world experience to help clients evaluate opportunities, navigate complexity and make better-informed decisions.',
+  cta: { label: 'Explore Our Expertise', href: '/expertise' },
+  image: {
+    src: '/images/home/home-expertise-architecture.webp',
+    alt: 'Sweeping curved stone facade of a contemporary building against a deep blue sky',
   },
-  {
-    title: 'Risk & Opportunity Assessment',
-    category: 'Material considerations',
-    copy: 'Balanced consideration of material risks, assumptions, dependencies, and potential upside.',
-    image: img('dcl-exp-risk'),
+  imageStatementLines: ['Insight', 'applied', 'to real', 'opportunity.'] as string[],
+  areas: [
+    {
+      label: 'Commercial Analysis',
+      headlineLines: ['Commercial insight', 'for real decisions.'],
+      copy: 'We assess market dynamics, competitive positioning and commercial fundamentals to provide a clearer understanding of opportunity and value.',
+      icon: 'commercial-analysis',
+      href: '/expertise#four-lenses',
+    },
+    {
+      label: 'Financial Review',
+      headlineLines: ['Stronger foundations', 'for opportunity.'],
+      copy: 'We analyse financial characteristics, performance and resilience to support better-informed decisions across significant investment opportunities.',
+      icon: 'financial-review',
+      href: '/expertise#four-lenses',
+    },
+    {
+      label: 'Strategic Insight',
+      headlineLines: ['Perspective for', 'a changing world.'],
+      copy: 'We identify options, test assumptions and consider broader strategic implications to help clients navigate complex environments.',
+      icon: 'strategic-insight',
+      href: '/expertise#four-lenses',
+    },
+    {
+      label: 'Risk Evaluation',
+      headlineLines: ['Clarity through', 'deeper understanding.'],
+      copy: 'We evaluate uncertainty, dependencies and downside considerations to support more resilient and well-founded decisions.',
+      icon: 'risk-evaluation',
+      href: '/expertise#four-lenses',
+    },
+  ] satisfies ExpertiseArea[],
+  bottomStrip: {
+    eyebrow: 'Our Approach in Practice',
+    statementLines: ['Expertise is most valuable', 'when it leads to clarity.'] as [string, string],
+    copy: 'We apply our expertise with a pragmatic, independent mindset, always focused on the factors that matter most to our clients.',
+    cta: { label: 'Our Approach', href: '/approach' },
   },
-  {
-    title: 'Business & Financial Analysis',
-    category: 'Performance review',
-    copy: 'Review of business performance, economics, and relevant financial factors.',
-    image: img('dcl-exp-financial'),
-  },
-  {
-    title: 'Strategic Advisory',
-    category: 'Commercial direction',
-    copy: 'Independent perspective on strategic decisions, growth opportunities, and commercial direction.',
-    image: img('dcl-exp-strategy'),
-  },
-  {
-    title: 'Due Diligence Support',
-    category: 'Decision readiness',
-    copy: 'Organised review of important information, assumptions, and unresolved questions before a significant decision.',
-    image: img('dcl-exp-diligence'),
-  },
-];
+};
 
 export const approach: ApproachStage[] = [
-  { title: 'Understand', copy: 'Establish the opportunity, objective, and wider context.' },
-  { title: 'Analyse', copy: 'Review the business, market, economics, and relevant information.' },
-  { title: 'Challenge', copy: 'Test assumptions, dependencies, and areas of uncertainty.' },
-  { title: 'Assess', copy: 'Bring risk, opportunity, and strategic considerations together.' },
-  { title: 'Advise', copy: 'Translate the analysis into clear, decision relevant perspective.' },
+  { title: 'Understand', copy: 'We take the time to understand the opportunity, objective and wider context.' },
+  { title: 'Analyse', copy: 'We review the business, market, economics and information that matter most.' },
+  { title: 'Evaluate', copy: 'We assess options, risks and opportunities with objectivity and a long-term view.' },
+  { title: 'Advise', copy: 'We translate the analysis into a clear, independent perspective you can act on.' },
 ];
+
+export const approachBandImage = {
+  src: '/images/home/home-approach-band.webp',
+  alt: 'Four consultants in conversation on a glass-walled terrace overlooking a coastal mountain landscape at sunset, with the DCL monogram mounted on a marble wall',
+};
 
 export const industries: IndustryItem[] = [
-  { name: 'Real Estate', context: 'Property, development, and asset backed opportunities.', image: img('dcl-ind-realestate') },
-  { name: 'Technology', context: 'Technology enabled businesses and digital growth opportunities.', image: img('dcl-ind-technology') },
-  { name: 'Artificial Intelligence', context: 'Emerging capabilities, applications, and business models.', image: img('dcl-ind-ai') },
-  { name: 'Healthcare', context: 'Healthcare services and health related businesses.', image: img('dcl-ind-healthcare') },
-  { name: 'Pharmaceuticals', context: 'Products, platforms, and commercial life sciences.', image: img('dcl-ind-pharma') },
-  { name: 'Financial Services', context: 'Financial institutions, platforms, and enabling infrastructure.', image: img('dcl-ind-financial') },
-  { name: 'Consumer & Retail', context: 'Consumer behaviour, brands, and distribution models.', image: img('dcl-ind-consumer') },
-  { name: 'Energy', context: 'Energy businesses and the transition around them.', image: img('dcl-ind-energy') },
-  { name: 'Infrastructure', context: 'Essential networks, assets, and long term investment.', image: img('dcl-ind-infrastructure') },
-  { name: 'Industrial', context: 'Industrial businesses, products, and operating models.', image: img('dcl-ind-industrial') },
-  { name: 'Hospitality', context: 'Experiences, property, and service led businesses.', image: img('dcl-ind-hospitality') },
-  { name: 'Professional Services', context: 'Knowledge businesses and specialist operators.', image: img('dcl-ind-professional') },
+  { name: 'Real Estate & Property', context: 'Advisory support across residential, commercial and real-asset opportunities.' },
+  { name: 'Technology & AI', context: 'Strategic insight across technology, software and emerging digital sectors.' },
+  { name: 'Healthcare & Life Sciences', context: 'Strategic insight across healthcare, pharmaceuticals and related industries.' },
+  { name: 'Energy & Infrastructure', context: 'Advisory perspective on energy transition, resources and sustainable infrastructure.' },
+  { name: 'Financial Services', context: 'Insight across financial markets, asset management and related services.' },
+  { name: 'Industrial & Manufacturing', context: 'Supporting growth, investment and transformation across industrial sectors.' },
 ];
 
-export interface AudienceItem {
-  title: string;
-  copy: string;
-}
+export const industriesImage = {
+  src: '/images/home/home-industries.webp',
+  alt: 'Two glass high-rise towers with a honeycomb facade pattern viewed from below against the sky',
+};
 
 export interface QualityItem {
   title: string;
@@ -97,45 +135,33 @@ export interface CompanyFact {
   value: string;
 }
 
-export interface PhilosophyStatement {
-  text: string;
-  highlight: string;
-  support: string;
-}
-
-export const whoWeAdvise: AudienceItem[] = [
-  {
-    title: 'Private Capital',
-    copy: 'Independent perspective for private investors evaluating opportunities, commercial risks and strategic choices.',
-  },
-  {
-    title: 'Corporate Ambition',
-    copy: 'Structured analysis for businesses considering growth, expansion, partnerships or other significant commercial decisions.',
-  },
-  {
-    title: 'Strategic Opportunity',
-    copy: 'Decision support when an opportunity is complex, unfamiliar or requires deeper independent scrutiny.',
-  },
-];
-
 export const whyDcl: QualityItem[] = [
   {
     title: 'Independent Perspective',
-    copy: 'A considered view shaped by the opportunity and the evidence rather than a predetermined conclusion.',
+    copy: 'Advice shaped by the facts of the situation, not by product, platform or third-party relationship.',
   },
   {
     title: 'Analytical Discipline',
-    copy: 'Structured evaluation focused on the commercial, financial and strategic factors most relevant to the decision.',
+    copy: 'A structured approach that tests assumptions and looks past the surface of an opportunity.',
   },
   {
     title: 'Commercial Understanding',
-    copy: 'Attention to how businesses, markets and opportunities work in practice, not only how they appear on paper.',
+    copy: 'Perspective grounded in how businesses, markets and transactions actually work.',
   },
   {
     title: 'Clear Communication',
-    copy: 'Complex information translated into a clearer view of what matters, what remains uncertain and what deserves attention.',
+    copy: 'Analysis translated into a perspective that is clear, direct and genuinely useful.',
+  },
+  {
+    title: 'Long-Term Thinking',
+    copy: 'A perspective weighed against what matters beyond the immediate decision.',
   },
 ];
+
+export const whyDclImage = {
+  src: '/images/home/home-why-dcl.webp',
+  alt: 'Angular white building facade with a diamond geometric cladding pattern against a blue sky',
+};
 
 export const companyFacts: CompanyFact[] = [
   { label: 'Company', value: 'DCL Consulting and Investments Limited' },
@@ -145,31 +171,26 @@ export const companyFacts: CompanyFact[] = [
   { label: 'Director', value: 'David Christopher Lebond' },
 ];
 
-export const philosophy: PhilosophyStatement[] = [
+export interface InsightItem {
+  theme: string;
+  statement: string;
+}
+
+// Editorial perspective statements, not dated articles - the project does not
+// yet contain published insight content, so no titles, dates, read times or
+// article routes are implied here (see brief guardrail on fabricated content).
+export const insights: InsightItem[] = [
   {
-    text: 'Understand before concluding.',
-    highlight: 'Understand',
-    support: 'Establish the context and the facts before forming a view.',
+    theme: 'On Independence',
+    statement: 'Advice shaped by the facts of the situation, not by product, platform or third-party relationship.',
   },
   {
-    text: 'Challenge assumptions before accepting them.',
-    highlight: 'Challenge',
-    support: 'Test what is known, what is assumed and what still requires scrutiny.',
+    theme: 'On Discipline',
+    statement: 'The value of analysis often lies in what it rules out, not only in what it confirms.',
   },
   {
-    text: 'Consider risk alongside opportunity.',
-    highlight: 'risk',
-    support: 'A compelling opportunity should still be examined for uncertainty and downside.',
-  },
-  {
-    text: 'Focus on what materially changes the decision.',
-    highlight: 'materially',
-    support: 'Separate important factors from background information.',
-  },
-  {
-    text: 'Communicate the conclusion clearly.',
-    highlight: 'clearly',
-    support: 'Translate analysis into a perspective that is useful for decision-making.',
+    theme: 'On Decisions',
+    statement: 'Clarity before capital - a considered perspective, before capital moves.',
   },
 ];
 
@@ -180,35 +201,23 @@ export interface FaqItem {
 
 export const faq: FaqItem[] = [
   {
-    question: 'What does DCL Consulting do?',
-    answer: 'DCL Consulting provides investment consulting and strategic decision support, helping investors and businesses evaluate opportunities through commercial analysis, financial considerations, risk assessment and independent strategic perspective.',
+    question: 'What does DCL do?',
+    answer: 'DCL Consulting and Investments Limited provides independent investment consulting and strategic decision support, helping clients evaluate opportunities with greater clarity.',
   },
   {
     question: 'Who does DCL work with?',
-    answer: 'DCL supports private investors, businesses and decision-makers seeking a clearer understanding of significant investment or strategic opportunities.',
+    answer: 'We work with individuals, families, private investors, businesses and organisations seeking independent perspective on significant investment, commercial or strategic decisions.',
   },
   {
-    question: 'What types of opportunities can DCL assess?',
-    answer: 'DCL can support the evaluation of investment opportunities, acquisitions, growth initiatives, market entry, strategic partnerships, business performance and other complex commercial decisions.',
-  },
-  {
-    question: 'Does DCL work across different industries?',
-    answer: 'Yes. DCL takes a sector-agnostic approach, focusing on the fundamentals of each opportunity rather than applying a fixed sector template.',
-  },
-  {
-    question: 'What does a typical engagement involve?',
-    answer: 'Each engagement begins by understanding the decision, objectives and available information. DCL then identifies the most relevant commercial, financial, risk and strategic factors before developing a clearer decision-focused perspective.',
-  },
-  {
-    question: 'Can DCL support due diligence?',
-    answer: 'DCL can support the organised review of important information, assumptions, dependencies and unresolved questions that should be considered before a significant decision.',
+    question: 'How is DCL different?',
+    answer: 'Our perspective is independent and shaped only by the facts of the situation, combining rigorous analysis with commercial understanding rather than any product or platform interest.',
   },
   {
     question: 'Does DCL manage or execute investments?',
-    answer: "DCL's website and services are positioned around consulting, analysis and strategic decision support rather than brokerage, custody, trading or portfolio-management services.",
+    answer: 'No. DCL is an independent advisory business. Our role is to provide analysis and perspective, not to hold client assets or execute investment decisions on a client’s behalf.',
   },
   {
-    question: 'How do I start a conversation with DCL?',
-    answer: 'Get in touch to introduce the opportunity or decision you are considering, and DCL will determine the appropriate scope for an initial discussion.',
+    question: 'How do we start a conversation?',
+    answer: 'Most engagements begin with an initial conversation to understand the decision, the context and the perspective that would be most useful before any scope is agreed.',
   },
 ];

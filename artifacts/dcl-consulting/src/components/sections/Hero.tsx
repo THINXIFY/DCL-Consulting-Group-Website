@@ -1,12 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { ArrowDownRight } from 'lucide-react';
 import { Header } from '@/components/Header';
+import { HeroBackground } from './HeroBackground';
 import { ensureGsapRegistered, gsap } from '@/lib/gsap';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { useMagnetic } from '@/hooks/use-magnetic';
 
-// Placeholder image - swap for the real photo before launch.
-const HERO_IMAGE = 'https://media.ourwebprojects.pro/wp-content/uploads/2026/09/approach-img.webp';
+const HERO_IMAGE = '/images/home/home-hero-architecture.webp';
 
 export function Hero() {
   const rootRef = useRef<HTMLElement>(null);
@@ -55,8 +55,9 @@ export function Hero() {
       aria-label="Clarity before capital"
       className="relative min-h-[100dvh] overflow-hidden bg-[#080a0d] text-white"
     >
+      <HeroBackground rootRef={rootRef} />
       <Header />
-      <div className="relative mx-auto grid min-h-[100dvh] max-w-[1440px] grid-cols-1 items-center gap-10 px-6 pb-16 pt-24 sm:px-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16 lg:px-16">
+      <div className="relative z-10 mx-auto grid min-h-[100dvh] max-w-[1440px] grid-cols-1 items-center gap-10 px-6 pb-16 pt-24 sm:px-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16 lg:px-16">
         <div className="max-w-[620px]">
           <p data-testid="text-hero-eyebrow" className="dclHome__eyebrow dclHero__reveal dclHero__revealLine mb-7 overflow-hidden text-[#c6e3fa]">
             Independent insight. London and international.
@@ -100,7 +101,9 @@ export function Hero() {
           <img
             className="dclHero__image h-full w-full scale-110 object-cover"
             src={HERO_IMAGE}
-            alt="Modern architectural facade with strong geometric lines"
+            alt="Curved glass office tower facade reflecting a dusk sky, London"
+            fetchPriority="high"
+            decoding="async"
           />
           <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(8,10,13,.55)_0%,transparent_45%)]" />
         </div>

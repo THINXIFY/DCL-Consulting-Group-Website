@@ -14,11 +14,9 @@ function mockMatchMedia(matches: boolean) {
 describe('IndustriesFinalCta', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('renders the small statement, headline, supporting copy, both CTAs, and the closing line', () => {
+  it('renders the headline, supporting copy, both CTAs, and the closing line', () => {
     mockMatchMedia(false);
     render(<IndustriesFinalCta />);
-    expect(screen.getByTestId('text-industries-final-statement')).toHaveTextContent('Sector perspective.');
-    expect(screen.getByTestId('text-industries-final-statement')).toHaveTextContent('Decision clarity.');
     expect(screen.getByTestId('text-industries-final-title')).toHaveTextContent('A clearer view');
     expect(screen.getByTestId('text-industries-final-title')).toHaveTextContent('of the opportunity.');
     expect(screen.getByTestId('text-industries-final-supporting')).toHaveTextContent(/independent analysis/i);

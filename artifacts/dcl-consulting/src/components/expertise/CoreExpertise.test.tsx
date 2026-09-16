@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { CoreExpertise } from './CoreExpertise';
+import { coreExpertise } from '@/data/expertise-content';
 
 function mockDesktop(matches: boolean) {
   window.matchMedia = vi.fn().mockImplementation((query: string) => ({
@@ -11,66 +12,97 @@ function mockDesktop(matches: boolean) {
   })) as unknown as typeof window.matchMedia;
 }
 
-const TITLES = [
-  'Investment Consulting',
-  'Opportunity Analysis',
-  'Risk & Opportunity Assessment',
-  'Business & Financial Analysis',
-  'Strategic Advisory',
-  'Due Diligence Support',
-];
+function slug(title: string) {
+  return title.toLowerCase().replaceAll(' & ', '-').replaceAll(' ', '-');
+}
 
 describe('CoreExpertise', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('renders the headline, intro, all six service rows, and the closing statement', () => {
+  it('renders the label, headline, intro, image, and all six capability rows on desktop', () => {
     mockDesktop(true);
     render(<CoreExpertise />);
-    expect(screen.getByText(/focused expertise/i)).toBeInTheDocument();
-    for (const title of TITLES) {
-      expect(screen.getByTestId(`expertise-row-${title.toLowerCase().replaceAll(' & ', '-').replaceAll(' ', '-')}`)).toHaveTextContent(title);
+    expect(screen.getByText(coreExpertise.label)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Specialist expertise.');
+    expect(screen.getByText(coreExpertise.intro)).toBeInTheDocument();
+    expect(screen.getByTestId('img-core-expertise')).toBeInTheDocument();
+    for (const capability of coreExpertise.capabilities) {
+      expect(screen.getByTestId(`core-expertise-row-${slug(capability.title)}`)).toHaveTextContent(capability.title);
     }
-    const closing = screen.getByTestId('text-expertise-closing');
-    expect(closing).toHaveTextContent('Expertise is most valuable');
-    expect(closing).toHaveTextContent('when it brings the decision into focus.');
   });
 
-  it('expands Investment Consulting by default and reveals its description inline (no separate panel)', () => {
+  it('shows the first capability active by default, with correct detail content and CTA route', () => {
     mockDesktop(true);
     render(<CoreExpertise />);
-    expect(screen.getByTestId('expertise-row-investment-consulting')).toHaveAttribute('data-active', 'true');
-    expect(screen.getByText(/structured support for investors evaluating significant opportunities/i)).toBeInTheDocument();
+    const first = coreExpertise.capabilities[0]!;
+    expect(screen.getByTestId(`core-expertise-row-${slug(first.title)}`)).toHaveAttribute('data-active', 'true');
+    expect(screen.getByTestId('text-core-expertise-headline')).toHaveTextContent(first.headline);
+    expect(screen.getByTestId('text-core-expertise-copy')).toHaveTextContent(first.copy);
+    const cta = screen.getByTestId('link-core-expertise-cta');
+    expect(cta).toHaveTextContent(first.ctaLabel);
+    expect(cta).toHaveAttribute('href', first.href);
   });
 
-  it('expands a different row on hover, and collapses it back on mouse leave', () => {
+  it('activates a different capability on click, and it stays active after the pointer leaves', () => {
     mockDesktop(true);
     render(<CoreExpertise />);
-    fireEvent.mouseEnter(screen.getByTestId('expertise-row-strategic-advisory'));
-    expect(screen.getByTestId('expertise-row-strategic-advisory')).toHaveAttribute('data-active', 'true');
-    expect(screen.getByText(/strategic perspective for businesses and investors/i)).toBeInTheDocument();
+    const third = coreExpertise.capabilities[2]!;
+    const row = screen.getByTestId(`core-expertise-row-${slug(third.title)}`);
 
-    fireEvent.mouseLeave(screen.getByTestId('expertise-row-strategic-advisory'));
-    expect(screen.getByTestId('expertise-row-investment-consulting')).toHaveAttribute('data-active', 'true');
+    fireEvent.click(row);
+    expect(row).toHaveAttribute('data-active', 'true');
+    expect(screen.getByTestId('text-core-expertise-headline')).toHaveTextContent(third.headline);
+
+    fireEvent.mouseLeave(row.parentElement!);
+    expect(row).toHaveAttribute('data-active', 'true');
   });
 
-  it('expands on keyboard focus, matching hover behaviour', () => {
+  it('previews a different capability on hover without discarding the clicked selection', () => {
     mockDesktop(true);
     render(<CoreExpertise />);
-    fireEvent.focus(screen.getByTestId('expertise-row-due-diligence-support'));
-    expect(screen.getByTestId('expertise-row-due-diligence-support')).toHaveAttribute('data-active', 'true');
-    fireEvent.blur(screen.getByTestId('expertise-row-due-diligence-support'));
-    expect(screen.getByTestId('expertise-row-investment-consulting')).toHaveAttribute('data-active', 'true');
+    const second = coreExpertise.capabilities[1]!;
+    const fourth = coreExpertise.capabilities[3]!;
+    const secondRow = screen.getByTestId(`core-expertise-row-${slug(second.title)}`);
+    const fourthRow = screen.getByTestId(`core-expertise-row-${slug(fourth.title)}`);
+
+    fireEvent.click(secondRow);
+    fireEvent.mouseEnter(fourthRow);
+    expect(fourthRow).toHaveAttribute('data-active', 'true');
+    expect(screen.getByTestId('text-core-expertise-headline')).toHaveTextContent(fourth.headline);
+
+    fireEvent.mouseLeave(fourthRow.parentElement!);
+    expect(secondRow).toHaveAttribute('data-active', 'true');
   });
 
-  it('renders a vertical accordion on mobile, with descriptions revealed only on tap', () => {
+  it('uses correct real routes for capabilities with dedicated service pages, and /services for the rest', () => {
+    mockDesktop(true);
+    render(<CoreExpertise />);
+    for (const capability of coreExpertise.capabilities) {
+      fireEvent.click(screen.getByTestId(`core-expertise-row-${slug(capability.title)}`));
+      expect(screen.getByTestId('link-core-expertise-cta')).toHaveAttribute('href', capability.href);
+    }
+  });
+
+  it('renders an accessible accordion on mobile, with each panel exposing its own CTA', () => {
     mockDesktop(false);
     render(<CoreExpertise />);
-    const button = screen.getByRole('button', { name: /investment consulting/i });
+    const first = coreExpertise.capabilities[0]!;
+    const button = screen.getByRole('button', { name: new RegExp(first.title) });
     expect(button).toHaveAttribute('aria-expanded', 'false');
-
     fireEvent.click(button);
     expect(button).toHaveAttribute('aria-expanded', 'true');
-    expect(screen.getByText(/structured support for investors evaluating significant opportunities/i)).toBeInTheDocument();
+    const cta = screen.getByTestId(`core-expertise-accordion-cta-${slug(first.title)}`);
+    expect(cta).toHaveAttribute('href', first.href);
+  });
+
+  it('does not throw with reduced motion preferred', () => {
+    window.matchMedia = vi.fn().mockImplementation(() => ({
+      matches: true,
+      media: '',
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    })) as unknown as typeof window.matchMedia;
+    expect(() => render(<CoreExpertise />)).not.toThrow();
   });
 
   it('contains no numbering or em-dash characters', () => {
@@ -78,5 +110,6 @@ describe('CoreExpertise', () => {
     render(<CoreExpertise />);
     const section = document.getElementById('core-expertise');
     expect(section?.textContent).not.toMatch(/[–—]/);
+    expect(section?.textContent).not.toMatch(/(^|\s)(\d+[.)]|step\s*\d|part\s*\d)/i);
   });
 });

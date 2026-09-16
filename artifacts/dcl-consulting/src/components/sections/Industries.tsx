@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { industries } from '@/data/home-content';
+import { industries, industriesImage } from '@/data/home-content';
 import { ensureGsapRegistered, gsap } from '@/lib/gsap';
 import { useMediaQuery } from '@/hooks/use-media-query';
 
@@ -84,18 +84,14 @@ export function Industries() {
           {isDesktop && (
             <div data-testid="image-industry-sticky" className="lg:sticky lg:top-24 lg:self-start">
               <div className="dclIndustries__frame relative aspect-square w-full overflow-hidden">
-                {industries.map((item, index) => (
-                  <img
-                    key={item.name}
-                    src={item.image}
-                    alt=""
-                    className="absolute inset-0 h-full w-full object-cover transition-[opacity,transform] duration-700 ease-out"
-                    style={{
-                      opacity: activeIndex === index ? 1 : 0,
-                      transform: activeIndex === index ? 'scale(1.04)' : 'scale(1)',
-                    }}
-                  />
-                ))}
+                <img
+                  src={industriesImage.src}
+                  alt={industriesImage.alt}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div className="absolute inset-0 bg-[#080a0d]/15" />
               </div>
               <div className="mt-6 flex items-start gap-4 border-t border-white/15 pt-6">
                 <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#8bbfe8]" />

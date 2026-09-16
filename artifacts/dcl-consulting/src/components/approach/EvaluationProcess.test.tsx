@@ -2,9 +2,9 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { EvaluationProcess } from './EvaluationProcess';
 
-function mockDesktop(matches: boolean) {
+function mockDesktop(desktop: boolean, reducedMotion = false) {
   window.matchMedia = vi.fn().mockImplementation((query: string) => ({
-    matches,
+    matches: query.includes('prefers-reduced-motion') ? reducedMotion : desktop,
     media: query,
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
@@ -77,6 +77,20 @@ describe('EvaluationProcess', () => {
       ['advise', 'Turn analysis into a clearer decision.'],
     ]) {
       expect(screen.getByTestId(`evaluation-mobile-${stage}`)).toHaveTextContent(statement);
+    }
+  });
+
+  it('falls back to the stacked, no-transform layout on desktop when prefers-reduced-motion is set, instead of the uncentered 3D band carousel', () => {
+    // Regression test: the 3D bands rely entirely on a GSAP-applied
+    // xPercent/yPercent:-50 transform to center themselves (there is no
+    // static/reduced-motion fallback for that positioning), so rendering
+    // them without motion left every band anchored by its top-left corner
+    // at the container's center, overflowing the page horizontally.
+    mockDesktop(true, true);
+    render(<EvaluationProcess />);
+    for (const stage of STAGES) {
+      expect(screen.queryByTestId(`evaluation-band-${stage}`)).not.toBeInTheDocument();
+      expect(screen.getByTestId(`evaluation-mobile-${stage}`)).toBeInTheDocument();
     }
   });
 

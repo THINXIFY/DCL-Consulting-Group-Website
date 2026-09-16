@@ -22,6 +22,14 @@ describe('Hero', () => {
     expect(screen.queryByTestId('link-explore-about')).not.toBeInTheDocument();
   });
 
+  it('renders the decorative ambient background layer behind the content, hidden from assistive tech', () => {
+    const { container } = render(<Hero />);
+    const bg = container.querySelector('.dclHeroBg');
+    expect(bg).not.toBeNull();
+    expect(bg).toHaveAttribute('aria-hidden', 'true');
+    expect(bg).toHaveClass('pointer-events-none');
+  });
+
   it('contains no em-dash characters in visible copy', () => {
     render(<Hero />);
     const section = screen.getByRole('region', { name: /clarity/i });

@@ -1,62 +1,65 @@
 import { render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ExpertiseHero } from './ExpertiseHero';
+import { expertiseHero } from '@/data/expertise-content';
 
-function mockViewport({ desktop = false, mobile = false, reducedMotion = false }: { desktop?: boolean; mobile?: boolean; reducedMotion?: boolean }) {
-  window.matchMedia = vi.fn().mockImplementation((query: string) => {
-    let matches = false;
-    if (query.includes('1024')) matches = desktop;
-    else if (query.includes('767')) matches = mobile;
-    else if (query.includes('reduced-motion')) matches = reducedMotion;
-    return {
-      matches,
-      media: query,
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-    };
-  }) as unknown as typeof window.matchMedia;
+function mockDesktop(matches: boolean) {
+  window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+    matches,
+    media: query,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+  })) as unknown as typeof window.matchMedia;
 }
 
 describe('ExpertiseHero', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('renders the eyebrow, headline, intro, supporting statement, and closing lines', () => {
-    mockViewport({ desktop: true });
+  it('renders the label, headline, lead, supporting copy, both CTAs, image, and statement', () => {
+    mockDesktop(true);
     render(<ExpertiseHero />);
-    expect(screen.getByTestId('text-expertise-hero-eyebrow')).toHaveTextContent('Expertise');
-    expect(screen.getByTestId('text-expertise-hero-title')).toHaveTextContent('Expertise applied');
-    expect(screen.getByTestId('text-expertise-hero-title')).toHaveTextContent('to the decision.');
-    expect(screen.getByTestId('text-expertise-hero-intro')).toHaveTextContent(/commercial analysis, financial perspective/i);
-    expect(screen.getByTestId('text-expertise-hero-supporting')).toHaveTextContent(/different opportunities require different questions/i);
-    const closing = screen.getByTestId('text-expertise-hero-closing');
-    expect(closing).toHaveTextContent('Analysis with purpose.');
-    expect(closing).toHaveTextContent('Perspective with relevance.');
-  });
+    expect(screen.getByTestId('text-expertise-hero-label')).toHaveTextContent(expertiseHero.label);
+    expect(screen.getByTestId('text-expertise-hero-title')).toHaveTextContent(expertiseHero.headlineLines[0]);
+    expect(screen.getByTestId('text-expertise-hero-title')).toHaveTextContent(expertiseHero.headlineLines[1]);
+    expect(screen.getByTestId('text-expertise-hero-lead')).toHaveTextContent(expertiseHero.lead);
+    expect(screen.getByTestId('text-expertise-hero-supporting')).toHaveTextContent(expertiseHero.supporting);
 
-  it('shows four analytical lenses on desktop, three on tablet, and two on mobile', () => {
-    mockViewport({ desktop: true });
-    const { unmount } = render(<ExpertiseHero />);
-    expect(screen.getAllByTestId(/^hero-lens-/)).toHaveLength(4);
-    unmount();
+    const primary = screen.getByTestId('link-expertise-hero-primary');
+    expect(primary).toHaveTextContent(expertiseHero.primaryCta.label);
+    expect(primary).toHaveAttribute('href', expertiseHero.primaryCta.href);
+    expect(primary.className).not.toMatch(/text-white/);
 
-    mockViewport({ desktop: false, mobile: false });
-    const tablet = render(<ExpertiseHero />);
-    expect(screen.getAllByTestId(/^hero-lens-/)).toHaveLength(3);
-    tablet.unmount();
+    const secondary = screen.getByTestId('link-expertise-hero-secondary');
+    expect(secondary).toHaveTextContent(expertiseHero.secondaryCta.label);
+    expect(secondary).toHaveAttribute('href', expertiseHero.secondaryCta.href);
 
-    mockViewport({ mobile: true });
-    render(<ExpertiseHero />);
-    expect(screen.getAllByTestId(/^hero-lens-/)).toHaveLength(2);
-  });
-
-  it('does not throw with reduced motion preferred', () => {
-    mockViewport({ desktop: true, reducedMotion: true });
-    expect(() => render(<ExpertiseHero />)).not.toThrow();
+    expect(screen.getByTestId('img-expertise-hero')).toBeInTheDocument();
+    const statement = screen.getByTestId('text-expertise-hero-statement');
+    for (const line of expertiseHero.imageStatementLines) {
+      expect(statement).toHaveTextContent(line);
+    }
   });
 
   it('renders the header inside the hero', () => {
-    mockViewport({ desktop: true });
+    mockDesktop(true);
     render(<ExpertiseHero />);
     expect(screen.getByTestId('link-home')).toBeInTheDocument();
+  });
+
+  it('does not throw with reduced motion preferred', () => {
+    window.matchMedia = vi.fn().mockImplementation(() => ({
+      matches: true,
+      media: '',
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    })) as unknown as typeof window.matchMedia;
+    expect(() => render(<ExpertiseHero />)).not.toThrow();
+  });
+
+  it('contains no numbering or em-dash characters', () => {
+    mockDesktop(true);
+    render(<ExpertiseHero />);
+    const section = document.getElementById('expertise-hero');
+    expect(section?.textContent).not.toMatch(/[–—]/);
   });
 });

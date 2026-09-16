@@ -4,7 +4,7 @@ import { ensureGsapRegistered, gsap, ScrollTrigger } from '@/lib/gsap';
 import { getActiveIndex } from '@/lib/scroll-active-index';
 import { useMediaQuery } from '@/hooks/use-media-query';
 
-const PLACEHOLDER_IMAGE = 'https://media.ourwebprojects.pro/wp-content/uploads/2026/09/approach-img.webp';
+const SECTION_IMAGE = '/images/general/approach-hero.webp';
 
 interface FrameState {
   rotateY: number;
@@ -136,8 +136,8 @@ export function UnderstandingDecision() {
                 <img
                   data-testid="img-understand"
                   className="dclUnderstand__image h-full w-full scale-105 object-cover object-center"
-                  src={PLACEHOLDER_IMAGE}
-                  alt="Placeholder institutional image, to be replaced"
+                  src={SECTION_IMAGE}
+                  alt="Overhead view down a square spiral stairwell with marble treads and a dark wood handrail"
                 />
               </div>
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[#080a0d]/10" />

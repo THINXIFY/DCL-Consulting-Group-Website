@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { whyDcl } from '@/data/home-content';
+import { whyDcl, whyDclImage } from '@/data/home-content';
 import { ensureGsapRegistered, gsap } from '@/lib/gsap';
 import { useMediaQuery } from '@/hooks/use-media-query';
 
@@ -20,9 +20,20 @@ export function WhyDcl() {
 
     const ctx = gsap.context(() => {
       if (prefersReducedMotion) {
-        gsap.set(['.dclWhy__revealLine', '.dclWhy__fadeUp', '.dclWhy__rule', '.dclWhy__chapter'], { clearProps: 'all' });
+        gsap.set(['.dclWhy__revealLine', '.dclWhy__fadeUp', '.dclWhy__rule', '.dclWhy__chapter', '.dclWhy__imageWrap'], { clearProps: 'all' });
         return;
       }
+
+      gsap.fromTo(
+        '.dclWhy__imageWrap',
+        { clipPath: 'inset(0 0 100% 0)' },
+        {
+          clipPath: 'inset(0 0 0% 0)',
+          duration: 1,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: '.dclWhy__imageWrap', start: 'top 85%' },
+        },
+      );
 
       gsap.fromTo(
         '.dclWhy__revealLine',
@@ -101,6 +112,16 @@ export function WhyDcl() {
             DCL's approach is designed around clarity, independence and disciplined evaluation, focusing attention on the factors that matter most.
           </p>
 
+          <div className="dclWhy__fadeUp dclWhy__imageWrap mt-10 aspect-[4/5] w-full max-w-[420px] overflow-hidden">
+            <img
+              className="h-full w-full object-cover"
+              src={whyDclImage.src}
+              alt={whyDclImage.alt}
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+
           {isDesktop && (
             <div className="dclWhy__fadeUp mt-14 border-t border-white/12 pt-10">
               <p className="dclHome__eyebrow mb-4 text-[#8bbfe8] transition-opacity duration-300">
@@ -137,7 +158,7 @@ export function WhyDcl() {
                 >
                   <h3
                     className="dclHome__display text-[clamp(1.9rem,3.4vw,3.1rem)] leading-none tracking-[-.03em] transition-transform duration-400"
-                    style={{ transform: active ? 'translateX(8px)' : 'translateX(0)', color: active ? '#ffffff' : 'rgba(255,255,255,.72)' }}
+                    style={{ transform: isDesktop && active ? 'translateX(8px)' : 'translateX(0)', color: active ? '#ffffff' : 'rgba(255,255,255,.72)' }}
                   >
                     {item.title}
                   </h3>

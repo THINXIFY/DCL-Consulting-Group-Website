@@ -1,31 +1,50 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ExpertiseFinalCta } from './ExpertiseFinalCta';
+import { expertiseFinalCta } from '@/data/expertise-content';
+
+function mockMatchMedia(matches: boolean) {
+  window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+    matches,
+    media: query,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+  })) as unknown as typeof window.matchMedia;
+}
 
 describe('ExpertiseFinalCta', () => {
-  it('renders the headline, supporting copy, both CTAs, and the closing line', () => {
+  afterEach(() => vi.restoreAllMocks());
+
+  it('renders the label, headline, supporting copy, both CTAs, and the closing lines', () => {
+    mockMatchMedia(false);
     render(<ExpertiseFinalCta />);
-    expect(screen.getByTestId('text-expertise-final-title')).toHaveTextContent('A clearer view');
-    expect(screen.getByTestId('text-expertise-final-title')).toHaveTextContent('before the next decision.');
-    expect(screen.getByTestId('text-expertise-final-supporting')).toHaveTextContent(/independent perspective may add value/i);
+    expect(screen.getByTestId('text-expertise-final-label')).toHaveTextContent(expertiseFinalCta.label);
+    expect(screen.getByTestId('text-expertise-final-title')).toHaveTextContent(expertiseFinalCta.headlineLines[0]);
+    expect(screen.getByTestId('text-expertise-final-title')).toHaveTextContent(expertiseFinalCta.headlineLines[1]);
+    expect(screen.getByTestId('text-expertise-final-supporting')).toHaveTextContent(expertiseFinalCta.supporting);
 
     const primary = screen.getByTestId('link-expertise-final-primary');
-    expect(primary).toHaveTextContent('Start a Conversation');
-    expect(primary).toHaveAttribute('href', '/#about');
+    expect(primary).toHaveTextContent(expertiseFinalCta.primaryCta.label);
+    expect(primary).toHaveAttribute('href', expertiseFinalCta.primaryCta.href);
+    expect(primary.className).not.toMatch(/text-white/);
 
     const secondary = screen.getByTestId('link-expertise-final-secondary');
-    expect(secondary).toHaveTextContent('Contact DCL');
-    expect(secondary).toHaveAttribute('href', '/#about');
+    expect(secondary).toHaveTextContent(expertiseFinalCta.secondaryCta.label);
+    expect(secondary).toHaveAttribute('href', expertiseFinalCta.secondaryCta.href);
 
-    expect(screen.getByTestId('text-expertise-final-closing')).toHaveTextContent('Clarity Before Capital.');
+    const closing = screen.getByTestId('text-expertise-final-closing');
+    for (const line of expertiseFinalCta.closingLines) {
+      expect(closing).toHaveTextContent(line);
+    }
   });
 
-  it('gives the primary CTA an explicit dark text color regardless of inherited styles', () => {
-    render(<ExpertiseFinalCta />);
-    expect(screen.getByTestId('link-expertise-final-primary').className).toContain('text-[#080a0d]');
+  it('does not throw with reduced motion preferred', () => {
+    mockMatchMedia(true);
+    expect(() => render(<ExpertiseFinalCta />)).not.toThrow();
   });
 
-  it('contains no em-dash characters', () => {
+  it('contains no numbering or em-dash characters', () => {
+    mockMatchMedia(false);
     render(<ExpertiseFinalCta />);
     const section = document.getElementById('expertise-final-cta');
     expect(section?.textContent).not.toMatch(/[–—]/);
