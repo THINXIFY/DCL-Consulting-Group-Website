@@ -27,4 +27,10 @@ describe("otp email template", () => {
     const html = renderOtpEmailHtml(input).toLowerCase();
     expect(html).not.toContain("attach");
   });
+
+  it("references the logo via cid, not a remote URL", () => {
+    const html = renderOtpEmailHtml(input);
+    expect(html).toContain('src="cid:dcl-logo"');
+    expect(html).not.toContain("images/brand/dcl-logo.png");
+  });
 });

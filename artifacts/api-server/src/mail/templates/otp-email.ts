@@ -1,3 +1,5 @@
+import { LOGO_CONTENT_ID } from "../logo";
+
 export interface OtpEmailInput {
   code: string;
   ttlMinutes: number;
@@ -8,8 +10,7 @@ const BLUE = "#8bbfe8";
 const INK = "#080a0d";
 const MUTED = "#9ca3aa";
 
-export function renderOtpEmailHtml({ code, ttlMinutes, publicSiteUrl }: OtpEmailInput): string {
-  const logoUrl = `${publicSiteUrl}/images/brand/dcl-logo.png`;
+export function renderOtpEmailHtml({ code, ttlMinutes }: OtpEmailInput): string {
   return `<!doctype html>
 <html lang="en">
   <head>
@@ -27,7 +28,7 @@ export function renderOtpEmailHtml({ code, ttlMinutes, publicSiteUrl }: OtpEmail
           <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:${INK};max-width:600px;width:100%;">
             <tr>
               <td style="padding:32px 40px 24px;">
-                <img src="${logoUrl}" alt="DCL Consulting and Investments Limited" height="28" style="display:block;border:0;" />
+                <img src="cid:${LOGO_CONTENT_ID}" alt="DCL Consulting and Investments Limited" width="197" height="28" style="display:block;border:0;" />
               </td>
             </tr>
             <tr>

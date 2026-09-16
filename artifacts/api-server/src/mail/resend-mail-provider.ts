@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import type { MailProvider, SendMailInput } from "./mail-provider";
+import { LOGO_CONTENT_ID, loadLogo } from "./logo";
 
 export class ResendMailProvider implements MailProvider {
   private readonly client: Resend;
@@ -13,6 +14,8 @@ export class ResendMailProvider implements MailProvider {
   }
 
   async sendMail(input: SendMailInput): Promise<void> {
+    const logo = await loadLogo();
+
     const result = await this.client.emails.send({
       from: `${this.fromName} <${this.fromEmail}>`,
       // So a recipient hitting "Reply" in their inbox reaches DCL directly,
@@ -23,10 +26,19 @@ export class ResendMailProvider implements MailProvider {
       subject: input.subject,
       html: input.html,
       text: input.text,
-      attachments: input.attachments?.map((attachment) => ({
-        filename: attachment.filename,
-        content: attachment.content,
-      })),
+      attachments: [
+        // Embedded inline (not a visible attachment) and referenced from
+        // the templates via `cid:dcl-logo`. Deliberately not a remote
+        // <img src> pointing at the marketing site: remote images are
+        // blocked by default in most inboxes until the recipient clicks
+        // "show images", and would break entirely before the site is
+        // deployed or if PUBLIC_SITE_URL is ever wrong.
+        { filename: "dcl-logo.png", content: logo, inlineContentId: LOGO_CONTENT_ID },
+        ...(input.attachments?.map((attachment) => ({
+          filename: attachment.filename,
+          content: attachment.content,
+        })) ?? []),
+      ],
     });
 
     if (result.error) {

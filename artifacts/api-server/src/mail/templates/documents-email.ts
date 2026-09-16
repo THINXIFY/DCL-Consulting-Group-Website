@@ -1,3 +1,5 @@
+import { LOGO_CONTENT_ID } from "../logo";
+
 export interface DocumentsEmailInput {
   publicSiteUrl: string;
 }
@@ -6,8 +8,7 @@ const BLUE = "#8bbfe8";
 const INK = "#080a0d";
 const MUTED = "#9ca3aa";
 
-export function renderDocumentsEmailHtml({ publicSiteUrl }: DocumentsEmailInput): string {
-  const logoUrl = `${publicSiteUrl}/images/brand/dcl-logo.png`;
+export function renderDocumentsEmailHtml(_input: DocumentsEmailInput): string {
   return `<!doctype html>
 <html lang="en">
   <head>
@@ -25,7 +26,7 @@ export function renderDocumentsEmailHtml({ publicSiteUrl }: DocumentsEmailInput)
           <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;max-width:600px;width:100%;border:1px solid #e3e6e8;">
             <tr>
               <td style="padding:32px 40px 24px;background-color:${INK};">
-                <img src="${logoUrl}" alt="DCL Consulting and Investments Limited" height="28" style="display:block;border:0;" />
+                <img src="cid:${LOGO_CONTENT_ID}" alt="DCL Consulting and Investments Limited" width="197" height="28" style="display:block;border:0;" />
               </td>
             </tr>
             <tr>

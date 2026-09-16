@@ -21,4 +21,10 @@ describe("documents email template", () => {
     expect(html).not.toMatch(/@[a-z0-9.-]+\.[a-z]{2,}/);
     expect(html).not.toContain("office hours");
   });
+
+  it("references the logo via cid, not a remote URL", () => {
+    const html = renderDocumentsEmailHtml(input);
+    expect(html).toContain('src="cid:dcl-logo"');
+    expect(html).not.toContain("images/brand/dcl-logo.png");
+  });
 });

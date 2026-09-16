@@ -37,4 +37,36 @@ describe("ResendMailProvider", () => {
       provider.sendMail({ to: "visitor@example.com", subject: "Subject", html: "<p>hi</p>", text: "hi" }),
     ).rejects.toThrow(/domain not verified/);
   });
+
+  it("embeds the DCL logo as an inline attachment referenced by cid:dcl-logo", async () => {
+    send.mockResolvedValue({ data: { id: "email-id" }, error: null });
+    const provider = new ResendMailProvider("re_test_key", "info@dcl-consulting-group.com", "DCL");
+
+    await provider.sendMail({ to: "visitor@example.com", subject: "Subject", html: "<p>hi</p>", text: "hi" });
+
+    const call = send.mock.calls[0][0];
+    const logoAttachment = call.attachments.find((a: { inlineContentId?: string }) => a.inlineContentId === "dcl-logo");
+    expect(logoAttachment).toBeDefined();
+    expect(logoAttachment.filename).toBe("dcl-logo.png");
+    expect(Buffer.isBuffer(logoAttachment.content)).toBe(true);
+    expect(logoAttachment.content.length).toBeGreaterThan(0);
+  });
+
+  it("keeps document attachments alongside the inline logo, without an inlineContentId", async () => {
+    send.mockResolvedValue({ data: { id: "email-id" }, error: null });
+    const provider = new ResendMailProvider("re_test_key", "info@dcl-consulting-group.com", "DCL");
+
+    await provider.sendMail({
+      to: "visitor@example.com",
+      subject: "Subject",
+      html: "<p>hi</p>",
+      text: "hi",
+      attachments: [{ filename: "DCL-Company-Profile.pdf", content: Buffer.from("pdf-bytes") }],
+    });
+
+    const call = send.mock.calls[0][0];
+    expect(call.attachments).toHaveLength(2);
+    const pdfAttachment = call.attachments.find((a: { filename: string }) => a.filename === "DCL-Company-Profile.pdf");
+    expect(pdfAttachment.inlineContentId).toBeUndefined();
+  });
 });
