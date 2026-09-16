@@ -123,4 +123,56 @@ describe('RequestInfoModal', () => {
     fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
     expect(onClose).toHaveBeenCalled();
   });
+
+  it('focuses the email input on open, not the close button', async () => {
+    render(<RequestInfoModal open onClose={() => {}} />);
+    await waitFor(() => expect(screen.getByTestId('input-request-info-email')).toHaveFocus());
+    expect(screen.getByTestId('button-request-info-close')).not.toHaveFocus();
+  });
+
+  it('focuses the first OTP digit input after moving to the OTP state', async () => {
+    mutateStart.mockResolvedValue({ requestId: 'req-1' });
+    render(<RequestInfoModal open onClose={() => {}} />);
+    fireEvent.change(screen.getByTestId('input-request-info-email'), { target: { value: 'visitor@example.com' } });
+    fireEvent.click(screen.getByTestId('button-request-info-send'));
+    await screen.findByTestId('button-request-info-verify');
+    await waitFor(() => expect(screen.getByTestId('otp-digit-0')).toHaveFocus());
+    expect(screen.getByTestId('button-request-info-close')).not.toHaveFocus();
+  });
+
+  it('disables the resend button while in flight and ignores a second click before it resolves', async () => {
+    vi.useFakeTimers();
+    try {
+      mutateStart.mockResolvedValue({ requestId: 'req-1' });
+      let resolveResend: (() => void) | undefined;
+      mutateResend.mockImplementation(
+        () =>
+          new Promise<void>((resolve) => {
+            resolveResend = resolve;
+          }),
+      );
+      render(<RequestInfoModal open onClose={() => {}} />);
+      fireEvent.change(screen.getByTestId('input-request-info-email'), { target: { value: 'visitor@example.com' } });
+      fireEvent.click(screen.getByTestId('button-request-info-send'));
+      await vi.advanceTimersByTimeAsync(0);
+      expect(screen.getByTestId('button-request-info-verify')).toBeInTheDocument();
+
+      // Exhaust the post-send resend cooldown so the resend button becomes enabled.
+      await vi.advanceTimersByTimeAsync(61_000);
+      expect(screen.getByTestId('button-request-info-resend')).not.toBeDisabled();
+
+      fireEvent.click(screen.getByTestId('button-request-info-resend'));
+      expect(mutateResend).toHaveBeenCalledTimes(1);
+      expect(screen.getByTestId('button-request-info-resend')).toBeDisabled();
+
+      // A second click while the first request is still pending must not fire another call.
+      fireEvent.click(screen.getByTestId('button-request-info-resend'));
+      expect(mutateResend).toHaveBeenCalledTimes(1);
+
+      resolveResend?.();
+      await vi.advanceTimersByTimeAsync(0);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
 });

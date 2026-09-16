@@ -9,7 +9,7 @@ import { OtpCodeInput } from './OtpCodeInput';
 import { ensureGsapRegistered, gsap } from '@/lib/gsap';
 import { useMediaQuery } from '@/hooks/use-media-query';
 
-type ModalState = 'email' | 'sending' | 'otp' | 'verifying' | 'success' | 'failure';
+type ModalState = 'email' | 'sending' | 'otp' | 'verifying' | 'success' | 'failure' | 'retrying';
 
 const RESEND_COOLDOWN_SECONDS = 60;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -40,6 +40,7 @@ export function RequestInfoModal({ open, onClose }: RequestInfoModalProps) {
   const [code, setCode] = useState('');
   const [otpError, setOtpError] = useState<string | null>(null);
   const [cooldown, setCooldown] = useState(0);
+  const [isResending, setIsResending] = useState(false);
 
   const dialogRef = useRef<HTMLDivElement>(null);
   const triggerFocusRef = useRef<HTMLElement | null>(null);
@@ -76,7 +77,18 @@ export function RequestInfoModal({ open, onClose }: RequestInfoModalProps) {
 
   useEffect(() => {
     if (!open) return;
-    dialogRef.current?.querySelector<HTMLElement>('input, button')?.focus();
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    // Prefer the first input in the current view (email or OTP field); only
+    // fall back to a primary action button on views that have no input
+    // (success/failure/retrying). The close (X) button is deliberately
+    // excluded so it never steals initial focus.
+    const target =
+      dialog.querySelector<HTMLElement>('input') ??
+      dialog.querySelector<HTMLElement>(
+        'button[type="submit"], button[data-testid="button-request-info-close-success"], button[data-testid="button-request-info-try-again"]',
+      );
+    target?.focus();
   }, [open, state]);
 
   useEffect(() => {
@@ -93,10 +105,11 @@ export function RequestInfoModal({ open, onClose }: RequestInfoModalProps) {
     setCode('');
     setOtpError(null);
     setCooldown(0);
+    setIsResending(false);
   }
 
   function handleClose() {
-    if (state === 'sending' || state === 'verifying') return;
+    if (state === 'sending' || state === 'verifying' || state === 'retrying') return;
     resetAll();
     onClose();
   }
@@ -163,7 +176,8 @@ export function RequestInfoModal({ open, onClose }: RequestInfoModalProps) {
   }
 
   async function handleResend() {
-    if (!requestId || cooldown > 0) return;
+    if (!requestId || cooldown > 0 || isResending) return;
+    setIsResending(true);
     try {
       await resendMutation.mutateAsync({ data: { requestId } });
       setCode('');
@@ -171,6 +185,8 @@ export function RequestInfoModal({ open, onClose }: RequestInfoModalProps) {
       setCooldown(RESEND_COOLDOWN_SECONDS);
     } catch {
       setOtpError('We could not resend the code. Please try again shortly.');
+    } finally {
+      setIsResending(false);
     }
   }
 
@@ -184,7 +200,7 @@ export function RequestInfoModal({ open, onClose }: RequestInfoModalProps) {
 
   async function handleTryAgain() {
     if (!requestId) return;
-    setState('verifying');
+    setState('retrying');
     try {
       const result = await verifyMutation.mutateAsync({ data: { requestId, code } });
       setState(result.status === 'sent' ? 'success' : 'failure');
@@ -248,7 +264,7 @@ export function RequestInfoModal({ open, onClose }: RequestInfoModalProps) {
               />
             </div>
             {emailError && (
-              <p data-testid="text-request-info-email-error" className="mt-2 text-[13px] text-[#a13b3b]">
+              <p role="alert" data-testid="text-request-info-email-error" className="mt-2 text-[13px] text-[#a13b3b]">
                 {emailError}
               </p>
             )}
@@ -291,7 +307,7 @@ export function RequestInfoModal({ open, onClose }: RequestInfoModalProps) {
             </div>
 
             {otpError && (
-              <p data-testid="text-request-info-otp-error" className="mt-3 text-[13px] text-[#a13b3b]">
+              <p role="alert" data-testid="text-request-info-otp-error" className="mt-3 text-[13px] text-[#a13b3b]">
                 {otpError}
               </p>
             )}
@@ -326,10 +342,10 @@ export function RequestInfoModal({ open, onClose }: RequestInfoModalProps) {
                 type="button"
                 data-testid="button-request-info-resend"
                 onClick={handleResend}
-                disabled={cooldown > 0}
+                disabled={cooldown > 0 || isResending}
                 className="text-[#080a0d] disabled:text-[#9ca3aa]"
               >
-                {cooldown > 0 ? `Resend in ${cooldown}s` : 'Resend Code'}
+                {cooldown > 0 ? `Resend in ${cooldown}s` : isResending ? 'Resending…' : 'Resend Code'}
               </button>
             </div>
           </form>
@@ -369,7 +385,7 @@ export function RequestInfoModal({ open, onClose }: RequestInfoModalProps) {
           </div>
         )}
 
-        {state === 'failure' && (
+        {(state === 'failure' || state === 'retrying') && (
           <div>
             <h2
               id="request-info-heading"
@@ -386,9 +402,10 @@ export function RequestInfoModal({ open, onClose }: RequestInfoModalProps) {
                 type="button"
                 data-testid="button-request-info-try-again"
                 onClick={handleTryAgain}
-                className="inline-flex flex-1 items-center justify-center bg-[#080a0d] px-6 py-4 text-[11px] font-semibold uppercase tracking-[.13em] text-white transition-colors duration-300 hover:bg-[#171714] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+                disabled={state === 'retrying'}
+                className="inline-flex flex-1 items-center justify-center bg-[#080a0d] px-6 py-4 text-[11px] font-semibold uppercase tracking-[.13em] text-white transition-colors duration-300 hover:bg-[#171714] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8] disabled:opacity-60"
               >
-                Try Again
+                {state === 'retrying' ? 'Retrying…' : 'Try Again'}
               </button>
               <a
                 href="#how-can-we-help"
