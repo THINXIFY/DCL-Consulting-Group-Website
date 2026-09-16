@@ -35,6 +35,17 @@ export function loadRequestInfoEnv(): RequestInfoEnv {
   if (mailProvider === "resend" && !process.env.RESEND_API_KEY) {
     throw new Error('MAIL_PROVIDER is "resend" but RESEND_API_KEY is not set.');
   }
+  // Fail closed, not open: MAIL_PROVIDER defaults to "console" (so local
+  // dev works out of the box), but that default becoming the *production*
+  // path by accident - simply forgetting to set MAIL_PROVIDER=resend in a
+  // deployed environment - would silently log every real visitor's email
+  // address and plaintext OTP to the server console. Refuse to boot rather
+  // than let a missing env var become a silent secret-logging bug.
+  if (process.env.NODE_ENV === "production" && mailProvider === "console") {
+    throw new Error(
+      'MAIL_PROVIDER must be explicitly set to "resend" in production - refusing to silently log real visitor emails and OTP codes to the console.',
+    );
+  }
 
   return {
     otpHashSecret: requireEnv("OTP_HASH_SECRET"),

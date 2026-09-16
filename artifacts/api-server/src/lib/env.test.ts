@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { loadRequestInfoEnv } from "./env";
 
+// Scoped to only the keys this suite touches, and restored individually,
+// rather than blanket-deleting and restoring all of process.env: Vitest's
+// thread pool can run multiple test files in the same worker thread, and a
+// blanket reset here could wipe or mismatch env state a sibling file relies
+// on if it happens to share a worker with this one.
 const ENV_KEYS = [
   "OTP_HASH_SECRET",
   "REQUEST_INFO_OTP_TTL_MINUTES",
@@ -8,6 +13,7 @@ const ENV_KEYS = [
   "MAIL_PROVIDER",
   "RESEND_API_KEY",
   "PUBLIC_SITE_URL",
+  "NODE_ENV",
 ] as const;
 
 const ORIGINAL_VALUES = Object.fromEntries(ENV_KEYS.map((key) => [key, process.env[key]]));
@@ -56,5 +62,27 @@ describe("loadRequestInfoEnv", () => {
     process.env.OTP_HASH_SECRET = "test-secret";
     process.env.PUBLIC_SITE_URL = "https://example.com/";
     expect(loadRequestInfoEnv().publicSiteUrl).toBe("https://example.com");
+  });
+
+  it("refuses to boot with MAIL_PROVIDER=console in production", () => {
+    process.env.OTP_HASH_SECRET = "test-secret";
+    process.env.NODE_ENV = "production";
+    delete process.env.MAIL_PROVIDER; // defaults to "console"
+    expect(() => loadRequestInfoEnv()).toThrow(/MAIL_PROVIDER must be explicitly set to "resend"/);
+  });
+
+  it("allows MAIL_PROVIDER=resend in production when a key is present", () => {
+    process.env.OTP_HASH_SECRET = "test-secret";
+    process.env.NODE_ENV = "production";
+    process.env.MAIL_PROVIDER = "resend";
+    process.env.RESEND_API_KEY = "re_test_key";
+    expect(() => loadRequestInfoEnv()).not.toThrow();
+  });
+
+  it("allows MAIL_PROVIDER=console outside production", () => {
+    process.env.OTP_HASH_SECRET = "test-secret";
+    process.env.NODE_ENV = "development";
+    delete process.env.MAIL_PROVIDER;
+    expect(loadRequestInfoEnv().mailProvider).toBe("console");
   });
 });
