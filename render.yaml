@@ -1,0 +1,104 @@
+# Render Blueprint for the DCL Consulting Group website.
+#
+# This is a pnpm workspace monorepo: artifacts/dcl-consulting (the Vite
+# frontend) depends on lib/api-client-react, and artifacts/api-server (the
+# API) depends on lib/api-zod and lib/db - both outside their own package
+# directories. Every build below therefore runs from the repository root
+# (no `rootDir`) using `pnpm --filter`, not scoped into either artifact's
+# own directory, so those workspace packages stay resolvable.
+#
+# Real secret values are never set here - see the `sync: false` entries
+# below, which Render requires you to fill in from the dashboard instead
+# of the blueprint. See the "MANUAL RENDER SETUP" steps for exactly what
+# to enter and where.
+
+services:
+  # ---------------------------------------------------------------------
+  # Frontend - Render Static Site
+  # ---------------------------------------------------------------------
+  - type: web
+    name: dcl-frontend
+    runtime: static
+    branch: main
+    buildCommand: >-
+      corepack enable &&
+      corepack prepare pnpm@10.33.2 --activate &&
+      pnpm install --frozen-lockfile &&
+      pnpm --filter @workspace/dcl-consulting run build
+    staticPublishPath: artifacts/dcl-consulting/dist/public
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      # vite.config.ts requires both of these to even load the config,
+      # including for `vite build` - not just for the dev/preview server.
+      # Their values don't matter for a static build beyond being valid.
+      - key: PORT
+        value: "5199"
+      - key: BASE_PATH
+        value: /
+      # Baked into the client bundle at build time (Vite only exposes
+      # VITE_-prefixed vars to client code). Points every generated API
+      # call at the separately-deployed backend instead of same-origin
+      # relative paths, which only work when both are on one domain.
+      - key: VITE_API_BASE_URL
+        value: https://api.dcl-consulting-group.com
+    routes:
+      # SPA fallback for client-side (wouter) routing - every path that
+      # isn't a real static asset resolves to index.html so /insights,
+      # /services/*, /insights/:slug etc. all work on a direct refresh.
+      # Render only applies this to requests that don't match a real file
+      # in staticPublishPath, so actual assets (js/css/images/video) are
+      # served normally and this never intercepts them.
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+  # ---------------------------------------------------------------------
+  # Backend - Render Web Service (single instance, persistent disk)
+  # ---------------------------------------------------------------------
+  - type: web
+    name: dcl-api
+    runtime: node
+    plan: starter # cheapest plan with persistent disk support
+    branch: main
+    buildCommand: >-
+      corepack enable &&
+      corepack prepare pnpm@10.33.2 --activate &&
+      pnpm install --frozen-lockfile &&
+      pnpm --filter @workspace/api-server run build
+    startCommand: node --enable-source-maps artifacts/api-server/dist/index.mjs
+    healthCheckPath: /api/healthz
+    disk:
+      name: dcl-api-data
+      mountPath: /var/data
+      sizeGB: 1 # smallest Render allows - the OTP challenge JSON is tiny
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: NODE_ENV
+        value: production
+      # Render injects PORT automatically for web services - the app
+      # already reads it via process.env.PORT (src/index.ts), so it is
+      # deliberately not set here.
+      - key: REQUEST_INFO_DATA_DIR
+        value: /var/data
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://dcl-consulting-group.com
+      - key: MAIL_PROVIDER
+        value: resend
+      - key: MAIL_FROM_EMAIL
+        value: info@dcl-consulting-group.com
+      - key: MAIL_FROM_NAME
+        value: DCL Consulting and Investments Limited
+      - key: PUBLIC_SITE_URL
+        value: https://dcl-consulting-group.com
+      - key: REQUEST_INFO_OTP_TTL_MINUTES
+        value: "10"
+      - key: REQUEST_INFO_MAX_ATTEMPTS
+        value: "5"
+      # Secrets - must be entered manually in the Render dashboard
+      # (Environment tab), never committed here.
+      - key: OTP_HASH_SECRET
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false

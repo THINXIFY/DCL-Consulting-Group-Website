@@ -11,9 +11,7 @@ const router: IRouter = Router();
 router.use(healthRouter);
 
 const requestInfoEnv = loadRequestInfoEnv();
-const requestInfoStore = new FileOtpChallengeStore(
-  path.resolve(import.meta.dirname, "..", "..", ".data", "request-info-challenges.json"),
-);
+const requestInfoStore = new FileOtpChallengeStore(path.join(requestInfoEnv.dataDir, "request-info-challenges.json"));
 
 router.use(
   createRequestInfoRouter({

@@ -1,3 +1,6 @@
+import path from "node:path";
+import { findPackageRoot } from "./documents";
+
 export interface RequestInfoEnv {
   otpHashSecret: string;
   otpTtlMinutes: number;
@@ -7,6 +10,8 @@ export interface RequestInfoEnv {
   mailFromEmail: string;
   mailFromName: string;
   publicSiteUrl: string;
+  /** Directory the OTP challenge JSON file is written under (see FileOtpChallengeStore). */
+  dataDir: string;
 }
 
 function requireEnv(name: string): string {
@@ -64,5 +69,15 @@ export function loadRequestInfoEnv(): RequestInfoEnv {
     mailFromEmail: process.env.MAIL_FROM_EMAIL ?? "no-reply@example.com",
     mailFromName: process.env.MAIL_FROM_NAME ?? "DCL Consulting and Investments Limited",
     publicSiteUrl: (process.env.PUBLIC_SITE_URL ?? "https://dcl-consulting-group.com").replace(/\/+$/, ""),
+    // REQUEST_INFO_DATA_DIR lets a deployment point this at a mounted
+    // persistent disk (e.g. Render's "/var/data") outside the app's own
+    // directory. Unset (local dev, and any deploy that doesn't need to
+    // override it) falls back to "<package root>/.data" - resolved by
+    // walking up from wherever this code is actually running (see
+    // findPackageRoot's own comment in documents.ts): a hardcoded
+    // "../.." relative to this file would resolve correctly in dev, but
+    // break once esbuild bundles this into dist/index.mjs, which sits at
+    // a different depth than src/lib/env.ts does.
+    dataDir: process.env.REQUEST_INFO_DATA_DIR ?? path.join(findPackageRoot(import.meta.dirname), ".data"),
   };
 }

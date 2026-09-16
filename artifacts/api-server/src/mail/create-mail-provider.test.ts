@@ -14,6 +14,7 @@ function envWith(overrides: Partial<RequestInfoEnv>): RequestInfoEnv {
     mailFromEmail: "no-reply@example.com",
     mailFromName: "DCL",
     publicSiteUrl: "https://example.com",
+    dataDir: "/tmp/test-data",
     ...overrides,
   };
 }

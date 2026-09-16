@@ -1,5 +1,7 @@
+import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { loadRequestInfoEnv } from "./env";
+import { findPackageRoot } from "./documents";
 
 // Scoped to only the keys this suite touches, and restored individually,
 // rather than blanket-deleting and restoring all of process.env: Vitest's
@@ -15,6 +17,7 @@ const ENV_KEYS = [
   "MAIL_FROM_EMAIL",
   "PUBLIC_SITE_URL",
   "NODE_ENV",
+  "REQUEST_INFO_DATA_DIR",
 ] as const;
 
 const ORIGINAL_VALUES = Object.fromEntries(ENV_KEYS.map((key) => [key, process.env[key]]));
@@ -94,5 +97,18 @@ describe("loadRequestInfoEnv", () => {
     process.env.NODE_ENV = "development";
     delete process.env.MAIL_PROVIDER;
     expect(loadRequestInfoEnv().mailProvider).toBe("console");
+  });
+
+  it("defaults dataDir to <package root>/.data when REQUEST_INFO_DATA_DIR is unset", () => {
+    process.env.OTP_HASH_SECRET = "test-secret";
+    delete process.env.REQUEST_INFO_DATA_DIR;
+    const expected = path.join(findPackageRoot(import.meta.dirname), ".data");
+    expect(loadRequestInfoEnv().dataDir).toBe(expected);
+  });
+
+  it("uses REQUEST_INFO_DATA_DIR verbatim when set, e.g. a mounted persistent disk", () => {
+    process.env.OTP_HASH_SECRET = "test-secret";
+    process.env.REQUEST_INFO_DATA_DIR = "/var/data";
+    expect(loadRequestInfoEnv().dataDir).toBe("/var/data");
   });
 });

@@ -62,6 +62,22 @@ pnpm run typecheck   # every package
 pnpm run build       # typecheck, then build every package
 ```
 
+## Deployment
+
+Production target is [Render](https://render.com), as two services defined
+in `render.yaml` at the repository root:
+
+- **`dcl-frontend`** — a Static Site built from `artifacts/dcl-consulting`.
+- **`dcl-api`** — a single-instance Node Web Service running
+  `artifacts/api-server`, with a Persistent Disk mounted at `/var/data`
+  for the OTP challenge store (see `artifacts/api-server/README.md`).
+
+Both build from the repository root (not scoped into either artifact's own
+directory) via `pnpm --filter`, since each depends on workspace packages
+under `lib/`. See `render.yaml`'s comments for the exact commands, and the
+project's operator for the manual one-time Render dashboard setup
+(connecting the repo, entering secret env vars, adding the custom domains).
+
 ## Notable features
 
 - **Request More Info** (`/contact`) — a real OTP-gated document-delivery

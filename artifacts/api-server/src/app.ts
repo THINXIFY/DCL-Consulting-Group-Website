@@ -32,7 +32,22 @@ app.use(
     },
   }),
 );
-app.use(cors());
+// CORS_ALLOWED_ORIGINS is a comma-separated allowlist (e.g.
+// "https://dcl-consulting-group.com,https://dcl-frontend.onrender.com").
+// Fail closed in production rather than silently default to
+// Access-Control-Allow-Origin: * - the same philosophy already applied to
+// MAIL_PROVIDER in lib/env.ts. Outside production this stays wide open
+// (unchanged from before), so local dev and the Vite proxy keep working
+// with zero configuration.
+const corsAllowedOrigins = process.env.CORS_ALLOWED_ORIGINS?.split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+if (process.env.NODE_ENV === "production" && !corsAllowedOrigins?.length) {
+  throw new Error(
+    "CORS_ALLOWED_ORIGINS must be set in production (comma-separated list of allowed origins) - refusing to default to an open CORS policy.",
+  );
+}
+app.use(cors(corsAllowedOrigins?.length ? { origin: corsAllowedOrigins } : undefined));
 app.use(express.json({ limit: "15kb" }));
 app.use(express.urlencoded({ extended: true }));
 

@@ -24,6 +24,12 @@ on a VPS, a single Docker container with a mounted volume, a Replit
 Reserved VM, or any PaaS "web service" pinned to exactly one
 instance/replica with a persistent disk attached.
 
+**Decided production target: Render**, as a single-instance Web Service
+(`plan: starter` or above) with a Persistent Disk mounted at `/var/data`
+- see `render.yaml` at the repository root. `REQUEST_INFO_DATA_DIR` (see
+`.env.example`) points `FileOtpChallengeStore` at that mount; it's unset
+in local dev, which falls back to `.data/` inside this package.
+
 A server restart or redeploy may invalidate any OTP challenges that were
 pending at that moment (the visitor would need to click "Resend Code" or
 restart the request-info flow). This is an accepted tradeoff, not a bug:
