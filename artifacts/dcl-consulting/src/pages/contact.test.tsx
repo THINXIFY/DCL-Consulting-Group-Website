@@ -2,6 +2,12 @@ import { render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import ContactPage from './contact';
 
+vi.mock('@workspace/api-client-react', () => ({
+  useStartRequestInfo: () => ({ mutateAsync: vi.fn() }),
+  useResendRequestInfoCode: () => ({ mutateAsync: vi.fn() }),
+  useVerifyRequestInfoCode: () => ({ mutateAsync: vi.fn() }),
+}));
+
 function mockDesktop(matches: boolean) {
   window.matchMedia = vi.fn().mockImplementation((query: string) => ({
     matches,
