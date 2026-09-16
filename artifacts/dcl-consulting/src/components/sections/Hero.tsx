@@ -12,11 +12,13 @@ const HERO_POSTER = '/images/home/home-hero-architecture.webp';
 
 const MICRO_INFO = ['Independent Perspective', 'Strategic Analysis', 'Long-Term Thinking'];
 
-// Strong on the left where the text sits, fading out toward the right so
-// the video (people, office interior, DCL branding) stays visible.
+// Strong on the left where the text sits, fading toward the right so the
+// video (people, office interior, DCL branding) stays visible - but never
+// below a ~70% overlay / ~30% video-visibility floor, even at the
+// rightmost, most-transparent edge.
 const HORIZONTAL_OVERLAY =
-  'linear-gradient(90deg, rgba(8,10,13,.93) 0%, rgba(8,10,13,.80) 38%, rgba(8,10,13,.56) 68%, rgba(8,10,13,.34) 100%)';
-const VERTICAL_OVERLAY = 'linear-gradient(180deg, rgba(8,10,13,.20) 0%, transparent 30%, transparent 70%, rgba(8,10,13,.48) 100%)';
+  'linear-gradient(90deg, rgba(8,10,13,.95) 0%, rgba(8,10,13,.86) 38%, rgba(8,10,13,.78) 68%, rgba(8,10,13,.70) 100%)';
+const VERTICAL_OVERLAY = 'linear-gradient(180deg, rgba(8,10,13,.28) 0%, transparent 30%, transparent 70%, rgba(8,10,13,.55) 100%)';
 const RADIAL_ACCENT = 'radial-gradient(circle at 25% 45%, rgba(139,191,232,.07), transparent 42%)';
 
 export function Hero() {
