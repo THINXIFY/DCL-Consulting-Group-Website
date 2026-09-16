@@ -1,6 +1,12 @@
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 import { CompanyInformation } from './CompanyInformation';
+
+vi.mock('@workspace/api-client-react', () => ({
+  useStartRequestInfo: () => ({ mutateAsync: vi.fn() }),
+  useResendRequestInfoCode: () => ({ mutateAsync: vi.fn() }),
+  useVerifyRequestInfoCode: () => ({ mutateAsync: vi.fn() }),
+}));
 
 describe('CompanyInformation', () => {
   it('renders the eyebrow, headline, intro, and both CTAs', () => {
@@ -63,5 +69,12 @@ describe('CompanyInformation', () => {
     render(<CompanyInformation />);
     const section = document.getElementById('company-information');
     expect(section?.textContent).not.toMatch(/[–—]/);
+  });
+
+  it('opens the request-more-info modal when the trigger is clicked', () => {
+    render(<CompanyInformation />);
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('button-request-more-info'));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 });

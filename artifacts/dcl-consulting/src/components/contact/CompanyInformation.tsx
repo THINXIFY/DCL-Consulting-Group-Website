@@ -1,8 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { companyInformation } from '@/data/contact-content';
 import { ensureGsapRegistered, gsap } from '@/lib/gsap';
 import { FadeInImage } from '@/components/ui/fade-in-image';
+import { RequestInfoModal } from './RequestInfoModal';
 
 const IMAGE_SRC = '/images/general/contact-company-meeting.webp';
 
@@ -13,6 +14,7 @@ function slug(label: string) {
 export function CompanyInformation() {
   const rootRef = useRef<HTMLElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
+  const [isRequestInfoOpen, setRequestInfoOpen] = useState(false);
 
   useEffect(() => {
     if (!rootRef.current) return;
@@ -103,6 +105,16 @@ export function CompanyInformation() {
               </a>
             </div>
 
+            <button
+              type="button"
+              data-testid="button-request-more-info"
+              onClick={() => setRequestInfoOpen(true)}
+              className="dclCompanyInfo__fadeUp group mt-5 inline-flex w-fit items-center gap-2 text-[11px] font-semibold uppercase tracking-[.13em] text-[#080a0d] transition-colors duration-300 hover:text-[#171714]/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+            >
+              Request More Info
+              <ArrowUpRight size={14} strokeWidth={1.3} className="transition-transform duration-300 ease-out group-hover:translate-x-[3px] group-hover:-translate-y-[3px]" />
+            </button>
+
             <div data-testid="text-company-info-statement" className="dclCompanyInfo__fadeUp mt-10 flex items-stretch gap-4 border-l border-[#8bbfe8] pl-4">
               <div className="flex flex-col gap-1.5">
                 {companyInformation.statementLines.map((word) => (
@@ -182,6 +194,7 @@ export function CompanyInformation() {
           </div>
         </div>
       </div>
+      <RequestInfoModal open={isRequestInfoOpen} onClose={() => setRequestInfoOpen(false)} />
     </section>
   );
 }
