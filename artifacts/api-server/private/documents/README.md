@@ -36,11 +36,12 @@ than silently dropping documents if the total is too large.
 
 ## Deployment
 
-This server runs as a real, persistent Node process - a single-instance
-/ Reserved VM deployment, not Replit Autoscale (see the top-level
-[`../README.md`](../README.md) for why) - so reading files from this
-folder at request time works the same in development and production. If
-this ever moves to a genuinely ephemeral/serverless or multi-instance
-runtime, these files would need to move to object storage instead - the
+This server must run as a real, persistent Node process on a
+single-instance host with a persistent disk - see the top-level
+[`../README.md`](../README.md) for the full requirement and why. As
+long as that holds, reading files from this folder at request time
+works the same in development and production. If this ever moves to a
+genuinely ephemeral/serverless or multi-instance runtime, these files
+would need to move to object storage instead - the
 `loadEnabledDocuments` function is the only place that would need to
 change.

@@ -3,7 +3,7 @@
 Express 5 + TypeScript API for the DCL Consulting site, including the
 `/api/request-info/*` "Request More Info" OTP document-delivery feature.
 
-## Deployment requirement: single instance, not Autoscale
+## Deployment requirement: single instance, persistent disk
 
 The `Request More Info` OTP challenge store (`src/lib/otp-challenge-store.ts`,
 `FileOtpChallengeStore`) persists pending OTP challenges to a single JSON
@@ -16,11 +16,13 @@ This is a deliberate, simple design - no database - and it requires:
   other, so `/verify` or `/resend` would wrongly report `not_found`.
 - **A writable, persistent local filesystem** for that one instance.
 
-**Required production deployment: a Replit Reserved VM (or any other
-always-on, single-instance host).** Replit **Autoscale is not
-supported** by this store - Autoscale can run multiple concurrent
-instances under load and can scale to zero on idle, both of which break
-the assumptions above.
+**This rules out serverless/edge runtimes (no persistent filesystem) and
+any "autoscale to N instances" deployment mode**, regardless of
+provider - e.g. Replit Autoscale, AWS Lambda, Vercel serverless/edge
+functions, or a PaaS's horizontally-scaled web-service tier. It's fine
+on a VPS, a single Docker container with a mounted volume, a Replit
+Reserved VM, or any PaaS "web service" pinned to exactly one
+instance/replica with a persistent disk attached.
 
 A server restart or redeploy may invalidate any OTP challenges that were
 pending at that moment (the visitor would need to click "Resend Code" or
