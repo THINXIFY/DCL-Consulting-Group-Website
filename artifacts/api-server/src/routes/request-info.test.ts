@@ -77,6 +77,17 @@ describe("POST /api/request-info/start", () => {
     const code = extractCode(mailProvider.sent[0].html);
     expect(JSON.stringify(res.body)).not.toContain(code);
   });
+
+  it("returns mail_failure when sending the OTP email throws", async () => {
+    deps.mailProvider = { sendMail: vi.fn().mockRejectedValue(new Error("mail down")) };
+    app = express();
+    app.use(express.json());
+    app.use("/api", createRequestInfoRouter(deps));
+
+    const res = await request(app).post("/api/request-info/start").send({ email: "visitor@example.com" });
+    expect(res.status).toBe(500);
+    expect(res.body).toEqual({ error: "mail_failure" });
+  });
 });
 
 describe("POST /api/request-info/verify", () => {
@@ -206,5 +217,24 @@ describe("POST /api/request-info/resend", () => {
     const res = await request(app).post("/api/request-info/resend").send({ requestId: "does-not-exist" });
     expect(res.status).toBe(404);
     expect(res.body).toEqual({ error: "not_found" });
+  });
+
+  it("returns mail_failure when sending the resent OTP email throws", async () => {
+    deps.resendCooldownMs = 0;
+    app = express();
+    app.use(express.json());
+    app.use("/api", createRequestInfoRouter(deps));
+
+    const startRes = await request(app).post("/api/request-info/start").send({ email: "visitor@example.com" });
+    const requestId = startRes.body.requestId as string;
+
+    deps.mailProvider = { sendMail: vi.fn().mockRejectedValue(new Error("mail down")) };
+    app = express();
+    app.use(express.json());
+    app.use("/api", createRequestInfoRouter(deps));
+
+    const res = await request(app).post("/api/request-info/resend").send({ requestId });
+    expect(res.status).toBe(500);
+    expect(res.body).toEqual({ error: "mail_failure" });
   });
 });

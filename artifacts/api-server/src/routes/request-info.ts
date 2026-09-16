@@ -71,9 +71,9 @@ async function deliverDocuments(deps: RequestInfoRouterDeps, challenge: Delivera
     await deps.store.setDeliveryStatus(challenge.id, "sent");
     logger.info({ requestId: challenge.id }, "Document delivery succeeded");
     return "sent";
-  } catch {
+  } catch (err) {
     await deps.store.setDeliveryStatus(challenge.id, "failed");
-    logger.error({ requestId: challenge.id }, "Document delivery failed");
+    logger.error({ requestId: challenge.id, err }, "Document delivery failed");
     return "failed";
   }
 }
@@ -107,8 +107,8 @@ export function createRequestInfoRouter(deps: RequestInfoRouterDeps): IRouter {
         html: renderOtpEmailHtml({ code, ttlMinutes: deps.otpTtlMinutes, publicSiteUrl: deps.publicSiteUrl }),
         text: renderOtpEmailText({ code, ttlMinutes: deps.otpTtlMinutes, publicSiteUrl: deps.publicSiteUrl }),
       });
-    } catch {
-      logger.error({ requestId: challenge.id }, "Failed to send OTP email");
+    } catch (err) {
+      logger.error({ requestId: challenge.id, err }, "Failed to send OTP email");
       res.status(500).json({ error: "mail_failure" });
       return;
     }
@@ -147,8 +147,8 @@ export function createRequestInfoRouter(deps: RequestInfoRouterDeps): IRouter {
         html: renderOtpEmailHtml({ code, ttlMinutes: deps.otpTtlMinutes, publicSiteUrl: deps.publicSiteUrl }),
         text: renderOtpEmailText({ code, ttlMinutes: deps.otpTtlMinutes, publicSiteUrl: deps.publicSiteUrl }),
       });
-    } catch {
-      logger.error({ requestId }, "Failed to send resent OTP email");
+    } catch (err) {
+      logger.error({ requestId, err }, "Failed to send resent OTP email");
       res.status(500).json({ error: "mail_failure" });
       return;
     }
