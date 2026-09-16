@@ -165,6 +165,23 @@ body::before {
   .dclHeroBg__glow { animation-duration: 34s; }
 }
 
+/* Restrained atmospheric particle layer for the homepage hero's video
+   background - deliberately simpler than .dclHeroBg__particle above (no
+   pointer-tracking glow, slower/smaller drift): elegant ambient motion,
+   not a Web3/gaming effect. Pure CSS keyframes driven by per-particle
+   custom properties, same low-cost transform+opacity technique as
+   .dclHeroBg__particle, so it never triggers layout. */
+.dclHeroLux__particle {
+  position: absolute;
+  border-radius: 9999px;
+  animation: dclHeroLuxParticleDrift var(--lp-dur, 24s) ease-in-out var(--lp-delay, 0s) infinite;
+}
+@keyframes dclHeroLuxParticleDrift {
+  0% { transform: translate3d(0, 0, 0); opacity: var(--lp-op-min, 0.08); }
+  50% { transform: translate3d(var(--lp-dx, 8px), var(--lp-dy, -30px), 0); opacity: var(--lp-op-max, 0.2); }
+  100% { transform: translate3d(0, 0, 0); opacity: var(--lp-op-min, 0.08); }
+}
+
 /* Image fade-in-on-load (FadeInImage component) - a CSS animation rather
    than a transition, so it never fights over transition-property with a
    sibling hover transition (e.g. transition-transform on the same img). */

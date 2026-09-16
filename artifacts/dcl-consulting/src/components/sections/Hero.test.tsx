@@ -14,14 +14,29 @@ describe('Hero', () => {
     expect(screen.getByTestId('text-hero-title')).toHaveTextContent(/clarity/i);
     expect(screen.getByTestId('text-hero-title')).toHaveTextContent(/before capital/i);
 
-    expect(screen.getByTestId('link-explore-expertise')).toHaveTextContent('Explore Our Expertise');
-    expect(screen.getByTestId('link-start-conversation-hero')).toHaveTextContent('Start a Conversation');
+    const primary = screen.getByTestId('link-start-conversation-hero');
+    expect(primary).toHaveTextContent('Start a Conversation');
+    expect(primary).toHaveAttribute('href', '/contact');
+
+    const secondary = screen.getByTestId('link-explore-services-hero');
+    expect(secondary).toHaveTextContent('Explore Our Services');
+    expect(secondary).toHaveAttribute('href', '/services');
+  });
+
+  it('renders the micro-information strip with no numbering', () => {
+    render(<Hero />);
+    const strip = screen.getByTestId('text-hero-micro-info');
+    expect(strip).toHaveTextContent('Independent Perspective');
+    expect(strip).toHaveTextContent('Strategic Analysis');
+    expect(strip).toHaveTextContent('Long-Term Thinking');
+    expect(strip.textContent).not.toMatch(/\b0?[1-3]\b/);
   });
 
   it('has no more than four text elements in the hero stack (eyebrow, headline, subtext, CTAs)', () => {
     render(<Hero />);
     expect(screen.queryByTestId('text-hero-tagline-strip')).not.toBeInTheDocument();
     expect(screen.queryByTestId('link-explore-about')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('link-explore-expertise')).not.toBeInTheDocument();
   });
 
   it('renders the background video as decorative, hidden from assistive tech, with no controls', () => {
@@ -50,6 +65,25 @@ describe('Hero', () => {
     );
     render(<Hero />);
     expect(screen.getByTestId('video-hero-background')).not.toHaveAttribute('autoplay');
+  });
+
+  it('renders the atmospheric particle layer as decorative, but not under reduced motion', () => {
+    const { container, unmount } = render(<Hero />);
+    const particleLayer = container.querySelector('[aria-hidden="true"] .dclHeroLux__particle');
+    expect(particleLayer).not.toBeNull();
+    unmount();
+
+    vi.spyOn(window, 'matchMedia').mockImplementation(
+      (query: string) =>
+        ({
+          matches: query.includes('prefers-reduced-motion'),
+          media: query,
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+        }) as unknown as MediaQueryList,
+    );
+    const { container: reducedContainer } = render(<Hero />);
+    expect(reducedContainer.querySelector('.dclHeroLux__particle')).toBeNull();
   });
 
   it('contains no em-dash characters in visible copy', () => {
