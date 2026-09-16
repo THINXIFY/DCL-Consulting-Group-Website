@@ -36,10 +36,11 @@ than silently dropping documents if the total is too large.
 
 ## Deployment
 
-This server runs as a real Node process (Replit's `autoscale` deployment
-target, not an immutable serverless bundle - see
-`artifacts/api-server/.replit-artifact/artifact.toml`), so reading files
-from this folder at request time works the same in development and
-production. If this ever moves to a genuinely immutable/serverless
+This server runs as a real, persistent Node process - a single-instance
+/ Reserved VM deployment, not Replit Autoscale (see the top-level
+[`../README.md`](../README.md) for why) - so reading files from this
+folder at request time works the same in development and production. If
+this ever moves to a genuinely ephemeral/serverless or multi-instance
 runtime, these files would need to move to object storage instead - the
-`loadEnabledDocuments` function is the only place that would need to change.
+`loadEnabledDocuments` function is the only place that would need to
+change.
