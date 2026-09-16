@@ -59,6 +59,16 @@ if (!('matchMedia' in window) || !window.matchMedia) {
   })) as unknown as typeof window.matchMedia;
 }
 
+// jsdom has no real media pipeline - HTMLMediaElement.prototype.play/pause
+// throw "not implemented" there. Components only need these to be
+// harmless no-ops in tests; actual playback is exercised in a real
+// browser, not unit tests.
+if (typeof window.HTMLMediaElement !== 'undefined') {
+  window.HTMLMediaElement.prototype.play = () => Promise.resolve();
+  window.HTMLMediaElement.prototype.pause = () => {};
+  window.HTMLMediaElement.prototype.load = () => {};
+}
+
 if (typeof window.requestAnimationFrame === 'undefined') {
   window.requestAnimationFrame = (callback: FrameRequestCallback) => setTimeout(() => callback(Date.now()), 16) as unknown as number;
   window.cancelAnimationFrame = (handle: number) => clearTimeout(handle);

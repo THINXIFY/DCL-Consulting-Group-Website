@@ -1,15 +1,23 @@
 import { useEffect, useRef } from 'react';
 import { ArrowDownRight } from 'lucide-react';
 import { Header } from '@/components/Header';
-import { HeroBackground } from './HeroBackground';
 import { ensureGsapRegistered, gsap } from '@/lib/gsap';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { useMagnetic } from '@/hooks/use-magnetic';
 
-const HERO_IMAGE = '/images/home/home-hero-architecture.webp';
+const HERO_VIDEO = '/video/dcl-hero-background.mp4';
+const HERO_POSTER = '/images/home/home-hero-architecture.webp';
+
+// Per the approved hero brief: strong on the left where the text sits,
+// fading out toward the right so the video (people, office interior,
+// DCL branding) stays visible rather than being washed out.
+const HORIZONTAL_OVERLAY =
+  'linear-gradient(90deg, rgba(8,10,13,.88) 0%, rgba(8,10,13,.68) 42%, rgba(8,10,13,.32) 72%, rgba(8,10,13,.18) 100%)';
+const VERTICAL_OVERLAY = 'linear-gradient(180deg, rgba(8,10,13,.5) 0%, transparent 18%, transparent 82%, rgba(8,10,13,.6) 100%)';
 
 export function Hero() {
   const rootRef = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const exploreRef = useRef<HTMLAnchorElement>(null);
   const startRef = useRef<HTMLAnchorElement>(null);
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
@@ -18,30 +26,27 @@ export function Hero() {
   useMagnetic(startRef, { strength: 0.3 });
 
   useEffect(() => {
+    if (prefersReducedMotion) videoRef.current?.pause();
+  }, [prefersReducedMotion]);
+
+  useEffect(() => {
     if (!rootRef.current) return;
     ensureGsapRegistered();
 
     const ctx = gsap.context(() => {
       if (prefersReducedMotion) {
-        gsap.set(['.dclHero__reveal', '.dclHero__revealLine', '.dclHero__image', '.dclHero__imageWrap'], { clearProps: 'all' });
+        gsap.set(['.dclHero__reveal', '.dclHero__revealLine', '.dclHero__video'], { clearProps: 'all' });
         return;
       }
 
+      gsap.set('.dclHero__video', { scale: 1.02 });
+
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-      tl.fromTo(
-        '.dclHero__imageWrap',
-        { clipPath: 'inset(0 0 100% 0)' },
-        { clipPath: 'inset(0 0 0% 0)', duration: 1.1 },
-      )
-        .fromTo('.dclHero__revealLine', { yPercent: 110 }, { yPercent: 0, duration: 0.9, stagger: 0.12 }, 0.1)
+      tl.to('.dclHero__video', { scale: 1, duration: 1.6, ease: 'power2.out' }, 0)
+        .fromTo('.dclHero__reveal--eyebrow', { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.6 }, 0.15)
+        .fromTo('.dclHero__revealLine', { yPercent: 110 }, { yPercent: 0, duration: 0.9, stagger: 0.12, ease: 'power4.out' }, 0.3)
         .fromTo('.dclHero__reveal--sub', { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.7 }, '-=0.5')
         .fromTo('.dclHero__reveal--cta', { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.08 }, '-=0.4');
-
-      gsap.to('.dclHero__image', {
-        yPercent: 10,
-        ease: 'none',
-        scrollTrigger: { trigger: rootRef.current, start: 'top top', end: 'bottom top', scrub: true },
-      });
     }, rootRef);
 
     return () => ctx.revert();
@@ -55,17 +60,41 @@ export function Hero() {
       aria-label="Clarity before capital"
       className="relative min-h-[100dvh] overflow-hidden bg-[#080a0d] text-white"
     >
-      <HeroBackground rootRef={rootRef} />
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
+        <video
+          ref={videoRef}
+          data-testid="video-hero-background"
+          className="dclHero__video pointer-events-none h-full w-full object-cover object-center"
+          src={HERO_VIDEO}
+          poster={HERO_POSTER}
+          autoPlay={!prefersReducedMotion}
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+        />
+        <div className="pointer-events-none absolute inset-0" style={{ background: HORIZONTAL_OVERLAY }} />
+        {/* Content spans the full width once the layout collapses to one
+            column below lg, so the right-faded horizontal overlay above
+            would leave text on a too-bright video there - add a uniform
+            extra scrim on those breakpoints only. */}
+        <div className="pointer-events-none absolute inset-0 bg-[#080a0d]/35 lg:hidden" />
+        <div className="pointer-events-none absolute inset-0" style={{ background: VERTICAL_OVERLAY }} />
+      </div>
+
       <Header />
-      <div className="relative z-10 mx-auto grid min-h-[100dvh] max-w-[1440px] grid-cols-1 items-center gap-10 px-6 pb-16 pt-24 sm:px-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16 lg:px-16">
-        <div className="max-w-[620px]">
-          <p data-testid="text-hero-eyebrow" className="dclHome__eyebrow dclHero__reveal dclHero__revealLine mb-7 overflow-hidden text-[#c6e3fa]">
+
+      <div className="relative z-10 mx-auto flex min-h-[100dvh] max-w-[1440px] flex-col justify-center px-6 pb-20 pt-28 sm:px-10 lg:px-16">
+        <div className="max-w-[680px]">
+          <p data-testid="text-hero-eyebrow" className="dclHome__eyebrow dclHero__reveal dclHero__reveal--eyebrow text-[#c6e3fa]">
             Independent insight. London and international.
           </p>
+          <div className="dclHero__reveal dclHero__reveal--eyebrow mt-5 h-px w-12 origin-left bg-[#8bbfe8]" />
           <h1
             id="hero-title"
             data-testid="text-hero-title"
-            className="dclHome__display text-[clamp(3.2rem,7vw,6.2rem)] leading-[.95] tracking-[-.04em]"
+            className="dclHome__display mt-7 text-[clamp(3.2rem,7vw,6.2rem)] leading-[.95] tracking-[-.04em]"
           >
             <span className="block overflow-hidden"><span className="dclHero__revealLine block">Clarity</span></span>
             <span className="block overflow-hidden"><span className="dclHero__revealLine block text-[#c6e3fa]">Before Capital.</span></span>
@@ -96,16 +125,6 @@ export function Hero() {
               Start a Conversation
             </a>
           </div>
-        </div>
-        <div className="dclHero__imageWrap relative aspect-[4/5] w-full overflow-hidden lg:aspect-auto lg:h-full">
-          <img
-            className="dclHero__image h-full w-full scale-110 object-cover"
-            src={HERO_IMAGE}
-            alt="Curved glass office tower facade reflecting a dusk sky, London"
-            fetchPriority="high"
-            decoding="async"
-          />
-          <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(8,10,13,.55)_0%,transparent_45%)]" />
         </div>
       </div>
     </section>
