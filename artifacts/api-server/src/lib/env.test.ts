@@ -85,7 +85,7 @@ describe("loadRequestInfoEnv", () => {
     process.env.NODE_ENV = "production";
     process.env.MAIL_PROVIDER = "resend";
     process.env.RESEND_API_KEY = "re_test_key";
-    process.env.MAIL_FROM_EMAIL = "no-reply@dcl-consulting-group.com";
+    process.env.MAIL_FROM_EMAIL = "info@dcl-consulting-group.com";
     expect(() => loadRequestInfoEnv()).not.toThrow();
   });
 
