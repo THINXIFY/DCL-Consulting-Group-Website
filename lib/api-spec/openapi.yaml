@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: request-info
+    description: Secure document request (email verification + delivery)
 paths:
   /healthz:
     get:
@@ -24,6 +26,90 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /request-info/start:
+    post:
+      operationId: startRequestInfo
+      tags: [request-info]
+      summary: Begin a document request by verifying an email address
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StartRequestInfoBody"
+      responses:
+        "200":
+          description: Verification code sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StartRequestInfoResponse"
+        "400":
+          description: Invalid email
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RequestInfoError"
+        "429":
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RequestInfoError"
+  /request-info/resend:
+    post:
+      operationId: resendRequestInfoCode
+      tags: [request-info]
+      summary: Invalidate the current code and send a new one
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResendRequestInfoBody"
+      responses:
+        "200":
+          description: New verification code sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResendRequestInfoResponse"
+        "404":
+          description: Unknown, already-verified, or expired challenge
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RequestInfoError"
+        "429":
+          description: Rate limited or resend cooldown still active
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RequestInfoError"
+  /request-info/verify:
+    post:
+      operationId: verifyRequestInfoCode
+      tags: [request-info]
+      summary: Verify the code and, on success, deliver the requested documents
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyRequestInfoBody"
+      responses:
+        "200":
+          description: Verified; documents were sent, or delivery failed after verification
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VerifyRequestInfoResponse"
+        "400":
+          description: Verification failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RequestInfoError"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +119,58 @@ components:
           type: string
       required:
         - status
+    StartRequestInfoBody:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+      required: [email]
+    StartRequestInfoResponse:
+      type: object
+      properties:
+        requestId:
+          type: string
+      required: [requestId]
+    ResendRequestInfoBody:
+      type: object
+      properties:
+        requestId:
+          type: string
+      required: [requestId]
+    ResendRequestInfoResponse:
+      type: object
+      properties:
+        requestId:
+          type: string
+      required: [requestId]
+    VerifyRequestInfoBody:
+      type: object
+      properties:
+        requestId:
+          type: string
+        code:
+          type: string
+      required: [requestId, code]
+    VerifyRequestInfoResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [sent, failed]
+      required: [status]
+    RequestInfoError:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+            - invalid_email
+            - invalid_code
+            - expired
+            - too_many_attempts
+            - not_found
+            - rate_limited
+            - mail_failure
+      required: [error]
 

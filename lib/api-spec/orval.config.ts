@@ -51,7 +51,14 @@ export default defineConfig({
       workspace: apiZodSrc,
       client: "zod",
       target: "generated",
-      schemas: { path: "generated/types", type: "typescript" },
+      // Intentionally no `schemas` output here (unlike the api-client-react project
+      // above): when an operationId doesn't carry a distinguishing suffix (e.g.
+      // "startRequestInfo"), its zod object name collides with the identically-named
+      // component schema, and barreling both into lib/api-zod/src/index.ts throws
+      // TS2308 (duplicate export). Nothing in the codebase consumed the removed
+      // plain-interface output (api-client-react's own api.schemas.ts already emits
+      // equivalent plain types for anything that wants types without validators).
+      // Don't re-add this to "fix" a future naming collision here.
       mode: "split",
       clean: true,
       prettier: true,
