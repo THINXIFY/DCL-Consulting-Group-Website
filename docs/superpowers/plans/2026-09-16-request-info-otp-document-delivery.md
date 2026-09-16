@@ -369,11 +369,29 @@ PUBLIC_SITE_URL=https://dcl-consulting-group.com
 import { afterEach, describe, expect, it } from "vitest";
 import { loadRequestInfoEnv } from "./env";
 
-const ORIGINAL_ENV = { ...process.env };
+// Scoped to only the keys this suite touches, and restored individually,
+// rather than blanket-deleting and restoring all of process.env: Vitest's
+// thread pool can run multiple test files in the same worker thread, and a
+// blanket reset here could wipe or mismatch env state a sibling file relies
+// on if it happens to share a worker with this one.
+const ENV_KEYS = [
+  "OTP_HASH_SECRET",
+  "REQUEST_INFO_OTP_TTL_MINUTES",
+  "REQUEST_INFO_MAX_ATTEMPTS",
+  "MAIL_PROVIDER",
+  "RESEND_API_KEY",
+  "PUBLIC_SITE_URL",
+  "NODE_ENV",
+] as const;
+
+const ORIGINAL_VALUES = Object.fromEntries(ENV_KEYS.map((key) => [key, process.env[key]]));
 
 function resetEnv() {
-  for (const key of Object.keys(process.env)) delete process.env[key];
-  Object.assign(process.env, ORIGINAL_ENV);
+  for (const key of ENV_KEYS) {
+    const original = ORIGINAL_VALUES[key];
+    if (original === undefined) delete process.env[key];
+    else process.env[key] = original;
+  }
 }
 
 describe("loadRequestInfoEnv", () => {
@@ -412,6 +430,28 @@ describe("loadRequestInfoEnv", () => {
     process.env.OTP_HASH_SECRET = "test-secret";
     process.env.PUBLIC_SITE_URL = "https://example.com/";
     expect(loadRequestInfoEnv().publicSiteUrl).toBe("https://example.com");
+  });
+
+  it("refuses to boot with MAIL_PROVIDER=console in production", () => {
+    process.env.OTP_HASH_SECRET = "test-secret";
+    process.env.NODE_ENV = "production";
+    delete process.env.MAIL_PROVIDER; // defaults to "console"
+    expect(() => loadRequestInfoEnv()).toThrow(/MAIL_PROVIDER must be explicitly set to "resend"/);
+  });
+
+  it("allows MAIL_PROVIDER=resend in production when a key is present", () => {
+    process.env.OTP_HASH_SECRET = "test-secret";
+    process.env.NODE_ENV = "production";
+    process.env.MAIL_PROVIDER = "resend";
+    process.env.RESEND_API_KEY = "re_test_key";
+    expect(() => loadRequestInfoEnv()).not.toThrow();
+  });
+
+  it("allows MAIL_PROVIDER=console outside production", () => {
+    process.env.OTP_HASH_SECRET = "test-secret";
+    process.env.NODE_ENV = "development";
+    delete process.env.MAIL_PROVIDER;
+    expect(loadRequestInfoEnv().mailProvider).toBe("console");
   });
 });
 ```
@@ -465,6 +505,17 @@ export function loadRequestInfoEnv(): RequestInfoEnv {
   if (mailProvider === "resend" && !process.env.RESEND_API_KEY) {
     throw new Error('MAIL_PROVIDER is "resend" but RESEND_API_KEY is not set.');
   }
+  // Fail closed, not open: MAIL_PROVIDER defaults to "console" (so local
+  // dev works out of the box), but that default becoming the *production*
+  // path by accident - simply forgetting to set MAIL_PROVIDER=resend in a
+  // deployed environment - would silently log every real visitor's email
+  // address and plaintext OTP to the server console. Refuse to boot rather
+  // than let a missing env var become a silent secret-logging bug.
+  if (process.env.NODE_ENV === "production" && mailProvider === "console") {
+    throw new Error(
+      'MAIL_PROVIDER must be explicitly set to "resend" in production - refusing to silently log real visitor emails and OTP codes to the console.',
+    );
+  }
 
   return {
     otpHashSecret: requireEnv("OTP_HASH_SECRET"),
@@ -485,7 +536,7 @@ export function loadRequestInfoEnv(): RequestInfoEnv {
 pnpm --filter @workspace/api-server run test -- env.test.ts
 ```
 
-Expected: PASS (5 tests).
+Expected: PASS (8 tests).
 
 - [ ] **Step 5: Commit**
 
