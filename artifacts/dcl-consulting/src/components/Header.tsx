@@ -52,7 +52,7 @@ const NAV_LINKS: Array<[string, string]> = [
   ['Expertise', '/expertise'],
   ['Approach', '/approach'],
   ['Industries', '/industries'],
-  ['Insights', '#insights'],
+  ['Insights', '/insights'],
 ];
 
 function desktopLinkClass(theme: Theme, isActive: boolean) {

@@ -34,6 +34,8 @@ import DueDiligenceSupportPage from '@/pages/due-diligence-support';
 import RiskOpportunityAssessmentPage from '@/pages/risk-opportunity-assessment';
 import MarketEntryExpansionAdvisoryPage from '@/pages/market-entry-expansion-advisory';
 import ServiceDetailPage from '@/pages/service-detail';
+import InsightsPage from '@/pages/insights';
+import InsightDetailPage from '@/pages/insight-detail';
 import NotFound from '@/pages/not-found';
 import { useScrollTriggerRefresh } from '@/hooks/use-scroll-trigger-refresh';
 import { useScrollToTop } from '@/hooks/use-scroll-to-top';
@@ -71,6 +73,8 @@ function Router() {
         <Route path="/expertise" component={ExpertisePage} />
         <Route path="/approach" component={ApproachPage} />
         <Route path="/industries" component={IndustriesPage} />
+        <Route path="/insights" component={InsightsPage} />
+        <Route path="/insights/:slug" component={InsightDetailPage} />
         <Route path="/contact" component={ContactPage} />
         <Route path="/privacy-policy" component={PrivacyPolicyPage} />
         <Route path="/terms" component={TermsPage} />

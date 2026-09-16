@@ -41,7 +41,7 @@ describe('Header', () => {
     expect(screen.getByTestId('link-nav-expertise')).toHaveAttribute('href', '/expertise');
     expect(screen.getByTestId('link-nav-approach')).toHaveAttribute('href', '/approach');
     expect(screen.getByTestId('link-nav-industries')).toHaveAttribute('href', '/industries');
-    expect(screen.getByTestId('link-nav-insights')).toHaveAttribute('href', '#insights');
+    expect(screen.getByTestId('link-nav-insights')).toHaveAttribute('href', '/insights');
   });
 
   it('renders the "Get in Touch" CTA routing to /contact, never with white text', () => {
