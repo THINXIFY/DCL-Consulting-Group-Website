@@ -12,6 +12,7 @@ const ENV_KEYS = [
   "REQUEST_INFO_MAX_ATTEMPTS",
   "MAIL_PROVIDER",
   "RESEND_API_KEY",
+  "MAIL_FROM_EMAIL",
   "PUBLIC_SITE_URL",
   "NODE_ENV",
 ] as const;
@@ -52,6 +53,14 @@ describe("loadRequestInfoEnv", () => {
     expect(() => loadRequestInfoEnv()).toThrow(/RESEND_API_KEY/);
   });
 
+  it("requires MAIL_FROM_EMAIL when MAIL_PROVIDER is resend", () => {
+    process.env.OTP_HASH_SECRET = "test-secret";
+    process.env.MAIL_PROVIDER = "resend";
+    process.env.RESEND_API_KEY = "re_test_key";
+    delete process.env.MAIL_FROM_EMAIL;
+    expect(() => loadRequestInfoEnv()).toThrow(/MAIL_FROM_EMAIL/);
+  });
+
   it("rejects a non-positive-integer TTL", () => {
     process.env.OTP_HASH_SECRET = "test-secret";
     process.env.REQUEST_INFO_OTP_TTL_MINUTES = "0";
@@ -71,11 +80,12 @@ describe("loadRequestInfoEnv", () => {
     expect(() => loadRequestInfoEnv()).toThrow(/MAIL_PROVIDER must be explicitly set to "resend"/);
   });
 
-  it("allows MAIL_PROVIDER=resend in production when a key is present", () => {
+  it("allows MAIL_PROVIDER=resend in production when a key and from-address are present", () => {
     process.env.OTP_HASH_SECRET = "test-secret";
     process.env.NODE_ENV = "production";
     process.env.MAIL_PROVIDER = "resend";
     process.env.RESEND_API_KEY = "re_test_key";
+    process.env.MAIL_FROM_EMAIL = "no-reply@dcl-consulting-group.com";
     expect(() => loadRequestInfoEnv()).not.toThrow();
   });
 

@@ -35,6 +35,14 @@ export function loadRequestInfoEnv(): RequestInfoEnv {
   if (mailProvider === "resend" && !process.env.RESEND_API_KEY) {
     throw new Error('MAIL_PROVIDER is "resend" but RESEND_API_KEY is not set.');
   }
+  // Resend rejects sends from a "from" address whose domain isn't verified
+  // in the account - the silent default below ("no-reply@example.com") is
+  // never a valid sender, so every real send would fail. Fail closed here
+  // instead of letting a missing env var turn into a 100%-send-failure
+  // production incident that only surfaces once a visitor complains.
+  if (mailProvider === "resend" && !process.env.MAIL_FROM_EMAIL) {
+    throw new Error('MAIL_PROVIDER is "resend" but MAIL_FROM_EMAIL is not set.');
+  }
   // Fail closed, not open: MAIL_PROVIDER defaults to "console" (so local
   // dev works out of the box), but that default becoming the *production*
   // path by accident - simply forgetting to set MAIL_PROVIDER=resend in a
