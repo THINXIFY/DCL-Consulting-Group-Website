@@ -947,11 +947,11 @@ export const requestInfoDocuments: RequestInfoDocument[] = [
 
 ```ts
 // artifacts/api-server/src/lib/documents.test.ts
-import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { loadEnabledDocuments } from "./documents";
+import { findPackageRoot, loadEnabledDocuments } from "./documents";
 import type { RequestInfoDocument } from "../../config/request-info-documents";
 
 let dir: string;
@@ -1006,6 +1006,22 @@ describe("loadEnabledDocuments", () => {
     const manifest: RequestInfoDocument[] = [{ id: "c", filename: "C.pdf", filePath: "c.txt", enabled: true }];
     await expect(loadEnabledDocuments(manifest, dir)).rejects.toThrow(/PDF/);
   });
+
+  it("resolves the package root the same way from both a src-depth and a dist-depth starting point", async () => {
+    // Simulates the exact bundling hazard DOCUMENTS_ROOT's real
+    // implementation guards against: esbuild collapses import.meta.dirname
+    // to the bundle's own (shallower) location, so the root-finding logic
+    // must land on the same package.json regardless of how deep the
+    // calling module happens to live.
+    await writeFile(path.join(dir, "package.json"), "{}");
+    const srcLib = path.join(dir, "src", "lib");
+    const dist = path.join(dir, "dist");
+    await mkdir(srcLib, { recursive: true });
+    await mkdir(dist, { recursive: true });
+
+    expect(findPackageRoot(srcLib)).toBe(dir);
+    expect(findPackageRoot(dist)).toBe(dir);
+  });
 });
 ```
 
@@ -1021,12 +1037,38 @@ Expected: FAIL — `./documents` does not exist yet.
 
 ```ts
 // artifacts/api-server/src/lib/documents.ts
+import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { requestInfoDocuments, type RequestInfoDocument } from "../../config/request-info-documents";
 import { logger } from "./logger";
 
-export const DOCUMENTS_ROOT = path.resolve(import.meta.dirname, "..", "..", "private", "documents");
+// Deliberately NOT `path.resolve(import.meta.dirname, "..", "..", ...)`.
+// That hardcoded-depth approach works in dev (this file runs in place at
+// src/lib/documents.ts, two levels below the package root) but breaks once
+// `build.mjs` bundles everything into one file: esbuild collapses every
+// module's `import.meta.dirname` to the *bundle's own* location (dist/,
+// one level below the package root, not two), so a hardcoded ".." depth
+// walks one directory too far and silently points outside the package -
+// every document read then fails, and since a missing file is logged and
+// skipped rather than thrown, a real visitor would receive zero
+// attachments with no visible error. Walking up until we find this
+// package's own package.json works identically in both dev and the bundle,
+// because dist/ and src/lib/ are both (at different depths) inside the
+// same package root.
+export function findPackageRoot(startDir: string): string {
+  let dir = startDir;
+  while (!existsSync(path.join(dir, "package.json"))) {
+    const parent = path.dirname(dir);
+    if (parent === dir) {
+      throw new Error(`Could not locate api-server's package.json walking up from "${startDir}".`);
+    }
+    dir = parent;
+  }
+  return dir;
+}
+
+export const DOCUMENTS_ROOT = path.join(findPackageRoot(import.meta.dirname), "private", "documents");
 
 export interface LoadedDocument {
   filename: string;
@@ -1063,8 +1105,13 @@ export async function loadEnabledDocuments(
     try {
       const content = await readFile(resolvedPath);
       loaded.push({ filename: doc.filename, content });
-    } catch {
-      logger.error({ documentId: doc.id }, "Failed to read a request-info document; skipping it");
+    } catch (err) {
+      // Include the real error (ENOENT vs. a permissions problem vs. a
+      // wrong DOCUMENTS_ROOT all look identical without this) so a
+      // systemic failure is distinguishable from "someone hasn't uploaded
+      // this PDF yet" in the logs, even though both are handled the same
+      // way here (skip this one document, keep going).
+      logger.error({ documentId: doc.id, err }, "Failed to read a request-info document; skipping it");
     }
   }
 
@@ -1078,7 +1125,7 @@ export async function loadEnabledDocuments(
 pnpm --filter @workspace/api-server run test -- documents.test.ts
 ```
 
-Expected: PASS (5 tests).
+Expected: PASS (6 tests).
 
 - [ ] **Step 6: Write the admin README**
 
