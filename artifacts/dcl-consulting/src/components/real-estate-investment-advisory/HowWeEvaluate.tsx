@@ -100,7 +100,7 @@ export function HowWeEvaluate() {
 
           <div className="lg:col-span-4">
             <div className="dclEvaluate__imageWrap relative aspect-[4/5] w-full overflow-hidden lg:sticky lg:top-28">
-              <img
+              <img loading="lazy" decoding="async"
                 ref={imageRef}
                 data-testid="img-how-we-evaluate"
                 className="h-full w-full scale-105 object-cover object-center"

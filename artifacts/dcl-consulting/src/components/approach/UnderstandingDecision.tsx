@@ -133,7 +133,7 @@ export function UnderstandingDecision() {
           <div className="order-1 lg:order-2 lg:col-span-5 lg:col-start-8">
             <div className="dclUnderstand__imageWrap relative aspect-[4/5] w-full overflow-hidden lg:sticky lg:top-28 lg:[perspective:1400px]">
               <div ref={imageStageRef} className="h-full w-full">
-                <img
+                <img loading="lazy" decoding="async"
                   data-testid="img-understand"
                   className="dclUnderstand__image h-full w-full scale-105 object-cover object-center"
                   src={SECTION_IMAGE}

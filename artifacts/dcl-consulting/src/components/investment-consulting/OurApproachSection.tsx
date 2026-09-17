@@ -77,7 +77,7 @@ export function OurApproachSection() {
 
           <div className="lg:col-span-4">
             <div className="dclOurApproach__imageWrap relative aspect-[4/3] w-full overflow-hidden">
-              <img
+              <img loading="lazy" decoding="async"
                 ref={imageRef}
                 data-testid="img-our-approach"
                 className="h-full w-full scale-105 object-cover object-center"

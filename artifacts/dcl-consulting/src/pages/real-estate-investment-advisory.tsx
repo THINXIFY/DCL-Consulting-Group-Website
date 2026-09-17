@@ -8,10 +8,24 @@ import { WhereWeSupport } from '@/components/real-estate-investment-advisory/Whe
 import { WhyDcl } from '@/components/real-estate-investment-advisory/WhyDcl';
 import { RealEstateFinalCta } from '@/components/real-estate-investment-advisory/RealEstateFinalCta';
 import { Footer } from '@/components/Footer';
+import { Seo } from '@/components/Seo';
+import { buildBreadcrumbJsonLd } from '@/lib/seo';
+
+const BREADCRUMB = buildBreadcrumbJsonLd([
+  { name: 'Home', path: '/' },
+  { name: 'Services', path: '/services' },
+  { name: 'Real Estate Investment Advisory', path: '/services/real-estate-investment-advisory' },
+]);
 
 export default function RealEstateInvestmentAdvisoryPage() {
   return (
     <>
+      <Seo
+        title="Real Estate Investment Advisory | DCL Consulting"
+        description="DCL Consulting offers real estate investment advisory, bringing commercial and strategic perspective to property and real-estate opportunities."
+        path="/services/real-estate-investment-advisory"
+        jsonLd={BREADCRUMB}
+      />
       <main>
         <RealEstateHero />
         <OurPerspective />

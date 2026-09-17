@@ -47,7 +47,7 @@ export function StrategicWhyDclSection() {
         <div className="grid grid-cols-1 gap-y-12 lg:grid-cols-12 lg:items-center lg:gap-x-14">
           <div className="lg:col-span-7">
             <div className="dclStWhy__imageWrap relative aspect-[16/11] w-full overflow-hidden">
-              <img
+              <img loading="lazy" decoding="async"
                 data-testid="img-strategic-why-dcl"
                 className="h-full w-full scale-105 object-cover object-center"
                 src={SECTION_IMAGE}

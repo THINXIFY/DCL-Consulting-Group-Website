@@ -77,7 +77,7 @@ export function OurPerspective() {
 
           <div className="lg:col-span-5">
             <div className="dclPerspective__imageWrap relative aspect-[5/4] w-full overflow-hidden">
-              <img
+              <img loading="lazy" decoding="async"
                 ref={imageRef}
                 data-testid="img-our-perspective"
                 className="h-full w-full scale-105 object-cover object-center"

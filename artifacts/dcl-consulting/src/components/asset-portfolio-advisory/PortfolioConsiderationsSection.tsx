@@ -77,7 +77,7 @@ export function PortfolioConsiderationsSection() {
 
           <div className="lg:col-span-3">
             <div className="dclPortfolio__imageWrap relative aspect-[4/5] w-full overflow-hidden">
-              <img
+              <img loading="lazy" decoding="async"
                 data-testid="img-portfolio-considerations"
                 className="h-full w-full scale-105 object-cover object-center"
                 src={SECTION_IMAGE}

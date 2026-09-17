@@ -121,7 +121,7 @@ export function CoreExpertise() {
 
             <div className="col-span-5">
               <div className="dclCoreExp__imageWrap relative aspect-[4/5] w-full overflow-hidden">
-                <img
+                <img loading="lazy" decoding="async"
                   ref={imageRef}
                   data-testid="img-core-expertise"
                   className="h-full w-full object-cover object-center"

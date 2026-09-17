@@ -14,6 +14,11 @@ import { Insights } from '@/components/sections/Insights';
 import { Faq } from '@/components/sections/Faq';
 import { FinalCta } from '@/components/sections/FinalCta';
 import { Footer } from '@/components/Footer';
+import { Seo } from '@/components/Seo';
+import { DEFAULT_TITLE, organizationJsonLd } from '@/lib/seo';
+
+const HOMEPAGE_DESCRIPTION =
+  'DCL Consulting helps investors and businesses evaluate opportunities through disciplined analysis, strategic insight and independent investment advisory.';
 import AboutPage from '@/pages/about';
 import ExpertisePage from '@/pages/expertise';
 import ApproachPage from '@/pages/approach';
@@ -48,6 +53,7 @@ const queryClient = new QueryClient();
 function Home() {
   return (
     <>
+      <Seo title={DEFAULT_TITLE} description={HOMEPAGE_DESCRIPTION} path="/" jsonLd={organizationJsonLd} />
       <main>
         <Hero />
         <About />

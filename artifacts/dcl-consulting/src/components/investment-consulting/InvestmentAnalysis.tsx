@@ -136,7 +136,7 @@ export function InvestmentAnalysis() {
 
           <div className="lg:col-span-3">
             <div className="dclIaAnalysis__imageWrap relative aspect-[3/5] w-full overflow-hidden lg:sticky lg:top-28">
-              <img
+              <img loading="lazy" decoding="async"
                 data-testid="img-investment-analysis"
                 className="h-full w-full scale-105 object-cover object-center"
                 src={SECTION_IMAGE}

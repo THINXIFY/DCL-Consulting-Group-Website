@@ -63,7 +63,7 @@ export function CrossSectorPerspective() {
 
           <div className="relative lg:col-span-6 lg:-ml-16 lg:mt-10">
             <div className="dclCrossSector__imageWrap relative aspect-[16/11] w-full overflow-hidden sm:aspect-[16/9]">
-              <img
+              <img loading="lazy" decoding="async"
                 ref={imageRef}
                 data-testid="img-cross-sector"
                 className="h-full w-full scale-105 object-cover object-center"

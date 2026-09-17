@@ -133,7 +133,7 @@ export function WhoWeAre() {
 
         <div className="relative mt-16 lg:mt-20 lg:[perspective:1600px]">
           <div ref={imageStageRef} className="dclWhoWeAre__imageWrap relative aspect-[16/11] w-full overflow-hidden sm:aspect-[16/9] lg:aspect-[21/9] lg:will-change-transform">
-            <img
+            <img loading="lazy" decoding="async"
               data-testid="img-whoweare"
               className="dclWhoWeAre__image h-full w-full scale-110 object-cover"
               src={WHO_WE_ARE_IMAGE}

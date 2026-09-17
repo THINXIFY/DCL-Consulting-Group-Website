@@ -68,7 +68,7 @@ export function AssetWhyDclSection() {
 
           <div className="lg:col-span-4">
             <div className="dclApWhy__imageWrap relative aspect-[3/5] w-full overflow-hidden">
-              <img
+              <img loading="lazy" decoding="async"
                 data-testid="img-asset-why-dcl"
                 className="h-full w-full scale-105 object-cover object-center"
                 src={SECTION_IMAGE}

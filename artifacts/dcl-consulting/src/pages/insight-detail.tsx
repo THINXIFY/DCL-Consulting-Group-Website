@@ -1,6 +1,8 @@
 import { Link, useParams } from 'wouter';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { Seo } from '@/components/Seo';
+import { buildBreadcrumbJsonLd } from '@/lib/seo';
 import { insightsArchive } from '@/data/insights-content';
 
 // Full long-form insight articles have not been published yet. This
@@ -10,9 +12,24 @@ import { insightsArchive } from '@/data/insights-content';
 export default function InsightDetailPage() {
   const params = useParams<{ slug: string }>();
   const insight = insightsArchive.find((item) => item.slug === params.slug);
+  const path = `/insights/${params.slug}`;
 
   return (
     <>
+      {insight ? (
+        <Seo
+          title={`${insight.title} | DCL Consulting`}
+          description={insight.excerpt}
+          path={path}
+          jsonLd={buildBreadcrumbJsonLd([
+            { name: 'Home', path: '/' },
+            { name: 'Insights', path: '/insights' },
+            { name: insight.title, path },
+          ])}
+        />
+      ) : (
+        <Seo title="Insight Not Found | DCL Consulting" description="This insight does not exist. Explore the full archive of DCL perspective instead." path={path} noindex />
+      )}
       <main>
         <section id="insight-detail" aria-labelledby="insight-detail-title" className="relative min-h-[100dvh] bg-[#080a0d] text-white">
           <Header />

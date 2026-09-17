@@ -51,7 +51,7 @@ export function WhyChooseDcl() {
         <div className="grid grid-cols-1 gap-y-12 lg:grid-cols-12 lg:items-center lg:gap-x-10">
           <div className="lg:col-span-5">
             <div className="dclWhyDcl__imageWrap relative aspect-[4/5] w-full overflow-hidden">
-              <img
+              <img loading="lazy" decoding="async"
                 data-testid="img-why-choose-dcl"
                 className="h-full w-full scale-105 object-cover object-center"
                 src={SECTION_IMAGE}

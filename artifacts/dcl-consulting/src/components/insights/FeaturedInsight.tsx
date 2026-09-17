@@ -45,7 +45,7 @@ export function FeaturedInsight() {
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-stretch lg:gap-14">
           <div className="lg:col-span-7">
             <div className="dclFeaturedInsight__imageWrap relative aspect-[16/11] w-full overflow-hidden sm:aspect-[16/9] lg:h-full lg:aspect-auto">
-              <img
+              <img loading="lazy" decoding="async"
                 ref={imageRef}
                 data-testid="img-featured-insight"
                 className="h-full w-full scale-105 object-cover object-center"

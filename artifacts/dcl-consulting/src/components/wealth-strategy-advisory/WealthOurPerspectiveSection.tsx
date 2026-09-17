@@ -69,7 +69,7 @@ export function WealthOurPerspectiveSection() {
 
           <div className="lg:col-span-4">
             <div className="relative aspect-[5/4] w-full overflow-hidden">
-              <img
+              <img loading="lazy" decoding="async"
                 ref={imageRef}
                 data-testid="img-wealth-our-perspective"
                 className="dclWealthPerspective__image h-full w-full object-cover object-center"

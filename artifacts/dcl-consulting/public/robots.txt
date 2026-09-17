@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://dcl-consulting-group.com/sitemap.xml

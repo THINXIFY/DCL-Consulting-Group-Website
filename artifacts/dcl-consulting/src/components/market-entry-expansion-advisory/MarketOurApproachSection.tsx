@@ -86,7 +86,7 @@ export function MarketOurApproachSection() {
         <div className="grid grid-cols-1 gap-y-12 lg:grid-cols-12 lg:gap-x-10">
           <div className="lg:col-span-3">
             <div className="dclMeApproach__imageWrap relative aspect-[3/4] w-full overflow-hidden">
-              <img
+              <img loading="lazy" decoding="async"
                 ref={imageRef}
                 data-testid="img-market-our-approach"
                 className="h-full w-full scale-105 object-cover object-center"

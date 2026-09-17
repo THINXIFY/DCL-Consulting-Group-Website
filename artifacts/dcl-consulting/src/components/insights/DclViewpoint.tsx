@@ -78,7 +78,7 @@ export function DclViewpoint() {
 
           <div className="lg:col-span-7">
             <div className="dclViewpoint__imageWrap relative aspect-[16/10] w-full overflow-hidden">
-              <img
+              <img loading="lazy" decoding="async"
                 ref={imageRef}
                 data-testid="img-dcl-viewpoint"
                 className="h-full w-full scale-105 object-cover object-center"

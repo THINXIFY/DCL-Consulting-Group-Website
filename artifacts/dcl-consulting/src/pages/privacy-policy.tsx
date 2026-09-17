@@ -2,16 +2,23 @@ import { PrivacyHero } from '@/components/privacy/PrivacyHero';
 import { PrivacyContent } from '@/components/privacy/PrivacyContent';
 import { PrivacySupportCta } from '@/components/privacy/PrivacySupportCta';
 import { Footer } from '@/components/Footer';
-import { useDocumentMeta } from '@/hooks/use-document-meta';
+import { Seo } from '@/components/Seo';
+import { buildBreadcrumbJsonLd } from '@/lib/seo';
+
+const BREADCRUMB = buildBreadcrumbJsonLd([
+  { name: 'Home', path: '/' },
+  { name: 'Privacy Policy', path: '/privacy-policy' },
+]);
 
 export default function PrivacyPolicyPage() {
-  useDocumentMeta(
-    'Privacy Policy | DCL Consulting and Investments Limited',
-    'Read the DCL Consulting and Investments Limited Privacy Policy, including how we handle enquiries, website information and secure document requests.',
-  );
-
   return (
     <>
+      <Seo
+        title="Privacy Policy | DCL Consulting"
+        description="Read the DCL Consulting and Investments Limited privacy policy explaining how personal data is collected, used, protected and your related rights."
+        path="/privacy-policy"
+        jsonLd={BREADCRUMB}
+      />
       <main>
         <PrivacyHero />
         <PrivacyContent />

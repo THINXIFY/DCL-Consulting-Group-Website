@@ -61,7 +61,7 @@ export function RiskOurPerspectiveSection() {
         <div className="grid grid-cols-1 gap-y-12 lg:grid-cols-12 lg:items-center lg:gap-x-10">
           <div className="lg:col-span-4">
             <div className="dclRiskPerspective__imageWrap relative aspect-[4/5] w-full overflow-hidden">
-              <img
+              <img loading="lazy" decoding="async"
                 ref={imageRef}
                 data-testid="img-risk-our-perspective"
                 className="h-full w-full scale-105 object-cover object-center"

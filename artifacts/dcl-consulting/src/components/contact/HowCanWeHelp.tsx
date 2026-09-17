@@ -281,7 +281,7 @@ export function HowCanWeHelp() {
 
           <div className="lg:col-span-4">
             <div className="dclHelp__imageWrap relative aspect-[3/4] w-full overflow-hidden">
-              <img
+              <img loading="lazy" decoding="async"
                 data-testid="img-how-can-we-help"
                 className="h-full w-full scale-105 object-cover object-center"
                 src={SECTION_IMAGE}

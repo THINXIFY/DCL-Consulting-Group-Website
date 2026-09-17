@@ -47,7 +47,7 @@ export function DueDiligenceWhyDclSection() {
         <div className="grid grid-cols-1 gap-y-12 lg:grid-cols-12 lg:items-center lg:gap-x-12">
           <div className="lg:col-span-6">
             <div className="dclDdWhy__imageWrap relative aspect-[4/3] w-full overflow-hidden">
-              <img
+              <img loading="lazy" decoding="async"
                 data-testid="img-dd-why-dcl"
                 className="h-full w-full scale-105 object-cover object-center"
                 src={SECTION_IMAGE}

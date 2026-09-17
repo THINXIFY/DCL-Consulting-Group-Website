@@ -1,14 +1,16 @@
 import { useEffect, useRef } from 'react';
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { notFoundContent } from '@/data/not-found-content';
+import { Seo } from '@/components/Seo';
 import { ensureGsapRegistered, gsap } from '@/lib/gsap';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { useMagnetic } from '@/hooks/use-magnetic';
 
 export default function NotFound() {
+  const [location] = useLocation();
   const rootRef = useRef<HTMLElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const ctaRef = useRef<HTMLAnchorElement>(null);
@@ -47,6 +49,7 @@ export default function NotFound() {
 
   return (
     <>
+      <Seo title="Page Not Found | DCL Consulting" description="The page you are looking for does not exist. Explore DCL Consulting's advisory services, insights and company information instead." path={location} noindex />
       <section id="not-found-hero" ref={rootRef} aria-labelledby="not-found-title" className="relative overflow-hidden bg-[#080a0d] text-white">
         <span
           aria-hidden="true"

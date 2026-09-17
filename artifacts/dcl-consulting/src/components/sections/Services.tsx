@@ -131,7 +131,7 @@ export function Services() {
                 <div key={family.heading} data-testid={`services-family-${slug(family.heading)}`} className="dclServices__col group/col relative">
                   {index > 0 && <div className="absolute -left-5 top-0 hidden h-full w-px bg-[#080a0d]/12 lg:block" aria-hidden="true" />}
                   <div className="service-icon flex h-20 w-20 items-center justify-center border border-[#080a0d]/15 bg-white/70 transition-colors duration-300 group-hover/col:border-[#8bbfe8] group-hover/col:bg-[#c6e3fa]/20">
-                    <img
+                    <img loading="lazy" decoding="async"
                       src={servicesSection.familyIcons[family.heading] ?? PLACEHOLDER_ICON_SRC}
                       alt=""
                       aria-hidden="true"

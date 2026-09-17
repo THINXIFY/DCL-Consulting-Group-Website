@@ -106,7 +106,7 @@ export function ServicesFaq() {
           <div className={`dclServicesFaq__card lg:col-span-5 ${isDesktop ? 'lg:sticky lg:top-24 lg:self-start' : ''}`}>
             <div className="border border-[#080a0d]/10">
               <div className="relative aspect-[16/9] w-full overflow-hidden">
-                <img
+                <img loading="lazy" decoding="async"
                   data-testid="img-services-faq-side"
                   className="h-full w-full object-cover object-center"
                   src={SECTION_IMAGE}

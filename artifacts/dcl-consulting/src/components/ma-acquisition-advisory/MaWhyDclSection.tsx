@@ -65,7 +65,7 @@ export function MaWhyDclSection() {
 
           <div className="lg:col-span-7 lg:order-2">
             <div className="dclMaWhy__imageWrap relative aspect-[16/11] w-full overflow-hidden">
-              <img
+              <img loading="lazy" decoding="async"
                 data-testid="img-ma-why-dcl"
                 className="h-full w-full scale-105 object-cover object-center"
                 src={SECTION_IMAGE}

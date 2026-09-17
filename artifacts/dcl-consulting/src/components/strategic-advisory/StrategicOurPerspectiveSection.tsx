@@ -67,7 +67,7 @@ export function StrategicOurPerspectiveSection() {
 
           <div className="lg:col-span-5 lg:col-start-6">
             <div className="dclStPerspective__imageWrap relative aspect-[4/3] w-full overflow-hidden">
-              <img
+              <img loading="lazy" decoding="async"
                 ref={imageRef}
                 data-testid="img-strategic-our-perspective"
                 className="h-full w-full scale-105 object-cover object-center"

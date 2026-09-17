@@ -70,7 +70,7 @@ export function MarketOurPerspectiveSection() {
 
           <div className="lg:col-span-5">
             <div className="dclMePerspective__imageWrap relative aspect-[4/3] w-full overflow-hidden">
-              <img
+              <img loading="lazy" decoding="async"
                 ref={imageRef}
                 data-testid="img-market-our-perspective"
                 className="h-full w-full scale-105 object-cover object-center"

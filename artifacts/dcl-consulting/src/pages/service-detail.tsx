@@ -1,18 +1,30 @@
 import { Link, useParams } from 'wouter';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { Seo } from '@/components/Seo';
 import { allServices } from '@/data/services-content';
 
 // Individual service detail pages have not been commissioned yet. This
 // placeholder looks up the requested slug against the approved service
 // list and renders only the name and description already approved on
 // the Services hub - it never fabricates page content beyond that.
+//
+// Every real, commissioned service already has its own dedicated route
+// registered ahead of this catch-all in App.tsx, so in practice this
+// component only ever renders for an unrecognized slug - hence the
+// unconditional noindex below, regardless of whether `service` resolves.
 export default function ServiceDetailPage() {
   const params = useParams<{ slug: string }>();
   const service = allServices.find((item) => item.slug === params.slug);
 
   return (
     <>
+      <Seo
+        title={service ? `${service.name} | DCL Consulting` : 'Service Not Found | DCL Consulting'}
+        description={service ? service.description : 'This service page does not exist. Explore the full list of DCL advisory services instead.'}
+        path={`/services/${params.slug}`}
+        noindex
+      />
       <main>
         <section
           id="service-detail"

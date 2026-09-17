@@ -27,7 +27,7 @@ function slug(label: string) {
 }
 
 function Mark() {
-  return <img src={LOGO_SRC} data-testid="img-footer-logo" alt="DCL Consulting and Investments Limited" className="h-8 w-auto sm:h-9" />;
+  return <img loading="lazy" decoding="async" src={LOGO_SRC} data-testid="img-footer-logo" alt="DCL Consulting and Investments Limited" className="h-8 w-auto sm:h-9" />;
 }
 
 function FooterLinkGroup({ heading, links }: { heading: string; links: { label: string; href: string }[] }) {
@@ -133,7 +133,7 @@ export function Footer() {
   return (
     <footer ref={rootRef} className="relative overflow-hidden bg-[#171714] text-white">
       <div className="dclFooter__bgWrap pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-        <img
+        <img loading="lazy" decoding="async"
           ref={bgImageRef}
           data-testid="img-footer-background"
           className="h-full w-full scale-105 object-cover object-center opacity-55"
@@ -195,7 +195,7 @@ export function Footer() {
             <div className="lg:col-span-4">
               <div className="dclFooter__imageWrap relative aspect-[4/3] w-full overflow-hidden">
                 <div ref={imageInnerRef} className="absolute inset-0 h-full w-full">
-                  <img
+                  <img loading="lazy" decoding="async"
                     data-testid="img-footer-cta"
                     className="h-full w-full object-cover object-center"
                     src={SECTION_IMAGE}

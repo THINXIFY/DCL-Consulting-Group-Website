@@ -59,7 +59,7 @@ export function ContactSupportCta() {
 
           <div className="lg:col-span-4">
             <div className="dclSupportCta__imageWrap relative aspect-[16/10] w-full overflow-hidden">
-              <img
+              <img loading="lazy" decoding="async"
                 data-testid="img-contact-support"
                 className="h-full w-full scale-105 object-cover object-center"
                 src={SECTION_IMAGE}
