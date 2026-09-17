@@ -107,6 +107,15 @@ describe('privacy-content', () => {
     expect(text).not.toContain('completely secure and guaranteed');
   });
 
+  it('does not carry blanket "no offer" or "no investment advice" disclaimers (that belongs to the Terms page, not Privacy)', () => {
+    const text = allStrings(ALL_CONTENT).join(' ').toLowerCase();
+    expect(text).not.toContain('no offer or solicitation');
+    expect(text).not.toContain('no investment, financial, legal or tax advice');
+    for (const forbidden of ['fca authorised', 'fca regulated', 'authorised investment firm', 'regulated financial adviser', 'licensed wealth manager']) {
+      expect(text).not.toContain(forbidden);
+    }
+  });
+
   it('contains no em-dash or en-dash characters anywhere', () => {
     for (const value of allStrings(ALL_CONTENT)) {
       expect(value).not.toMatch(DASH_CHARS);

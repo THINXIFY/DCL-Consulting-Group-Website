@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { footerBrand, footerClosing, footerContact, footerLegalLinks, footerNavLinks, footerServicesViewAll, preFooterCta } from './footer-content';
+import { footerBrand, footerClosing, footerCompanyLinks, footerContact, footerExpertiseLinks, footerLegalLinks, footerServicesViewAll, preFooterCta } from './footer-content';
 
 const NUMBERING_PATTERN = /(^|\s)(\d+[.)]|step\s*\d|part\s*\d)/i;
 const DASH_CHARS = /[–—]/;
@@ -13,11 +13,11 @@ function allStrings(value: unknown): string[] {
   return [];
 }
 
-const ALL_CONTENT = { preFooterCta, footerBrand, footerNavLinks, footerServicesViewAll, footerContact, footerLegalLinks, footerClosing };
+const ALL_CONTENT = { preFooterCta, footerBrand, footerCompanyLinks, footerExpertiseLinks, footerServicesViewAll, footerContact, footerLegalLinks, footerClosing };
 
 describe('footer-content', () => {
-  it('every navigation link points to a real, existing route', () => {
-    for (const link of footerNavLinks) {
+  it('every Company and Expertise link points to a real, existing route', () => {
+    for (const link of [...footerCompanyLinks, ...footerExpertiseLinks]) {
       expect(REAL_ROUTES).toContain(link.href);
     }
   });
@@ -42,9 +42,11 @@ describe('footer-content', () => {
     expect(footerServicesViewAll.href).toBe('/services');
   });
 
-  it('does not contain any fabricated email, phone number, or physical address', () => {
+  it('has the one real, verified official email and no other fabricated email or phone number', () => {
+    expect(footerBrand.email).toBe('info@dcl-consulting-group.com');
     const text = allStrings(ALL_CONTENT).join(' ');
-    expect(text).not.toMatch(/@[a-z0-9.-]+\.[a-z]{2,}/i);
+    const emails = text.match(/[a-z0-9.-]+@[a-z0-9.-]+\.[a-z]{2,}/gi) ?? [];
+    expect(new Set(emails)).toEqual(new Set(['info@dcl-consulting-group.com']));
     expect(text).not.toMatch(/\+?\d[\d\s()-]{7,}\d/);
   });
 

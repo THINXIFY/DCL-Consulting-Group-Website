@@ -27,11 +27,18 @@ export function TeamDirectory() {
         .fromTo('.dclTeamDirectory__revealLine', { yPercent: 112 }, { yPercent: 0, duration: 1, stagger: 0.1, ease: 'power4.out' }, '-=0.35')
         .fromTo('.dclTeamDirectory__fadeUp--intro', { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.65 }, '-=0.5');
 
-      gsap.fromTo(
-        '.dclTeamDirectory__row',
-        { autoAlpha: 0, y: 16 },
-        { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.07, ease: 'power2.out', scrollTrigger: { trigger: '.dclTeamDirectory__list', start: 'top 82%' } },
-      );
+      gsap.utils.toArray<HTMLElement>('.dclTeamDirectory__row').forEach((row, i) => {
+        const name = row.querySelector('.dclTeamDirectory__rowName');
+        const role = row.querySelector('.dclTeamDirectory__rowRole');
+        const description = row.querySelector('.dclTeamDirectory__rowDescription');
+        const base = (i % 4) * 0.07;
+        const rowTl = gsap.timeline({ scrollTrigger: { trigger: row, start: 'top 88%' } });
+        rowTl
+          .fromTo(row, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out' }, base)
+          .fromTo(name, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.4, ease: 'power2.out' }, base + 0.08)
+          .fromTo(role, { autoAlpha: 0, y: 6 }, { autoAlpha: 1, y: 0, duration: 0.35, ease: 'power2.out' }, base + 0.16)
+          .fromTo(description, { autoAlpha: 0, y: 6 }, { autoAlpha: 1, y: 0, duration: 0.4, ease: 'power2.out' }, base + 0.24);
+      });
 
       gsap.fromTo(
         '.dclTeamDirectory__fadeUp--micro',
@@ -70,13 +77,16 @@ export function TeamDirectory() {
               key={member.name}
               data-testid={`team-member-${slug(member.name)}`}
               tabIndex={0}
-              className="dclTeamDirectory__row group flex items-center justify-between gap-4 border-b border-white/12 py-6 outline-none transition-colors duration-300 hover:border-[#8bbfe8]/50 focus-visible:border-[#8bbfe8]"
+              className="dclTeamDirectory__row group flex items-start justify-between gap-4 border-b border-white/12 py-7 outline-none transition-colors duration-300 hover:border-[#8bbfe8]/50 focus-visible:border-[#8bbfe8]"
             >
               <div className="transition-transform duration-300 group-hover:translate-x-1">
-                <p className="dclHome__display text-[1.3rem] leading-[1.15] tracking-[-.015em] text-white">{member.name}</p>
-                <p className="mt-1.5 text-[11px] font-semibold uppercase tracking-[.13em] text-white/45">{member.role}</p>
+                <p className="dclTeamDirectory__rowName dclHome__display text-[1.3rem] leading-[1.15] tracking-[-.015em] text-white">{member.name}</p>
+                <p className="dclTeamDirectory__rowRole mt-1.5 text-[11px] font-semibold uppercase tracking-[.13em] text-white/45">{member.role}</p>
+                <p className="dclTeamDirectory__rowDescription mt-3 max-w-[420px] text-[16px] leading-6 text-white/55 lg:max-w-[380px] lg:text-[14px] lg:leading-[1.55]">
+                  {member.description}
+                </p>
               </div>
-              <ArrowRight size={16} strokeWidth={1.4} className="shrink-0 text-white/30 transition-all duration-300 group-hover:translate-x-1 group-hover:text-[#8bbfe8]" aria-hidden="true" />
+              <ArrowRight size={16} strokeWidth={1.4} className="mt-2 shrink-0 text-white/30 transition-all duration-300 group-hover:translate-x-1 group-hover:text-[#8bbfe8]" aria-hidden="true" />
             </div>
           ))}
         </div>

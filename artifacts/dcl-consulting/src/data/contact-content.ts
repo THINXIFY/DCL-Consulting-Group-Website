@@ -64,6 +64,7 @@ export const companyInformation = {
   ] satisfies CompanyDetailFact[],
   companiesHouseHref: 'https://find-and-update.company-information.service.gov.uk/company/10086906/officers',
   companyRegisterCta: 'Official Company Profile',
+  companyRegisterDocumentCta: { label: 'Company Register', href: '/docs/companies_house_document-2_260908_211328.pdf' },
   legalCta: { label: 'Legal Information', href: '/terms' },
   impressumCta: { label: 'Impressum', href: '/impressum' },
 };

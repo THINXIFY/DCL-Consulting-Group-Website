@@ -15,7 +15,7 @@ function mockMatchMedia(matches: boolean) {
 describe('TeamDirectory', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('renders the eyebrow, headline, intro, and all seven broader-team members with name and role', () => {
+  it('renders the eyebrow, headline, intro, and all seven broader-team members with name, role, and description', () => {
     mockMatchMedia(false);
     render(<TeamDirectory />);
     expect(screen.getByTestId('text-team-directory-eyebrow')).toHaveTextContent(teamDirectory.eyebrow);
@@ -25,6 +25,7 @@ describe('TeamDirectory', () => {
       const el = screen.getByTestId(testId);
       expect(el).toHaveTextContent(member.name);
       expect(el).toHaveTextContent(member.role);
+      expect(el).toHaveTextContent(member.description);
     }
   });
 

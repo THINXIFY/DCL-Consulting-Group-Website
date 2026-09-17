@@ -62,6 +62,10 @@ describe('contact-content', () => {
     expect(companyInformation.facts.find((fact) => fact.label === 'London Office')?.lines).toEqual(['5 Beaconsfield Street,', 'London,', 'United Kingdom,', 'N1C 4EW']);
     expect(companyInformation.companiesHouseHref).toBe('https://find-and-update.company-information.service.gov.uk/company/10086906/officers');
     expect(companyInformation.impressumCta).toEqual({ label: 'Impressum', href: '/impressum' });
+    expect(companyInformation.companyRegisterDocumentCta).toEqual({
+      label: 'Company Register',
+      href: '/docs/companies_house_document-2_260908_211328.pdf',
+    });
   });
 
   it('does not invent an email, phone number, office hours, or social handle for the get-in-touch band', () => {

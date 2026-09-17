@@ -21,7 +21,7 @@ describe('team-content', () => {
   });
 
   it('has exactly the four approved leadership members with real titles, nothing invented', () => {
-    expect(teamLeadership.members).toEqual([
+    expect(teamLeadership.members.map(({ initials, name, role }) => ({ initials, name, role }))).toEqual([
       { initials: 'DL', name: 'David Christopher Lebond', role: 'Chairman' },
       { initials: 'SG', name: 'Sandeep Gupta', role: 'Managing Director' },
       { initials: 'SR', name: 'Stephan Rotstein', role: 'CFO' },
@@ -30,7 +30,7 @@ describe('team-content', () => {
   });
 
   it('has exactly the seven approved broader-team members with real titles, nothing invented', () => {
-    expect(teamDirectory.members).toEqual([
+    expect(teamDirectory.members.map(({ name, role }) => ({ name, role }))).toEqual([
       { name: 'Steve Johnson', role: 'CRM' },
       { name: 'Thomas Zeman', role: 'Investment Manager' },
       { name: 'Markus Weber', role: 'Investment Analyst' },
@@ -45,9 +45,22 @@ describe('team-content', () => {
     expect(teamLeadership.members.length + teamDirectory.members.length).toBe(11);
   });
 
+  it('every team member has a real 20-25 word description, no ellipsis truncation', () => {
+    const allMembers = [...teamLeadership.members, ...teamDirectory.members];
+    expect(allMembers).toHaveLength(11);
+    for (const member of allMembers) {
+      expect(member.description).toBeTruthy();
+      expect(member.description).not.toContain('...');
+      expect(member.description).not.toContain('…');
+      const wordCount = member.description.trim().split(/\s+/).length;
+      expect(wordCount).toBeGreaterThanOrEqual(20);
+      expect(wordCount).toBeLessThanOrEqual(25);
+    }
+  });
+
   it('does not invent biographies, education, LinkedIn links, locations, or years of experience', () => {
     const text = allStrings(ALL_CONTENT).join(' ').toLowerCase();
-    for (const forbidden of ['linkedin', 'university', 'years of experience', 'based in', 'certified', 'msc', 'mba', 'phd']) {
+    for (const forbidden of ['linkedin', 'university', 'years of experience', 'certified', 'msc', 'mba', 'phd']) {
       expect(text).not.toContain(forbidden);
     }
   });

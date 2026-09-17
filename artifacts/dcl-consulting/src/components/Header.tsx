@@ -7,7 +7,12 @@ import { useMediaQuery } from '@/hooks/use-media-query';
 
 type Theme = 'dark' | 'light';
 
-const LIGHT_PAGE_ROUTES = new Set(['/privacy-policy', '/terms']);
+// No route currently uses the light header state: Privacy Policy and Terms
+// both have dark heroes like every other page, so forcing a white header
+// bar there just showed the placeholder text mark instead of the real
+// (light-colored) logo image. Kept as an empty set - and the theme
+// machinery below intact - in case a future light-hero page needs it.
+const LIGHT_PAGE_ROUTES = new Set<string>([]);
 const SCROLL_THRESHOLD = 60;
 const MEGA_MENU_CLOSE_DELAY = 160;
 const LOGO_SRC = '/images/brand/dcl-logo.png';

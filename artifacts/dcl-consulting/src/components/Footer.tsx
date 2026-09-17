@@ -1,15 +1,23 @@
 import { useEffect, useRef } from 'react';
 import { Link } from 'wouter';
 import { ArrowUpRight } from 'lucide-react';
-import { footerBrand, footerClosing, footerContact, footerLegalLinks, footerNavLinks, footerServicesViewAll, preFooterCta } from '@/data/footer-content';
-import { allMegaMenuServices } from '@/data/services-nav-content';
+import {
+  footerBrand,
+  footerClosing,
+  footerCompanyLinks,
+  footerContact,
+  footerExpertiseLinks,
+  footerLegalLinks,
+  footerServicesViewAll,
+  preFooterCta,
+} from '@/data/footer-content';
 import { companyFacts } from '@/data/home-content';
 import { ensureGsapRegistered, gsap } from '@/lib/gsap';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { useMagnetic } from '@/hooks/use-magnetic';
 
-const SECTION_IMAGE = '/images/general/footer.webp';
-const FOOTER_BACKGROUND_IMAGE = 'https://media.ourwebprojects.pro/wp-content/uploads/2026/09/ChatGPT-Image-Sep-15-2026-02_34_24-PM.webp';
+const SECTION_IMAGE = 'https://marbholding.com/wp-content/uploads/2026/09/lets-talk.webp';
+const FOOTER_BACKGROUND_IMAGE = 'https://marbholding.com/wp-content/uploads/2026/09/ChatGPT-Image-Sep-17-2026-05_01_29-PM.png';
 const LOGO_SRC = '/images/brand/dcl-logo.png';
 
 const REGISTRATION_FACTS = companyFacts.filter((fact) => fact.label !== 'Director');
@@ -22,9 +30,33 @@ function Mark() {
   return <img src={LOGO_SRC} data-testid="img-footer-logo" alt="DCL Consulting and Investments Limited" className="h-8 w-auto sm:h-9" />;
 }
 
+function FooterLinkGroup({ heading, links }: { heading: string; links: { label: string; href: string }[] }) {
+  return (
+    <div className="dclFooter__column">
+      <p className="dclHome__eyebrow text-white/35">{heading}</p>
+      <ul className="mt-5 flex flex-col gap-1">
+        {links.map((link) => (
+          <li key={link.href} className="dclFooter__link">
+            <Link
+              href={link.href}
+              data-testid={`link-footer-nav-${slug(link.label)}`}
+              className="group inline-flex min-h-[44px] items-center text-[15px] text-white/70 outline-none transition-colors duration-300 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+            >
+              <span className="relative">
+                {link.label}
+                <span className="absolute -bottom-0.5 left-0 block h-px w-0 bg-[#8bbfe8] transition-all duration-300 group-hover:w-full" />
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export function Footer() {
   const rootRef = useRef<HTMLElement>(null);
-  const imageRef = useRef<HTMLImageElement>(null);
+  const imageInnerRef = useRef<HTMLDivElement>(null);
   const bgImageRef = useRef<HTMLImageElement>(null);
   const ctaRef = useRef<HTMLAnchorElement>(null);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
@@ -39,10 +71,11 @@ export function Footer() {
     const ctx = gsap.context(() => {
       if (prefersReducedMotion) {
         gsap.set(
-          ['.dclFooter__label', '.dclFooter__rule', '.dclFooter__revealLine', '.dclFooter__fadeUp', '.dclFooter__imageWrap', '.dclFooter__cta', '.dclFooter__column'],
+          ['.dclFooter__label', '.dclFooter__rule', '.dclFooter__revealLine', '.dclFooter__fadeUp', '.dclFooter__imageWrap', '.dclFooter__cta', '.dclFooter__column', '.dclFooter__link'],
           { clearProps: 'all' },
         );
         if (bgImageRef.current) gsap.set(bgImageRef.current, { clearProps: 'all' });
+        if (imageInnerRef.current) gsap.set(imageInnerRef.current, { clearProps: 'all' });
         return;
       }
 
@@ -50,8 +83,15 @@ export function Footer() {
         gsap.fromTo(
           bgImageRef.current,
           { autoAlpha: 0, scale: 1.12 },
-          { autoAlpha: 0.6, scale: 1.05, duration: 1.4, ease: 'power2.out', scrollTrigger: { trigger: rootRef.current, start: 'top 90%' } },
+          { autoAlpha: 0.55, scale: 1.05, duration: 1.4, ease: 'power2.out', scrollTrigger: { trigger: rootRef.current, start: 'top 90%' } },
         );
+        if (isDesktop) {
+          gsap.to(bgImageRef.current, {
+            yPercent: 4,
+            ease: 'none',
+            scrollTrigger: { trigger: rootRef.current, start: 'top bottom', end: 'bottom top', scrub: 1 },
+          });
+        }
       }
 
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' }, scrollTrigger: { trigger: rootRef.current, start: 'top 85%' } });
@@ -63,18 +103,32 @@ export function Footer() {
         .fromTo(
           '.dclFooter__imageWrap',
           { clipPath: 'inset(0 0 100% 0)' },
-          { clipPath: 'inset(0 0 0% 0)', duration: 1, ease: 'power4.out' },
+          { clipPath: 'inset(0 0 0% 0)', duration: 1.2, ease: 'power4.out' },
           '-=0.6',
-        );
+        )
+        .fromTo(imageInnerRef.current, { scale: 1.08, autoAlpha: 0.85 }, { scale: 1, autoAlpha: 1, duration: 1.2, ease: 'power4.out' }, '<');
+
+      if (imageInnerRef.current) {
+        gsap.to(imageInnerRef.current, {
+          yPercent: isDesktop ? 3 : 0,
+          ease: 'none',
+          scrollTrigger: { trigger: rootRef.current, start: 'top bottom', end: 'bottom top', scrub: 1 },
+        });
+      }
 
       gsap.fromTo(
         '.dclFooter__column',
         { autoAlpha: 0, y: 16 },
         { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.06, ease: 'power2.out', scrollTrigger: { trigger: '.dclFooter__columns', start: 'top 92%' } },
       );
+      gsap.fromTo(
+        '.dclFooter__link',
+        { autoAlpha: 0, x: -6 },
+        { autoAlpha: 1, x: 0, duration: 0.4, stagger: 0.035, ease: 'power2.out', scrollTrigger: { trigger: '.dclFooter__columns', start: 'top 88%' } },
+      );
     }, rootRef);
     return () => ctx.revert();
-  }, [prefersReducedMotion]);
+  }, [prefersReducedMotion, isDesktop]);
 
   return (
     <footer ref={rootRef} className="relative overflow-hidden bg-[#171714] text-white">
@@ -82,12 +136,12 @@ export function Footer() {
         <img
           ref={bgImageRef}
           data-testid="img-footer-background"
-          className="h-full w-full scale-105 object-cover object-center opacity-60"
+          className="h-full w-full scale-105 object-cover object-center opacity-55"
           src={FOOTER_BACKGROUND_IMAGE}
           alt=""
         />
-        <div className="absolute inset-0 bg-[#171714]/45" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#171714] via-[#171714]/30 to-[#171714]" />
+        <div className="absolute inset-0 bg-[#171714]/60" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#171714] via-[#171714]/35 to-[#171714]" />
       </div>
 
       {/* Pre-footer CTA */}
@@ -140,13 +194,14 @@ export function Footer() {
 
             <div className="lg:col-span-4">
               <div className="dclFooter__imageWrap relative aspect-[4/3] w-full overflow-hidden">
-                <img
-                  ref={imageRef}
-                  data-testid="img-footer-cta"
-                  className="h-full w-full scale-105 object-cover object-center"
-                  src={SECTION_IMAGE}
-                  alt="Dark building facade at dusk with a few warmly lit windows and curved balcony edges"
-                />
+                <div ref={imageInnerRef} className="absolute inset-0 h-full w-full">
+                  <img
+                    data-testid="img-footer-cta"
+                    className="h-full w-full object-cover object-center"
+                    src={SECTION_IMAGE}
+                    alt="Dark, warmly lit architectural interior with premium finishes, evoking a considered conversation space"
+                  />
+                </div>
                 <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#080a0d]/55 via-transparent to-transparent" />
                 <div data-testid="text-footer-cta-image-statement" className="absolute bottom-5 right-5 text-right">
                   {preFooterCta.imageStatementLines.map((line) => (
@@ -185,101 +240,79 @@ export function Footer() {
                     {fact.value}
                   </p>
                 ))}
+                <a
+                  href={`mailto:${footerBrand.email}`}
+                  data-testid="link-footer-email"
+                  className="mt-1 inline-flex w-fit items-center text-[13px] leading-5 text-white/50 underline decoration-white/20 underline-offset-4 transition-colors duration-300 hover:text-[#8bbfe8] hover:decoration-[#8bbfe8]"
+                >
+                  {footerBrand.email}
+                </a>
               </div>
             </div>
 
+            <FooterLinkGroup heading="Company" links={footerCompanyLinks} />
+            <FooterLinkGroup heading="Expertise" links={footerExpertiseLinks} />
+
             <div className="dclFooter__column lg:col-span-2">
-              <p className="dclHome__eyebrow text-white/35">Navigation</p>
-              <ul className="mt-5 flex flex-col gap-3">
-                {footerNavLinks.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      data-testid={`link-footer-nav-${slug(link.label)}`}
-                      className="group inline-block text-[15px] text-white/70 outline-none transition-colors duration-300 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
-                    >
-                      {link.label}
-                      <span className="block h-px w-0 bg-[#8bbfe8] transition-all duration-300 group-hover:w-full" />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="dclFooter__column lg:col-span-3">
-              <p className="dclHome__eyebrow text-white/35">Services</p>
-              <ul className="mt-5 flex flex-col gap-3">
-                {allMegaMenuServices.map((service) => (
-                  <li key={service.href}>
-                    <Link
-                      href={service.href}
-                      data-testid={`link-footer-service-${slug(service.label)}`}
-                      className="group inline-block text-[15px] text-white/70 outline-none transition-colors duration-300 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
-                    >
-                      {service.label}
-                      <span className="block h-px w-0 bg-[#8bbfe8] transition-all duration-300 group-hover:w-full" />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href={footerServicesViewAll.href}
-                data-testid="link-footer-view-all-services"
-                className="group mt-5 inline-flex items-center gap-2 text-[13px] font-semibold uppercase tracking-[.1em] text-[#8bbfe8] outline-none transition-colors duration-300 hover:text-[#c6e3fa] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
-              >
-                {footerServicesViewAll.label}
-                <ArrowUpRight size={13} strokeWidth={1.3} className="transition-transform duration-300 ease-out group-hover:translate-x-[3px] group-hover:-translate-y-[3px]" />
-              </Link>
-            </div>
-
-            <div className="dclFooter__column lg:col-span-3">
-              <p className="dclHome__eyebrow text-white/35">Contact</p>
-              <p className="mt-5 max-w-[260px] text-[15px] leading-6 text-white/60">{footerContact.intro}</p>
-              <a
-                href={footerContact.cta.href}
-                data-testid="link-footer-contact-cta"
-                className="group mt-5 inline-flex items-center gap-2 text-[13px] font-semibold uppercase tracking-[.1em] text-[#8bbfe8] outline-none transition-colors duration-300 hover:text-[#c6e3fa] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
-              >
-                {footerContact.cta.label}
-                <ArrowUpRight size={13} strokeWidth={1.3} className="transition-transform duration-300 ease-out group-hover:translate-x-[3px] group-hover:-translate-y-[3px]" />
-              </a>
-            </div>
-          </nav>
-
-          <div className="mt-12 flex flex-col gap-4 border-t border-white/12 pt-6 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
-              <p data-testid="text-footer-copyright" className="text-[11px] uppercase tracking-[.12em] text-white/35">
-                &copy; {year} DCL Consulting and Investments Limited. All rights reserved.
-              </p>
-              {footerLegalLinks.length > 0 && (
-                <div className="flex flex-wrap gap-x-5 gap-y-2">
-                  {footerLegalLinks.map((link) =>
-                    link.external ? (
+              <p className="dclHome__eyebrow text-white/35">Legal</p>
+              <ul className="mt-5 flex flex-col gap-1">
+                {footerLegalLinks.map((link) =>
+                  link.external ? (
+                    <li key={link.href} className="dclFooter__link">
                       <a
-                        key={link.href}
                         href={link.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        data-testid={`link-footer-legal-${link.label.toLowerCase().replaceAll(' ', '-')}`}
-                        className="inline-flex items-center gap-1 text-[11px] uppercase tracking-[.12em] text-white/35 outline-none transition-colors duration-300 hover:text-white/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+                        data-testid={`link-footer-nav-${slug(link.label)}`}
+                        className="group inline-flex min-h-[44px] items-center gap-1.5 text-[15px] text-white/70 outline-none transition-colors duration-300 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
                       >
                         {link.label}
-                        <ArrowUpRight size={11} strokeWidth={1.4} aria-hidden="true" />
+                        <ArrowUpRight size={12} strokeWidth={1.4} aria-hidden="true" />
                       </a>
-                    ) : (
+                    </li>
+                  ) : (
+                    <li key={link.href} className="dclFooter__link">
                       <Link
-                        key={link.href}
                         href={link.href}
-                        data-testid={`link-footer-legal-${link.label.toLowerCase().replaceAll(' ', '-')}`}
-                        className="text-[11px] uppercase tracking-[.12em] text-white/35 outline-none transition-colors duration-300 hover:text-white/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+                        data-testid={`link-footer-nav-${slug(link.label)}`}
+                        className="group inline-flex min-h-[44px] items-center text-[15px] text-white/70 outline-none transition-colors duration-300 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
                       >
-                        {link.label}
+                        <span className="relative">
+                          {link.label}
+                          <span className="absolute -bottom-0.5 left-0 block h-px w-0 bg-[#8bbfe8] transition-all duration-300 group-hover:w-full" />
+                        </span>
                       </Link>
-                    ),
-                  )}
-                </div>
-              )}
+                    </li>
+                  ),
+                )}
+              </ul>
             </div>
+          </nav>
+
+          <div className="dclFooter__fadeUp mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-white/12 pt-8">
+            <Link
+              href={footerServicesViewAll.href}
+              data-testid="link-footer-view-all-services"
+              className="group inline-flex min-h-[44px] items-center gap-2 text-[12px] font-semibold uppercase tracking-[.1em] text-[#8bbfe8] outline-none transition-colors duration-300 hover:text-[#c6e3fa] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+            >
+              {footerServicesViewAll.label}
+              <ArrowUpRight size={13} strokeWidth={1.3} className="transition-transform duration-300 ease-out group-hover:translate-x-[3px] group-hover:-translate-y-[3px]" />
+            </Link>
+            <span className="hidden h-4 w-px bg-white/15 sm:block" aria-hidden="true" />
+            <a
+              href={footerContact.cta.href}
+              data-testid="link-footer-contact-cta"
+              className="group inline-flex min-h-[44px] items-center gap-2 text-[12px] font-semibold uppercase tracking-[.1em] text-[#8bbfe8] outline-none transition-colors duration-300 hover:text-[#c6e3fa] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+            >
+              {footerContact.cta.label}
+              <ArrowUpRight size={13} strokeWidth={1.3} className="transition-transform duration-300 ease-out group-hover:translate-x-[3px] group-hover:-translate-y-[3px]" />
+            </a>
+          </div>
+
+          <div className="mt-8 flex flex-col gap-4 border-t border-white/12 pt-6 sm:flex-row sm:items-center sm:justify-between">
+            <p data-testid="text-footer-copyright" className="text-[11px] uppercase tracking-[.12em] text-white/35">
+              &copy; {year} DCL Consulting and Investments Limited. All rights reserved.
+            </p>
             <p data-testid="text-footer-closing" className="text-[11px] font-semibold uppercase tracking-[.15em] text-[#8bbfe8]">
               {footerClosing}
             </p>

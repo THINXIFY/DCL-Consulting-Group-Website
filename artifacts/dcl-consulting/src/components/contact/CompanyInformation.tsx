@@ -183,6 +183,16 @@ export function CompanyInformation() {
                 <ArrowUpRight size={15} strokeWidth={1.3} className="transition-transform duration-300 ease-out group-hover:translate-x-[3px] group-hover:-translate-y-[3px]" />
               </a>
               <a
+                href={companyInformation.companyRegisterDocumentCta.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-testid="link-company-register-document"
+                className="dclCompanyInfo__cta group inline-flex items-center gap-3 border border-[#080a0d] px-6 py-4 text-[11px] font-semibold uppercase tracking-[.13em] text-[#080a0d] transition-colors duration-300 hover:border-[#171714] hover:text-[#171714] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+              >
+                {companyInformation.companyRegisterDocumentCta.label}
+                <ArrowUpRight size={15} strokeWidth={1.3} className="transition-transform duration-300 ease-out group-hover:translate-x-[3px] group-hover:-translate-y-[3px]" />
+              </a>
+              <a
                 href={companyInformation.legalCta.href}
                 data-testid="link-company-legal"
                 className="dclCompanyInfo__cta group inline-flex items-center gap-3 border border-[#080a0d] px-6 py-4 text-[11px] font-semibold uppercase tracking-[.13em] text-[#080a0d] transition-colors duration-300 hover:border-[#171714] hover:text-[#171714] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"

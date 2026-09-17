@@ -1,8 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Footer } from './Footer';
-import { footerNavLinks, footerServicesViewAll, preFooterCta } from '@/data/footer-content';
-import { allMegaMenuServices } from '@/data/services-nav-content';
+import { footerCompanyLinks, footerExpertiseLinks, footerLegalLinks, footerServicesViewAll, preFooterCta } from '@/data/footer-content';
 
 function mockMatchMedia(matches: boolean) {
   window.matchMedia = vi.fn().mockImplementation((query: string) => ({
@@ -24,12 +23,12 @@ describe('Footer', () => {
     mockMatchMedia(false);
     render(<Footer />);
     const bg = screen.getByTestId('img-footer-background');
-    expect(bg).toHaveAttribute('src', expect.stringContaining('ChatGPT-Image-Sep-15-2026-02_34_24-PM.webp'));
+    expect(bg).toHaveAttribute('src', expect.stringContaining('ChatGPT-Image-Sep-17-2026-05_01_29-PM.png'));
     expect(bg).toHaveAttribute('alt', '');
     expect(bg.closest('[aria-hidden="true"]')).not.toBeNull();
   });
 
-  it('renders the pre-footer CTA label, headline, supporting copy, both CTAs, vocabulary, image, and image statement', () => {
+  it('renders the pre-footer CTA label, headline, supporting copy, both CTAs, vocabulary, the real image, and image statement', () => {
     mockMatchMedia(false);
     render(<Footer />);
     expect(screen.getByTestId('text-footer-cta-label')).toHaveTextContent(preFooterCta.label);
@@ -52,45 +51,44 @@ describe('Footer', () => {
     }
     expect(vocab).toHaveTextContent(preFooterCta.vocabularyEmphasis);
 
-    expect(screen.getByTestId('img-footer-cta')).toBeInTheDocument();
+    const ctaImage = screen.getByTestId('img-footer-cta');
+    expect(ctaImage).toHaveAttribute('src', expect.stringContaining('lets-talk.webp'));
     const statement = screen.getByTestId('text-footer-cta-image-statement');
     for (const line of preFooterCta.imageStatementLines) {
       expect(statement).toHaveTextContent(line);
     }
   });
 
-  it('links the mark home and renders every navigation link with the correct real route', () => {
+  it('links the mark home and renders the Company and Expertise link groups with the correct real routes', () => {
     mockMatchMedia(false);
     render(<Footer />);
     expect(screen.getByTestId('link-footer-home')).toHaveAttribute('href', '/');
-    for (const link of footerNavLinks) {
+    for (const link of [...footerCompanyLinks, ...footerExpertiseLinks]) {
       expect(screen.getByTestId(`link-footer-nav-${slug(link.label)}`)).toHaveAttribute('href', link.href);
     }
   });
 
-  it('renders all ten completed service links plus the view-all link, matching the mega-menu data exactly', () => {
+  it('renders a View All Services link and a Get in Touch link, with no invented contact details', () => {
     mockMatchMedia(false);
     render(<Footer />);
-    expect(allMegaMenuServices).toHaveLength(10);
-    for (const service of allMegaMenuServices) {
-      const link = screen.getByTestId(`link-footer-service-${slug(service.label)}`);
-      expect(link).toHaveTextContent(service.label);
-      expect(link).toHaveAttribute('href', service.href);
-    }
     const viewAll = screen.getByTestId('link-footer-view-all-services');
     expect(viewAll).toHaveTextContent(footerServicesViewAll.label);
     expect(viewAll).toHaveAttribute('href', footerServicesViewAll.href);
-  });
 
-  it('renders a contact intro and a Get in Touch link, with no invented contact details', () => {
-    mockMatchMedia(false);
-    render(<Footer />);
     const cta = screen.getByTestId('link-footer-contact-cta');
     expect(cta).toHaveTextContent('Get in Touch');
     expect(cta).toHaveAttribute('href', '/contact');
+
     const footer = document.querySelector('footer');
-    expect(footer?.textContent).not.toMatch(/@[a-z0-9.-]+\.[a-z]{2,}/i);
     expect(footer?.textContent).not.toMatch(/\+?\d[\d\s()-]{7,}\d/);
+  });
+
+  it('renders the real official email as a mailto link', () => {
+    mockMatchMedia(false);
+    render(<Footer />);
+    const email = screen.getByTestId('link-footer-email');
+    expect(email).toHaveTextContent('info@dcl-consulting-group.com');
+    expect(email).toHaveAttribute('href', 'mailto:info@dcl-consulting-group.com');
   });
 
   it('renders only the exact confirmed company registration facts, nothing invented', () => {
@@ -118,33 +116,31 @@ describe('Footer', () => {
     expect(document.querySelector('footer input')).not.toBeInTheDocument();
   });
 
-  it('renders the current year and the closing tagline in the legal strip', () => {
+  it('renders the current year and the closing tagline at the bottom', () => {
     mockMatchMedia(false);
     render(<Footer />);
     expect(screen.getByTestId('text-footer-copyright')).toHaveTextContent(String(new Date().getFullYear()));
     expect(screen.getByTestId('text-footer-closing')).toHaveTextContent('Clarity Before Capital.');
   });
 
-  it('renders a Privacy Policy link in the legal strip, pointing to the real route', () => {
+  it('renders the Legal link group (Privacy Policy, Terms, Impressum, and the external Official Company Profile)', () => {
     mockMatchMedia(false);
     render(<Footer />);
-    expect(screen.getByTestId('link-footer-legal-privacy-policy')).toHaveAttribute('href', '/privacy-policy');
+    for (const link of footerLegalLinks) {
+      const el = screen.getByTestId(`link-footer-nav-${slug(link.label)}`);
+      expect(el).toHaveAttribute('href', link.href);
+      if (link.external) {
+        expect(el).toHaveAttribute('target', '_blank');
+        expect(el).toHaveAttribute('rel', 'noopener noreferrer');
+      }
+    }
   });
 
-  it('renders an Impressum link and an external Official Company Profile link in the legal strip', () => {
-    mockMatchMedia(false);
-    render(<Footer />);
-    expect(screen.getByTestId('link-footer-legal-impressum')).toHaveAttribute('href', '/impressum');
-    const companyProfile = screen.getByTestId('link-footer-legal-official-company-profile');
-    expect(companyProfile).toHaveAttribute('href', 'https://find-and-update.company-information.service.gov.uk/company/10086906/officers');
-    expect(companyProfile).toHaveAttribute('target', '_blank');
-    expect(companyProfile).toHaveAttribute('rel', 'noopener noreferrer');
-  });
-
-  it('includes Team and Insights in the footer navigation', () => {
+  it('includes Team, Partners, and Insights in the Company link group', () => {
     mockMatchMedia(false);
     render(<Footer />);
     expect(screen.getByTestId('link-footer-nav-team')).toHaveAttribute('href', '/team');
+    expect(screen.getByTestId('link-footer-nav-partners')).toHaveAttribute('href', '/partners');
     expect(screen.getByTestId('link-footer-nav-insights')).toHaveAttribute('href', '/insights');
   });
 

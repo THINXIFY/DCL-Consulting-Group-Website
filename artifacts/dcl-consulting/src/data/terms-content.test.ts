@@ -58,8 +58,9 @@ describe('terms-content', () => {
     expect(termsSections.map((section) => section.heading)).toEqual([
       'About DCL',
       'Purpose of This Website',
-      'No Investment, Financial, Legal or Tax Advice',
-      'No Offer or Solicitation',
+      'Investment and Financial Advisory Services',
+      'Professional and Specialist Advice',
+      'Investment Opportunities, Offers and Communications',
       'Our Services',
       'Reliance on Website Information',
       'Use of the Website',
@@ -78,6 +79,23 @@ describe('terms-content', () => {
       'Governing Law',
       'Contact',
     ]);
+  });
+
+  it('positively describes DCL as a real investment/advisory business, with no blanket "no advice" or "no offer" disclaimers', () => {
+    const headings = termsSections.map((section) => section.heading.toLowerCase());
+    expect(headings.some((h) => h.includes('no investment') || h.includes('no offer') || h.includes('no solicitation'))).toBe(false);
+
+    const text = allStrings(termsSections).join(' ');
+    expect(text).toContain('DCL Consulting and Investments Limited provides investment consulting, financial analysis, strategic advisory and decision-support services');
+    expect(text).not.toMatch(/nothing on this website constitutes.*personalised investment advice/i);
+    expect(text).not.toMatch(/nothing on this website constitutes an offer, solicitation/i);
+  });
+
+  it('does not introduce any unverified FCA or regulatory-authorisation claim', () => {
+    const text = allStrings(termsSections).join(' ').toLowerCase();
+    for (const forbidden of ['fca authorised', 'fca regulated', 'authorised investment firm', 'regulated financial adviser', 'licensed wealth manager']) {
+      expect(text).not.toContain(forbidden);
+    }
   });
 
   it('describes the real Request More Info verification flow without inventing marketing/CRM claims', () => {

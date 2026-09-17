@@ -50,19 +50,30 @@ export const termsSections: TermsSection[] = [
     ],
   },
   {
-    id: 'no-investment-financial-legal-or-tax-advice',
-    heading: 'No Investment, Financial, Legal or Tax Advice',
+    id: 'investment-and-financial-advisory-services',
+    heading: 'Investment and Financial Advisory Services',
     body: [
-      'Nothing on this website constitutes or should be interpreted as personalised investment advice, financial advice, legal advice, tax advice or regulatory advice.',
-      'Any decision involving investments, businesses, assets, transactions or strategic matters should be considered in light of the relevant circumstances and, where appropriate, with advice from suitably qualified independent professionals.',
+      'DCL Consulting and Investments Limited provides investment consulting, financial analysis, strategic advisory and decision-support services to investors, businesses and other clients.',
+      'Our work may include evaluating investment opportunities, financial considerations, commercial fundamentals, risk, strategic context and transaction-related matters.',
+      'The precise scope of any advice or service is determined by the relevant engagement, mandate, documentation and applicable legal or regulatory requirements.',
     ],
   },
   {
-    id: 'no-offer-or-solicitation',
-    heading: 'No Offer or Solicitation',
+    id: 'professional-and-specialist-advice',
+    heading: 'Professional and Specialist Advice',
     body: [
-      'Nothing on this website constitutes an offer, solicitation, invitation or recommendation to buy or sell any investment, acquire or dispose of any security, enter into any financial transaction, make any investment commitment, or participate in any particular opportunity.',
-      'Any actual engagement with DCL will be subject to separately agreed terms.',
+      "DCL's advisory work may involve consideration of legal, tax, financial, commercial and structural matters as part of a broader investment or strategic assessment.",
+      'Where a matter requires specialist legal, tax, accounting or other regulated professional advice, the appropriate scope, professional responsibility and engagement terms will apply.',
+    ],
+  },
+  {
+    id: 'investment-opportunities-offers-and-communications',
+    heading: 'Investment Opportunities, Offers and Communications',
+    body: [
+      'Where expressly stated, certain materials, communications or opportunities presented by DCL may relate to investment opportunities, transactions or potential commercial participation.',
+      'Any specific offer, invitation or solicitation will be subject to its own terms, eligibility requirements, applicable law, jurisdictional restrictions and any required regulatory or professional approvals.',
+      'General website content should not automatically be interpreted as a binding offer unless it is expressly identified as such.',
+      'No specific investment return, outcome or level of performance is guaranteed or promised.',
     ],
   },
   {

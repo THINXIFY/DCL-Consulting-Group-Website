@@ -99,14 +99,16 @@ describe('Header', () => {
       expect(header.className).toMatch(/bg-\[#080a0d\]/);
     });
 
-    it('uses a solid light background at the top of a light-page route, and switches to the dark scrolled background once scrolled', () => {
-      setPath('/privacy-policy');
-      const { container } = render(<Header />);
-      const header = container.querySelector('header')!;
-      expect(header.className).toMatch(/bg-white/);
-
-      setScrollY(120);
-      expect(header.className).toMatch(/bg-\[#080a0d\]/);
+    it('stays transparent with the real logo at the top of Privacy Policy and Terms (both have dark heroes, not the light header state)', () => {
+      for (const path of ['/privacy-policy', '/terms']) {
+        setPath(path);
+        const { container, unmount } = render(<Header />);
+        const header = container.querySelector('header')!;
+        expect(header.className).toMatch(/bg-transparent/);
+        expect(header.className).not.toMatch(/bg-white/);
+        expect(screen.getByTestId('img-header-logo')).toBeInTheDocument();
+        unmount();
+      }
     });
   });
 

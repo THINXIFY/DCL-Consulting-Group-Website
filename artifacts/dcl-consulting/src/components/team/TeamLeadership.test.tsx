@@ -15,7 +15,7 @@ function mockMatchMedia(matches: boolean) {
 describe('TeamLeadership', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('renders the eyebrow, headline, intro, and all four leaders with initials, name, and role', () => {
+  it('renders the eyebrow, headline, intro, and all four leaders with initials, name, role, and description', () => {
     mockMatchMedia(false);
     render(<TeamLeadership />);
     expect(screen.getByTestId('text-team-leadership-eyebrow')).toHaveTextContent(teamLeadership.eyebrow);
@@ -28,6 +28,7 @@ describe('TeamLeadership', () => {
       expect(el).toHaveTextContent(member.initials);
       expect(el).toHaveTextContent(member.name);
       expect(el).toHaveTextContent(member.role);
+      expect(el).toHaveTextContent(member.description);
     }
   });
 

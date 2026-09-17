@@ -57,6 +57,16 @@ describe('CompanyInformation', () => {
     expect(link).toHaveAttribute('rel', expect.stringContaining('noopener'));
   });
 
+  it('links to the real Company Register document, opened safely in a new tab, in addition to the Companies House web link', () => {
+    render(<CompanyInformation />);
+    const doc = screen.getByTestId('link-company-register-document');
+    expect(doc).toHaveTextContent('Company Register');
+    expect(doc).toHaveAttribute('href', '/docs/companies_house_document-2_260908_211328.pdf');
+    expect(doc).toHaveAttribute('target', '_blank');
+    expect(doc).toHaveAttribute('rel', expect.stringContaining('noopener'));
+    expect(screen.getByTestId('link-company-register')).toBeInTheDocument();
+  });
+
   it('links legal information to the real /terms route, and Impressum to the real /impressum route', () => {
     render(<CompanyInformation />);
     expect(screen.getByTestId('link-company-legal')).toHaveAttribute('href', '/terms');

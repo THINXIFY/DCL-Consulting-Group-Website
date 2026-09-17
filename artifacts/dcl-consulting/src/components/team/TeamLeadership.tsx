@@ -16,7 +16,10 @@ export function TeamLeadership() {
     ensureGsapRegistered();
     const ctx = gsap.context(() => {
       if (prefersReducedMotion) {
-        gsap.set(['.dclTeamLeadership__eyebrowRule', '.dclTeamLeadership__revealLine', '.dclTeamLeadership__fadeUp', '.dclTeamLeadership__member'], { clearProps: 'all' });
+        gsap.set(
+          ['.dclTeamLeadership__eyebrowRule', '.dclTeamLeadership__revealLine', '.dclTeamLeadership__fadeUp', '.dclTeamLeadership__member'],
+          { clearProps: 'all' },
+        );
         return;
       }
 
@@ -28,8 +31,17 @@ export function TeamLeadership() {
 
       gsap.utils.toArray<HTMLElement>('.dclTeamLeadership__member').forEach((member, i) => {
         const rule = member.querySelector('.dclTeamLeadership__memberRule');
-        gsap.fromTo(member, { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power3.out', delay: i * 0.09, scrollTrigger: { trigger: '.dclTeamLeadership__members', start: 'top 82%' } });
-        gsap.fromTo(rule, { scaleX: 0 }, { scaleX: 1, transformOrigin: 'left center', duration: 0.6, ease: 'power2.out', delay: i * 0.09 + 0.2, scrollTrigger: { trigger: '.dclTeamLeadership__members', start: 'top 82%' } });
+        const name = member.querySelector('.dclTeamLeadership__memberName');
+        const role = member.querySelector('.dclTeamLeadership__memberRole');
+        const description = member.querySelector('.dclTeamLeadership__memberDescription');
+        const base = i * 0.09;
+        const memberTl = gsap.timeline({ scrollTrigger: { trigger: '.dclTeamLeadership__members', start: 'top 82%' } });
+        memberTl
+          .fromTo(member, { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.6, ease: 'power3.out' }, base)
+          .fromTo(rule, { scaleX: 0 }, { scaleX: 1, transformOrigin: 'left center', duration: 0.5, ease: 'power2.out' }, base + 0.15)
+          .fromTo(name, { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.45, ease: 'power2.out' }, base + 0.25)
+          .fromTo(role, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.4, ease: 'power2.out' }, base + 0.35)
+          .fromTo(description, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.45, ease: 'power2.out' }, base + 0.45);
       });
     }, rootRef);
     return () => ctx.revert();
@@ -57,13 +69,14 @@ export function TeamLeadership() {
           <p className="dclTeamLeadership__fadeUp dclTeamLeadership__fadeUp--intro max-w-[420px] text-[16px] leading-7 text-[#4b545c]">{teamLeadership.intro}</p>
         </div>
 
-        <div className="dclTeamLeadership__members mt-16 grid grid-cols-2 gap-x-8 gap-y-12 border-t border-[#080a0d]/12 pt-12 lg:mt-20 lg:grid-cols-4 lg:gap-x-10">
+        <div className="dclTeamLeadership__members mt-16 grid grid-cols-1 gap-x-8 gap-y-12 border-t border-[#080a0d]/12 pt-12 sm:grid-cols-2 lg:mt-20 lg:grid-cols-4 lg:gap-x-10">
           {teamLeadership.members.map((member) => (
-            <div key={member.name} data-testid={`team-leader-${slug(member.name)}`} className="dclTeamLeadership__member">
-              <p className="dclHome__display text-[2.4rem] leading-none tracking-[-.02em] text-[#8bbfe8]">{member.initials}</p>
-              <div className="dclTeamLeadership__memberRule mt-4 h-px w-8 origin-left bg-[#080a0d]/15" />
-              <p className="mt-4 text-[16px] leading-[1.3] text-[#080a0d]">{member.name}</p>
-              <p className="mt-1.5 text-[11px] font-semibold uppercase tracking-[.13em] text-[#6b737a]">{member.role}</p>
+            <div key={member.name} data-testid={`team-leader-${slug(member.name)}`} className="dclTeamLeadership__member group/leader">
+              <p className="dclHome__display text-[2.4rem] leading-none tracking-[-.02em] text-[#8bbfe8] transition-colors duration-300 group-hover/leader:text-[#4f718c]">{member.initials}</p>
+              <div className="dclTeamLeadership__memberRule mt-4 h-px w-8 origin-left bg-[#080a0d]/15 transition-all duration-300 group-hover/leader:w-12 group-hover/leader:bg-[#8bbfe8]" />
+              <p className="dclTeamLeadership__memberName mt-4 text-[16px] leading-[1.3] text-[#080a0d]">{member.name}</p>
+              <p className="dclTeamLeadership__memberRole mt-1.5 text-[11px] font-semibold uppercase tracking-[.13em] text-[#6b737a]">{member.role}</p>
+              <p className="dclTeamLeadership__memberDescription mt-3 max-w-[320px] text-[16px] leading-6 text-[#4b545c] lg:max-w-[280px] lg:text-[14px] lg:leading-[1.55]">{member.description}</p>
             </div>
           ))}
         </div>
