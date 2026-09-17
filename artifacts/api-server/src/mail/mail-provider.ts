@@ -1,6 +1,7 @@
 export interface MailAttachment {
   filename: string;
   content: Buffer;
+  contentType?: string;
 }
 
 export interface SendMailInput {

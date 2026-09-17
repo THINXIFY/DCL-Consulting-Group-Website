@@ -37,6 +37,7 @@ export class ResendMailProvider implements MailProvider {
         ...(input.attachments?.map((attachment) => ({
           filename: attachment.filename,
           content: attachment.content,
+          ...(attachment.contentType ? { contentType: attachment.contentType } : {}),
         })) ?? []),
       ],
     });

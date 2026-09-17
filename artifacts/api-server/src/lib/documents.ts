@@ -34,6 +34,7 @@ export const DOCUMENTS_ROOT = path.join(findPackageRoot(import.meta.dirname), "p
 export interface LoadedDocument {
   filename: string;
   content: Buffer;
+  contentType: string;
 }
 
 function resolveSafePath(filePath: string, root: string): string {
@@ -65,7 +66,7 @@ export async function loadEnabledDocuments(
     const resolvedPath = resolveSafePath(doc.filePath, documentsRoot);
     try {
       const content = await readFile(resolvedPath);
-      loaded.push({ filename: doc.filename, content });
+      loaded.push({ filename: doc.filename, content, contentType: "application/pdf" });
     } catch (err) {
       // Include the real error (ENOENT vs. a permissions problem vs. a
       // wrong DOCUMENTS_ROOT all look identical without this) so a

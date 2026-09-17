@@ -4,7 +4,8 @@ import { generateOtp, hashOtp, verifyOtp } from "../lib/otp";
 import type { MailProvider } from "../mail/mail-provider";
 import { renderDocumentsEmailHtml, renderDocumentsEmailText } from "../mail/templates/documents-email";
 import { renderOtpEmailHtml, renderOtpEmailText } from "../mail/templates/otp-email";
-import { loadEnabledDocuments } from "../lib/documents";
+import { DOCUMENTS_ROOT, loadEnabledDocuments } from "../lib/documents";
+import { requestInfoDocuments, type RequestInfoDocument } from "../../config/request-info-documents";
 import { logger } from "../lib/logger";
 import {
   requestInfoSendLimiterByEmail,
@@ -24,6 +25,9 @@ export interface RequestInfoRouterDeps {
   publicSiteUrl: string;
   /** Overridable only for tests; production always gets the 60s default (see below). */
   resendCooldownMs?: number;
+  /** Overridable only for tests; production always reads the real manifest/root. */
+  documentsManifest?: RequestInfoDocument[];
+  documentsRoot?: string;
 }
 
 const MAX_TOTAL_ATTACHMENT_BYTES = 35 * 1024 * 1024; // conservative margin under Resend's documented limit
@@ -49,7 +53,37 @@ async function deliverDocuments(deps: RequestInfoRouterDeps, challenge: Delivera
   logger.info({ requestId: challenge.id }, "Document delivery started");
 
   try {
-    const documents = await loadEnabledDocuments();
+    const manifest = deps.documentsManifest ?? requestInfoDocuments;
+    const documentsRoot = deps.documentsRoot ?? DOCUMENTS_ROOT;
+    const expectedCount = manifest.filter((doc) => doc.enabled).length;
+    const documents = await loadEnabledDocuments(manifest, documentsRoot);
+
+    // Safe to log: directory path, count, filenames and byte sizes only -
+    // never file contents or anything secret.
+    logger.info(
+      {
+        requestId: challenge.id,
+        documentsRoot,
+        expectedCount,
+        loadedCount: documents.length,
+        attachments: documents.map((doc) => ({ filename: doc.filename, bytes: doc.content.byteLength })),
+      },
+      "Resolved request-info document attachments",
+    );
+
+    // A manifest entry that failed to load (missing file, wrong path, bad
+    // permissions) is a real delivery failure, not a "best effort, send
+    // what we have" situation - a visitor must never be told documents were
+    // sent when some or all of them silently weren't. This also refuses to
+    // ever call the mail provider with `attachments: []`.
+    if (expectedCount === 0 || documents.length !== expectedCount || documents.some((doc) => doc.content.byteLength === 0)) {
+      await deps.store.setDeliveryStatus(challenge.id, "failed");
+      logger.error(
+        { requestId: challenge.id, documentsRoot, expectedCount, loadedCount: documents.length },
+        "Document delivery failed: one or more configured documents did not load correctly",
+      );
+      return "failed";
+    }
 
     const totalBytes = documents.reduce((sum, doc) => sum + doc.content.byteLength, 0);
     if (totalBytes > MAX_TOTAL_ATTACHMENT_BYTES) {
@@ -66,10 +100,10 @@ async function deliverDocuments(deps: RequestInfoRouterDeps, challenge: Delivera
       subject: "Your requested DCL documents",
       html: renderDocumentsEmailHtml({ publicSiteUrl: deps.publicSiteUrl }),
       text: renderDocumentsEmailText({ publicSiteUrl: deps.publicSiteUrl }),
-      attachments: documents.map((doc) => ({ filename: doc.filename, content: doc.content })),
+      attachments: documents.map((doc) => ({ filename: doc.filename, content: doc.content, contentType: doc.contentType })),
     });
     await deps.store.setDeliveryStatus(challenge.id, "sent");
-    logger.info({ requestId: challenge.id }, "Document delivery succeeded");
+    logger.info({ requestId: challenge.id, attachmentCount: documents.length }, "Document delivery succeeded");
     return "sent";
   } catch (err) {
     await deps.store.setDeliveryStatus(challenge.id, "failed");

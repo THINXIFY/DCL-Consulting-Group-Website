@@ -1,5 +1,5 @@
 import express from "express";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import request from "supertest";
@@ -8,6 +8,7 @@ import { createRequestInfoRouter, type RequestInfoRouterDeps } from "./request-i
 import { FileOtpChallengeStore } from "../lib/otp-challenge-store";
 import type { MailProvider, SendMailInput } from "../mail/mail-provider";
 import { resetRequestInfoRateLimiters } from "../middlewares/request-info-rate-limit";
+import { requestInfoDocuments } from "../../config/request-info-documents";
 
 class RecordingMailProvider implements MailProvider {
   sent: SendMailInput[] = [];
@@ -148,12 +149,56 @@ describe("POST /api/request-info/verify", () => {
     expect(mailProvider.sent).toHaveLength(2); // OTP + one documents email, not two
   });
 
-  it("only attaches enabled documents", async () => {
+  it("attaches all six configured documents, each with its manifest filename, PDF content type, and non-empty content", async () => {
     const { requestId, code } = await startChallenge();
     await request(app).post("/api/request-info/verify").send({ requestId, code });
-    const attachmentNames = mailProvider.sent[1].attachments?.map((a) => a.filename) ?? [];
-    expect(attachmentNames).toContain("DCL-Company-Profile.pdf");
-    expect(attachmentNames).toContain("DCL-Services-Overview.pdf");
+    const attachments = mailProvider.sent[1].attachments ?? [];
+
+    expect(attachments).toHaveLength(requestInfoDocuments.length);
+    for (const doc of requestInfoDocuments) {
+      const attachment = attachments.find((a) => a.filename === doc.filename);
+      expect(attachment, `missing attachment for ${doc.filename}`).toBeDefined();
+      expect(attachment!.contentType).toBe("application/pdf");
+      expect(Buffer.isBuffer(attachment!.content)).toBe(true);
+      expect(attachment!.content.byteLength).toBeGreaterThan(0);
+    }
+  });
+
+  it("never reports status sent, and never calls the mail provider, when a configured document fails to load", async () => {
+    // Reproduces the exact production bug: a manifest entry pointing at a
+    // file that does not exist on disk. loadEnabledDocuments logs and
+    // skips it (by design, so one bad file doesn't block the others), so
+    // the route itself must be the one refusing to report success.
+    deps.documentsManifest = [
+      { id: "present", filename: "Present.pdf", filePath: "present.pdf", enabled: true },
+      { id: "missing", filename: "Missing.pdf", filePath: "missing.pdf", enabled: true },
+    ];
+    deps.documentsRoot = dir;
+    await writeFile(path.join(dir, "present.pdf"), "pdf-bytes");
+    app = express();
+    app.use(express.json());
+    app.use("/api", createRequestInfoRouter(deps));
+
+    const { requestId, code } = await startChallenge();
+    const res = await request(app).post("/api/request-info/verify").send({ requestId, code });
+
+    expect(res.body.status).toBe("failed");
+    expect(mailProvider.sent).toHaveLength(1); // only the OTP email - never the documents email
+    expect(mailProvider.sent.some((mail) => mail.subject === "Your requested DCL documents")).toBe(false);
+  });
+
+  it("never reports status sent, and never calls the mail provider, when every configured document is missing (the empty-attachments case)", async () => {
+    deps.documentsManifest = [{ id: "missing", filename: "Missing.pdf", filePath: "missing.pdf", enabled: true }];
+    deps.documentsRoot = dir;
+    app = express();
+    app.use(express.json());
+    app.use("/api", createRequestInfoRouter(deps));
+
+    const { requestId, code } = await startChallenge();
+    const res = await request(app).post("/api/request-info/verify").send({ requestId, code });
+
+    expect(res.body.status).toBe("failed");
+    expect(mailProvider.sent).toHaveLength(1);
   });
 
   it("retries delivery on a subsequent verify call after a delivery failure, without re-checking the code", async () => {
