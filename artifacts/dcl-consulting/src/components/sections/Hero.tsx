@@ -8,7 +8,7 @@ import { useMediaQuery } from '@/hooks/use-media-query';
 import { useMagnetic } from '@/hooks/use-magnetic';
 
 const HERO_VIDEO = '/video/dcl-hero-background.mp4';
-const HERO_POSTER = '/images/home/home-hero-architecture.webp';
+const PITCH_DECK_HREF = '/docs/DCL-Consulting-Group-Pitch-Deck.pdf';
 
 const MICRO_INFO = ['Independent Perspective', 'Strategic Analysis', 'Long-Term Thinking'];
 
@@ -25,11 +25,11 @@ export function Hero() {
   const rootRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const startRef = useRef<HTMLAnchorElement>(null);
-  const exploreRef = useRef<HTMLAnchorElement>(null);
+  const pitchDeckRef = useRef<HTMLAnchorElement>(null);
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
 
   useMagnetic(startRef, { strength: 0.3 });
-  useMagnetic(exploreRef, { strength: 0.25 });
+  useMagnetic(pitchDeckRef, { strength: 0.25 });
 
   useEffect(() => {
     if (prefersReducedMotion) videoRef.current?.pause();
@@ -79,12 +79,11 @@ export function Hero() {
           data-testid="video-hero-background"
           className="dclHero__video pointer-events-none h-full w-full object-cover object-center"
           src={HERO_VIDEO}
-          poster={HERO_POSTER}
           autoPlay={!prefersReducedMotion}
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="auto"
           aria-hidden="true"
         />
         <div className="pointer-events-none absolute inset-0" style={{ background: HORIZONTAL_OVERLAY }} />
@@ -110,7 +109,7 @@ export function Hero() {
           <h1
             id="hero-title"
             data-testid="text-hero-title"
-            className="dclHome__display mt-7 text-[clamp(2.625rem,2.5rem+1.7vw,4.875rem)] leading-[.97] tracking-[-.035em]"
+            className="dclHome__display mt-7 text-[clamp(3rem,2.8rem+2.6vw,7.2rem)] leading-[.97] tracking-[-.035em]"
           >
             <span className="block overflow-hidden"><span className="dclHero__revealLine block">Clarity</span></span>
             <span className="block overflow-hidden"><span className="dclHero__revealLine block text-[#c6e3fa]">Before Capital.</span></span>
@@ -133,17 +132,21 @@ export function Hero() {
                 className="text-[#080a0d] transition-transform duration-300 ease-out group-hover:translate-x-[3px] group-hover:-translate-y-[3px]"
               />
             </Link>
-            <Link
-              ref={exploreRef}
-              href="/services"
-              data-testid="link-explore-services-hero"
-              className="dclHero__reveal dclHero__reveal--cta group inline-flex items-center gap-2 border-b border-white/40 px-1 py-2 text-[11px] font-semibold uppercase tracking-[.13em] text-white/80 transition-colors duration-300 hover:border-[#c6e3fa] hover:text-[#c6e3fa] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+            <a
+              ref={pitchDeckRef}
+              href={PITCH_DECK_HREF}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-testid="link-hero-pitch-deck"
+              className="dclHero__reveal dclHero__reveal--cta group inline-flex items-center gap-4 border border-[#8bbfe8]/50 px-6 py-4 text-[11px] font-semibold uppercase tracking-[.13em] text-[#c6e3fa] transition-[border-color,background-color] duration-300 hover:border-[#c6e3fa] hover:bg-[#c6e3fa]/[0.08] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
             >
-              Explore Our Services
-              <span aria-hidden="true" className="inline-block transition-transform duration-300 group-hover:translate-x-1">
-                &#8594;
-              </span>
-            </Link>
+              View Pitch Deck
+              <ArrowUpRight
+                size={15}
+                strokeWidth={1.3}
+                className="text-[#c6e3fa] transition-transform duration-300 ease-out group-hover:translate-x-[3px] group-hover:-translate-y-[3px]"
+              />
+            </a>
           </div>
 
           <div className="dclHero__reveal dclHero__reveal--detail mt-14 h-px w-full max-w-[560px] bg-white/15 lg:mt-16" />

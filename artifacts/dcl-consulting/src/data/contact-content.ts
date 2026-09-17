@@ -78,10 +78,9 @@ export const getInTouchBand = {
     { label: 'Registered Office', lines: ['3 Tallow Wharf,', 'Birchley Green,', 'Hertford,', 'Hertfordshire,', 'England,', 'SG14 1FF', 'United Kingdom'] },
   ] satisfies CompanyDetailFact[],
   locationImage: {
-    src: '/images/general/contact-registered-office-location.webp',
-    alt: 'Row of traditional red-brick English townhouses with white-painted sash windows along a quiet street',
+    src: 'https://marbholding.com/wp-content/uploads/2026/09/cntct.webp',
+    alt: 'Two DCL Consulting advisors in conversation at a marble table in a branded office overlooking a city skyline',
   },
-  locationCaptionLines: ['Hertford, England', 'Registered Office Location'],
   statementLines: ['People', 'Perspective', 'Progress'],
 };
 

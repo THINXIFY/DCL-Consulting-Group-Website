@@ -30,15 +30,22 @@ describe('GetInTouchBand', () => {
     expect(fact.querySelector('address')).not.toBeNull();
   });
 
-  it('labels the location visual honestly, without implying it is the actual DCL office', () => {
+  it('renders the section visual with a real src and an honest alt that does not claim it is the registered office', () => {
     render(<GetInTouchBand />);
-    const caption = screen.getByTestId('text-get-in-touch-location-caption');
-    expect(caption).toHaveTextContent('Hertford, England');
-    expect(caption).toHaveTextContent('Registered Office Location');
-    expect(caption.textContent?.toLowerCase()).not.toContain('our office');
-
     const image = screen.getByTestId('img-get-in-touch-location');
-    expect(image).toHaveAttribute('src', expect.stringContaining('/images/general/'));
+    expect(image).toHaveAttribute('src', expect.stringContaining('cntct.webp'));
+    const alt = (image.getAttribute('alt') ?? '').toLowerCase();
+    expect(alt).not.toContain('our office');
+    expect(alt).not.toContain('hertford');
+    expect(alt).not.toContain('registered office');
+  });
+
+  it('presents People, Perspective, and Progress as restrained supporting micro-copy', () => {
+    render(<GetInTouchBand />);
+    const statement = screen.getByTestId('text-get-in-touch-statement');
+    expect(statement).toHaveTextContent('People');
+    expect(statement).toHaveTextContent('Perspective');
+    expect(statement).toHaveTextContent('Progress');
   });
 
   it('contains no numbering or em-dash characters', () => {

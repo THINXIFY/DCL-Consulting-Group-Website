@@ -132,7 +132,7 @@ export function Footer() {
 
   return (
     <footer ref={rootRef} className="relative overflow-hidden bg-[#171714] text-white">
-      <div className="dclFooter__bgWrap pointer-events-none absolute inset-0" aria-hidden="true">
+      <div className="dclFooter__bgWrap pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
         <img
           ref={bgImageRef}
           data-testid="img-footer-background"

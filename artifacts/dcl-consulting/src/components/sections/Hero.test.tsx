@@ -17,10 +17,18 @@ describe('Hero', () => {
     const primary = screen.getByTestId('link-start-conversation-hero');
     expect(primary).toHaveTextContent('Start a Conversation');
     expect(primary).toHaveAttribute('href', '/contact');
+  });
 
-    const secondary = screen.getByTestId('link-explore-services-hero');
-    expect(secondary).toHaveTextContent('Explore Our Services');
-    expect(secondary).toHaveAttribute('href', '/services');
+  it('links the single Pitch Deck CTA to the real PDF, opened safely in a new tab, with no duplicate or leftover Explore Services link', () => {
+    render(<Hero />);
+    const pitchDeck = screen.getByTestId('link-hero-pitch-deck');
+    expect(pitchDeck).toHaveTextContent('View Pitch Deck');
+    expect(pitchDeck).toHaveAttribute('href', '/docs/DCL-Consulting-Group-Pitch-Deck.pdf');
+    expect(pitchDeck).toHaveAttribute('target', '_blank');
+    expect(pitchDeck).toHaveAttribute('rel', expect.stringContaining('noopener'));
+    expect(pitchDeck).toHaveAttribute('rel', expect.stringContaining('noreferrer'));
+    expect(screen.getAllByTestId('link-hero-pitch-deck')).toHaveLength(1);
+    expect(screen.queryByTestId('link-explore-services-hero')).not.toBeInTheDocument();
   });
 
   it('renders the micro-information strip with no numbering', () => {

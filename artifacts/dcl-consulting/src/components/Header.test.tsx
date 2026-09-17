@@ -184,51 +184,100 @@ describe('Header', () => {
   });
 
   describe('mobile navigation', () => {
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
     it('opens a full-screen panel on menu button click, with aria-expanded/aria-modal wired correctly', () => {
       render(<Header />);
       const button = screen.getByTestId('button-mobile-menu');
       expect(button).toHaveAttribute('aria-expanded', 'false');
       fireEvent.click(button);
       expect(button).toHaveAttribute('aria-expanded', 'true');
-      const panel = screen.getByTestId('button-mobile-menu-close').closest('[role="dialog"]');
+      const panel = screen.getByTestId('mobile-navigation-panel');
       expect(panel).toHaveAttribute('aria-modal', 'true');
+      expect(panel).toHaveAttribute('data-open', 'true');
+      expect(panel).toHaveAttribute('aria-hidden', 'false');
       expect(screen.getByTestId('link-mobile-about')).toBeInTheDocument();
     });
 
-    it('locks body scroll while open and restores it on close', () => {
+    it('locks body scroll while open and restores it once the close animation finishes', () => {
+      vi.useFakeTimers();
       render(<Header />);
       fireEvent.click(screen.getByTestId('button-mobile-menu'));
       expect(document.body.style.overflow).toBe('hidden');
+
       fireEvent.click(screen.getByTestId('button-mobile-menu-close'));
+      expect(document.body.style.overflow).toBe('hidden');
+
+      act(() => {
+        vi.advanceTimersByTime(500);
+      });
       expect(document.body.style.overflow).toBe('');
+      expect(screen.queryByTestId('mobile-navigation-panel')).not.toBeInTheDocument();
     });
 
-    it('closes on Escape and returns focus to the menu trigger', () => {
+    it('closes on Escape immediately (signaled via data-open) and returns focus to the menu trigger, then unmounts after the close animation', () => {
+      vi.useFakeTimers();
       render(<Header />);
       const trigger = screen.getByTestId('button-mobile-menu');
       fireEvent.click(trigger);
-      const panel = screen.getByTestId('button-mobile-menu-close').closest('[role="dialog"]')!;
+      const panel = screen.getByTestId('mobile-navigation-panel');
       fireEvent.keyDown(panel, { key: 'Escape' });
-      expect(screen.queryByTestId('button-mobile-menu-close')).not.toBeInTheDocument();
+
+      expect(panel).toHaveAttribute('data-open', 'false');
       expect(trigger).toHaveFocus();
+
+      act(() => {
+        vi.advanceTimersByTime(500);
+      });
+      expect(screen.queryByTestId('mobile-navigation-panel')).not.toBeInTheDocument();
     });
 
-    it('includes Partners and Contact as plain links, in addition to the Home/About/Services/Expertise/Approach/Industries/Team set', () => {
+    it('traps Tab focus inside the panel while open', () => {
       render(<Header />);
       fireEvent.click(screen.getByTestId('button-mobile-menu'));
-      for (const label of ['home', 'about', 'services', 'expertise', 'approach', 'industries', 'team', 'partners', 'contact']) {
+      const panel = screen.getByTestId('mobile-navigation-panel');
+      const focusables = panel.querySelectorAll<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+
+      last.focus();
+      fireEvent.keyDown(panel, { key: 'Tab' });
+      expect(first).toHaveFocus();
+
+      first.focus();
+      fireEvent.keyDown(panel, { key: 'Tab', shiftKey: true });
+      expect(last).toHaveFocus();
+    });
+
+    it('renders exactly the Home/About/Services/Expertise/Approach/Industries/Team set as the primary mobile nav', () => {
+      render(<Header />);
+      fireEvent.click(screen.getByTestId('button-mobile-menu'));
+      for (const label of ['home', 'about', 'services', 'expertise', 'approach', 'industries', 'team']) {
         expect(screen.getByTestId(`link-mobile-${label}`)).toBeInTheDocument();
       }
-      expect(screen.getByTestId('link-mobile-partners')).toHaveAttribute('href', '/partners');
+      expect(screen.getByTestId('link-mobile-about')).toHaveAttribute('href', '/about');
     });
 
-    it('renders the Get in Touch CTA and the closing tagline at the bottom', () => {
+    it('renders the bottom utility area with Insights, the legal pages, the verified email, and a prominent Get in Touch CTA', () => {
       render(<Header />);
       fireEvent.click(screen.getByTestId('button-mobile-menu'));
+
+      const insights = screen.getByTestId('link-mobile-insights');
+      expect(insights).toHaveAttribute('href', '/insights');
+
+      expect(screen.getByTestId('link-mobile-privacy-policy')).toHaveAttribute('href', '/privacy-policy');
+      expect(screen.getByTestId('link-mobile-terms-conditions')).toHaveAttribute('href', '/terms');
+      expect(screen.getByTestId('link-mobile-impressum')).toHaveAttribute('href', '/impressum');
+
+      const email = screen.getByTestId('link-mobile-email');
+      expect(email).toHaveTextContent('info@dcl-consulting-group.com');
+      expect(email).toHaveAttribute('href', 'mailto:info@dcl-consulting-group.com');
+
       const cta = screen.getByTestId('link-mobile-cta');
       expect(cta).toHaveTextContent('Get in Touch');
       expect(cta).toHaveAttribute('href', '/contact');
-      expect(screen.getByText('Clarity Before Capital.')).toBeInTheDocument();
     });
 
     describe('Services accordion', () => {
@@ -274,12 +323,12 @@ describe('Header', () => {
         expect(screen.getByTestId('link-mobile-mega-wealth-strategy-advisory')).toHaveAttribute('aria-current', 'page');
       });
 
-      it('closes the whole mobile menu after tapping a service link', () => {
+      it('closes the whole mobile menu immediately after tapping a service link, since navigation itself resets it', () => {
         render(<Header />);
         openMobileMenu();
         fireEvent.click(screen.getByTestId('button-mobile-services-toggle'));
         fireEvent.click(screen.getByTestId('link-mobile-mega-investment-consulting'));
-        expect(screen.queryByTestId('link-mobile-mega-investment-consulting')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('mobile-navigation-panel')).not.toBeInTheDocument();
       });
     });
   });

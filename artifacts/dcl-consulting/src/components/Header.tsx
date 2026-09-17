@@ -1,9 +1,14 @@
 import { useEffect, useRef, useState, type FocusEvent, type KeyboardEvent, type ReactNode } from 'react';
-import { ArrowRight, ChevronDown, Menu, X } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, ChevronDown, Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import { servicesMegaMenu } from '@/data/services-nav-content';
+import { footerLegalLinks } from '@/data/footer-content';
+import { dclCompany } from '@/data/company';
 import { ensureGsapRegistered, gsap } from '@/lib/gsap';
 import { useMediaQuery } from '@/hooks/use-media-query';
+
+const MOBILE_CLOSE_DELAY_MS = 450;
+const MOBILE_UTILITY_LINKS = [{ label: 'Insights', href: '/insights' }, ...footerLegalLinks.filter((link) => !link.external)];
 
 type Theme = 'dark' | 'light';
 
@@ -117,15 +122,36 @@ function NavLink({
 }
 
 function mobileLinkClass(isActive: boolean) {
-  return `dclHome__display flex items-center justify-between border-b border-white/10 py-4 text-[clamp(1.6rem,5.5vw,2.1rem)] leading-none tracking-[-.01em] outline-none transition-colors duration-[250ms] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8] ${
-    isActive ? 'text-white' : 'text-white/70'
+  return `dclMobileNav__navItem dclMobileNav__anim group relative flex min-h-[44px] items-center justify-between border-b border-white/10 py-5 outline-none transition-colors duration-[250ms] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8] active:bg-white/[0.03] ${
+    isActive ? 'text-white' : 'text-white/70 hover:text-white'
   }`;
+}
+
+function MobileNavRowContent({ label, isActive, showArrow = true }: { label: string; isActive: boolean; showArrow?: boolean }) {
+  return (
+    <>
+      <span className="flex items-center gap-3.5">
+        <span
+          aria-hidden="true"
+          className={`h-1.5 w-1.5 shrink-0 rounded-full bg-[#8bbfe8] transition-opacity duration-300 ${isActive ? 'opacity-100' : 'opacity-0'}`}
+        />
+        <span className="dclHome__display text-[clamp(1.65rem,7.2vw,2.35rem)] leading-none tracking-[-.01em]">{label}</span>
+      </span>
+      {showArrow && <ArrowUpRight
+        size={17}
+        strokeWidth={1.4}
+        aria-hidden="true"
+        className={`shrink-0 transition-all duration-300 ${isActive ? 'text-[#8bbfe8] opacity-100' : 'text-white/30 opacity-70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#8bbfe8] group-hover:opacity-100'}`}
+      />}
+    </>
+  );
 }
 
 export function Header() {
   const [location] = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileMounted, setMobileMounted] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
 
@@ -134,7 +160,9 @@ export function Header() {
   const servicesPanelRef = useRef<HTMLDivElement>(null);
   const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
   const mobileCloseRef = useRef<HTMLButtonElement>(null);
+  const mobilePanelRef = useRef<HTMLDivElement>(null);
   const servicesCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mobileCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const suppressServicesFocusOpen = useRef(false);
 
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
@@ -152,8 +180,13 @@ export function Header() {
   }, []);
 
   useEffect(() => {
+    if (mobileCloseTimer.current) {
+      clearTimeout(mobileCloseTimer.current);
+      mobileCloseTimer.current = null;
+    }
     setServicesOpen(false);
     setMobileOpen(false);
+    setMobileMounted(false);
     setMobileServicesOpen(false);
   }, [location]);
 
@@ -180,13 +213,67 @@ export function Header() {
   }, [prefersReducedMotion]);
 
   useEffect(() => {
-    if (!mobileOpen) return;
+    if (!mobileMounted) return;
     document.body.style.overflow = 'hidden';
-    mobileCloseRef.current?.focus();
     return () => {
       document.body.style.overflow = '';
     };
-  }, [mobileOpen]);
+  }, [mobileMounted]);
+
+  useEffect(() => () => {
+    if (mobileCloseTimer.current) clearTimeout(mobileCloseTimer.current);
+  }, []);
+
+  function openMobileMenu() {
+    if (mobileCloseTimer.current) {
+      clearTimeout(mobileCloseTimer.current);
+      mobileCloseTimer.current = null;
+    }
+    setMobileMounted(true);
+    setMobileOpen(true);
+  }
+
+  function closeMobileMenu() {
+    setMobileOpen(false);
+    if (prefersReducedMotion) {
+      setMobileMounted(false);
+      return;
+    }
+    mobileCloseTimer.current = setTimeout(() => setMobileMounted(false), MOBILE_CLOSE_DELAY_MS);
+  }
+
+  useEffect(() => {
+    if (!mobileMounted || !mobilePanelRef.current) return;
+    ensureGsapRegistered();
+
+    const ctx = gsap.context(() => {
+      if (prefersReducedMotion) {
+        gsap.set(
+          [mobilePanelRef.current, '.dclMobileNav__anim'],
+          { clearProps: 'all' },
+        );
+        return;
+      }
+
+      if (mobileOpen) {
+        mobileCloseRef.current?.focus();
+        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+        tl.fromTo(mobilePanelRef.current, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 0)
+          .fromTo('.dclMobileNav__topItem', { autoAlpha: 0, y: -8 }, { autoAlpha: 1, y: 0, duration: 0.35, stagger: 0.06 }, 0.05)
+          .fromTo('.dclMobileNav__rule--top', { scaleX: 0 }, { scaleX: 1, duration: 0.35 }, 0.12)
+          .fromTo('.dclMobileNav__navItem', { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.3, stagger: 0.028 }, 0.18)
+          .fromTo('.dclMobileNav__rule--divider', { scaleX: 0 }, { scaleX: 1, duration: 0.3 }, 0.4)
+          .fromTo('.dclMobileNav__utility', { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.3, stagger: 0.03 }, 0.45)
+          .fromTo('.dclMobileNav__cta', { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.3, ease: 'power4.out' }, 0.58);
+      } else {
+        const tl = gsap.timeline({ defaults: { ease: 'power2.inOut' } });
+        tl.to('.dclMobileNav__anim', { autoAlpha: 0, y: 6, duration: 0.22, stagger: 0.01 }, 0)
+          .to(mobilePanelRef.current, { autoAlpha: 0, duration: 0.3 }, 0.05);
+      }
+    }, mobilePanelRef);
+
+    return () => ctx.revert();
+  }, [mobileOpen, mobileMounted, prefersReducedMotion]);
 
   function cancelServicesClose() {
     if (servicesCloseTimer.current) {
@@ -223,8 +310,24 @@ export function Header() {
 
   function handleMobileKeyDown(event: KeyboardEvent) {
     if (event.key === 'Escape') {
-      setMobileOpen(false);
+      closeMobileMenu();
       mobileMenuButtonRef.current?.focus();
+      return;
+    }
+    if (event.key === 'Tab' && mobilePanelRef.current) {
+      const focusables = mobilePanelRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     }
   }
 
@@ -305,7 +408,7 @@ export function Header() {
             aria-label={mobileOpen ? 'Close navigation' : 'Open navigation'}
             aria-expanded={mobileOpen}
             aria-controls="mobile-navigation-panel"
-            onClick={() => setMobileOpen((value) => !value)}
+            onClick={() => (mobileOpen ? closeMobileMenu() : openMobileMenu())}
             className={`flex h-11 w-11 shrink-0 items-center justify-center outline-none transition-colors duration-[250ms] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8] min-[1180px]:hidden ${
               theme === 'light' ? 'text-[#080a0d]' : 'text-white'
             }`}
@@ -398,17 +501,33 @@ export function Header() {
         </div>
       </div>
 
-      {mobileOpen && (
+      {mobileMounted && (
         <div
+          ref={mobilePanelRef}
           id="mobile-navigation-panel"
           role="dialog"
           aria-modal="true"
           aria-label="Site navigation"
+          aria-hidden={!mobileOpen}
+          data-open={mobileOpen}
+          data-testid="mobile-navigation-panel"
           onKeyDown={handleMobileKeyDown}
-          className="fixed inset-0 top-0 z-[70] flex flex-col bg-[#080a0d] min-[1180px]:hidden"
+          className={`fixed inset-x-0 top-0 z-[70] flex h-[100dvh] flex-col overflow-hidden bg-[#080a0d] min-[1180px]:hidden ${
+            mobileOpen ? 'pointer-events-auto' : 'pointer-events-none'
+          } ${prefersReducedMotion ? (mobileOpen ? 'opacity-100' : 'opacity-0') : ''}`}
         >
-          <div className="flex items-center justify-between px-6 py-5 sm:px-10">
-            <Link href="/" data-testid="link-mobile-home-logo" onClick={() => setMobileOpen(false)} className="outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]">
+          {/* Very subtle architectural texture: a faint radial glow and one
+              hairline, never blur/glassmorphism. */}
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: 'radial-gradient(circle at 85% 0%, rgba(139,191,232,.05), transparent 45%)' }} />
+          <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 left-6 hidden w-px bg-white/[0.04] sm:left-10 sm:block" />
+
+          <div className="relative flex items-center justify-between px-6 py-5 sm:px-10">
+            <Link
+              href="/"
+              data-testid="link-mobile-home-logo"
+              onClick={closeMobileMenu}
+              className="dclMobileNav__topItem dclMobileNav__anim outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+            >
               <Mark theme="dark" />
             </Link>
             <button
@@ -416,121 +535,129 @@ export function Header() {
               type="button"
               data-testid="button-mobile-menu-close"
               aria-label="Close navigation"
-              onClick={() => setMobileOpen(false)}
-              className="flex h-11 w-11 items-center justify-center text-white outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+              onClick={closeMobileMenu}
+              className="dclMobileNav__topItem dclMobileNav__anim group flex h-11 w-11 items-center justify-center text-white outline-none transition-colors duration-300 hover:text-[#8bbfe8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
             >
-              <X size={22} strokeWidth={1.4} />
+              <X size={22} strokeWidth={1.4} className="transition-transform duration-300 group-hover:rotate-90" />
             </button>
           </div>
 
-          <nav aria-label="Mobile navigation" className="flex-1 overflow-y-auto px-6 pb-8 sm:px-10">
-            {NAV_LINKS.map(([label, href]) => {
-              const isActive = isNavLinkActive(href, location);
-              if (label === 'Services') {
-                return (
-                  <div key={href} className="border-b border-white/10">
-                    <div className="flex items-center">
-                      <NavLink
-                        href="/services"
-                        onClick={() => setMobileOpen(false)}
-                        isActive={servicesActive}
-                        showUnderline={false}
-                        testId="link-mobile-services"
-                        className={`${mobileLinkClass(servicesActive)} flex-1 border-b-0`}
-                      >
-                        Services
-                      </NavLink>
-                      <button
-                        type="button"
-                        data-testid="button-mobile-services-toggle"
-                        aria-expanded={mobileServicesOpen}
-                        aria-controls="mobile-services-panel"
-                        aria-label={mobileServicesOpen ? 'Collapse Services menu' : 'Expand Services menu'}
-                        onClick={() => setMobileServicesOpen((value) => !value)}
-                        className="flex h-11 w-11 shrink-0 items-center justify-center text-white/70 outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
-                      >
-                        <ChevronDown size={18} strokeWidth={1.5} aria-hidden="true" className={`transition-transform duration-300 ${mobileServicesOpen ? 'rotate-180' : ''}`} />
-                      </button>
-                    </div>
-                    {mobileServicesOpen && (
-                      <div id="mobile-services-panel" className="flex flex-col pb-4 pl-1">
-                        <Link
-                          href={servicesMegaMenu.viewAll.href}
-                          onClick={() => setMobileOpen(false)}
-                          data-testid="link-mobile-mega-view-all"
-                          className="flex min-h-[44px] items-center border-b border-white/10 text-[11px] font-semibold uppercase tracking-[.12em] text-white/70"
-                        >
-                          {servicesMegaMenu.viewAll.label}
-                        </Link>
-                        {servicesMegaMenu.groups.map((group) => (
-                          <div key={group.heading}>
-                            <p className="mt-4 text-[10px] font-semibold uppercase tracking-[.14em] text-white/35">{group.heading}</p>
-                            {group.services.map((service) => {
-                              const serviceActive = location === service.href;
-                              return (
-                                <Link
-                                  key={service.href}
-                                  href={service.href}
-                                  onClick={() => setMobileOpen(false)}
-                                  data-testid={`link-mobile-mega-${slug(service.label)}`}
-                                  aria-current={serviceActive ? 'page' : undefined}
-                                  className={`flex min-h-[44px] items-center border-b border-white/10 py-2 text-[14px] font-medium ${serviceActive ? 'text-[#8bbfe8]' : 'text-white/85'}`}
-                                >
-                                  {service.label}
-                                </Link>
-                              );
-                            })}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              }
-              return (
-                <NavLink
-                  key={href}
-                  href={href}
-                  onClick={() => setMobileOpen(false)}
-                  isActive={isActive}
-                  showUnderline={false}
-                  testId={`link-mobile-${slug(label)}`}
-                  className={mobileLinkClass(isActive)}
-                >
-                  {label}
-                </NavLink>
-              );
-            })}
-            <Link
-              href="/partners"
-              onClick={() => setMobileOpen(false)}
-              data-testid="link-mobile-partners"
-              aria-current={isNavLinkActive('/partners', location) ? 'page' : undefined}
-              className={mobileLinkClass(isNavLinkActive('/partners', location))}
-            >
-              Partners
-            </Link>
-            <Link
-              href="/contact"
-              onClick={() => setMobileOpen(false)}
-              data-testid="link-mobile-contact"
-              aria-current={isNavLinkActive('/contact', location) ? 'page' : undefined}
-              className={mobileLinkClass(isNavLinkActive('/contact', location))}
-            >
-              Contact
-            </Link>
+          <div className="dclMobileNav__rule--top dclMobileNav__anim relative mx-6 h-px origin-left bg-white/10 sm:mx-10" />
 
-            <div className="mt-10 flex flex-col gap-6">
+          <nav aria-label="Mobile navigation" className="relative flex-1 overflow-y-auto px-6 pb-10 sm:px-10">
+            <div className="pt-2">
+              {NAV_LINKS.map(([label, href]) => {
+                const isActive = isNavLinkActive(href, location);
+                if (label === 'Services') {
+                  return (
+                    <div key={href} className="dclMobileNav__navItem dclMobileNav__anim border-b border-white/10">
+                      <div className="flex items-center">
+                        <NavLink
+                          href="/services"
+                          onClick={closeMobileMenu}
+                          isActive={servicesActive}
+                          showUnderline={false}
+                          testId="link-mobile-services"
+                          className="group relative flex min-h-[44px] flex-1 items-center py-5 outline-none transition-colors duration-[250ms] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+                        >
+                          <MobileNavRowContent label="Services" isActive={servicesActive} showArrow={false} />
+                        </NavLink>
+                        <button
+                          type="button"
+                          data-testid="button-mobile-services-toggle"
+                          aria-expanded={mobileServicesOpen}
+                          aria-controls="mobile-services-panel"
+                          aria-label={mobileServicesOpen ? 'Collapse Services menu' : 'Expand Services menu'}
+                          onClick={() => setMobileServicesOpen((value) => !value)}
+                          className="flex h-11 w-11 shrink-0 items-center justify-center text-white/50 outline-none transition-colors duration-300 hover:text-[#8bbfe8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+                        >
+                          <ChevronDown size={18} strokeWidth={1.5} aria-hidden="true" className={`transition-transform duration-300 ${mobileServicesOpen ? 'rotate-180' : ''}`} />
+                        </button>
+                      </div>
+                      {mobileServicesOpen && (
+                        <div id="mobile-services-panel" className="flex flex-col pb-6 pl-1">
+                          <Link
+                            href={servicesMegaMenu.viewAll.href}
+                            onClick={closeMobileMenu}
+                            data-testid="link-mobile-mega-view-all"
+                            className="dclHome__body flex min-h-[44px] items-center border-b border-white/10 text-[11px] font-semibold uppercase tracking-[.12em] text-white/60 transition-colors duration-300 hover:text-[#8bbfe8]"
+                          >
+                            {servicesMegaMenu.viewAll.label}
+                          </Link>
+                          {servicesMegaMenu.groups.map((group) => (
+                            <div key={group.heading}>
+                              <p className="dclHome__body mt-5 text-[10px] font-semibold uppercase tracking-[.16em] text-white/35">{group.heading}</p>
+                              {group.services.map((service) => {
+                                const serviceActive = location === service.href;
+                                return (
+                                  <Link
+                                    key={service.href}
+                                    href={service.href}
+                                    onClick={closeMobileMenu}
+                                    data-testid={`link-mobile-mega-${slug(service.label)}`}
+                                    aria-current={serviceActive ? 'page' : undefined}
+                                    className={`dclHome__body flex min-h-[44px] items-center border-b border-white/10 py-2.5 text-[15px] font-medium transition-colors duration-300 ${serviceActive ? 'text-[#8bbfe8]' : 'text-white/80 hover:text-white'}`}
+                                  >
+                                    {service.label}
+                                  </Link>
+                                );
+                              })}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+                return (
+                  <NavLink
+                    key={href}
+                    href={href}
+                    onClick={closeMobileMenu}
+                    isActive={isActive}
+                    showUnderline={false}
+                    testId={`link-mobile-${slug(label)}`}
+                    className={mobileLinkClass(isActive)}
+                  >
+                    <MobileNavRowContent label={label} isActive={isActive} />
+                  </NavLink>
+                );
+              })}
+            </div>
+
+            <div className="dclMobileNav__rule--divider dclMobileNav__anim mt-10 h-px origin-left bg-white/10" />
+
+            <div className="dclMobileNav__utility dclMobileNav__anim mt-8 flex flex-col gap-1">
+              {MOBILE_UTILITY_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={closeMobileMenu}
+                  data-testid={`link-mobile-${slug(link.label)}`}
+                  className="dclHome__body flex min-h-[44px] items-center text-[13px] font-medium uppercase tracking-[.1em] text-white/50 transition-colors duration-300 hover:text-[#8bbfe8]"
+                >
+                  {link.label}
+                </Link>
+              ))}
+              <a
+                href={`mailto:${dclCompany.email}`}
+                data-testid="link-mobile-email"
+                className="dclHome__body flex min-h-[44px] items-center text-[13px] font-medium lowercase tracking-[.02em] text-white/50 transition-colors duration-300 hover:text-[#8bbfe8]"
+              >
+                {dclCompany.email}
+              </a>
+            </div>
+
+            <div className="dclMobileNav__cta dclMobileNav__anim mt-8">
               <Link
                 href="/contact"
-                onClick={() => setMobileOpen(false)}
+                onClick={closeMobileMenu}
                 data-testid="link-mobile-cta"
-                className="group inline-flex w-fit items-center gap-3 bg-[#c6e3fa] px-6 py-4 text-[11px] font-semibold uppercase tracking-[.13em] text-[#080a0d] transition-colors duration-300 hover:bg-[#8bbfe8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+                className="group flex w-full items-center justify-between bg-[#c6e3fa] px-6 py-5 text-[12px] font-semibold uppercase tracking-[.15em] text-[#080a0d] transition-colors duration-300 hover:bg-[#8bbfe8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8] sm:w-fit sm:gap-4"
               >
                 Get in Touch
-                <ArrowRight size={14} strokeWidth={1.4} className="text-[#080a0d] transition-transform duration-300 group-hover:translate-x-[3px]" />
+                <ArrowRight size={16} strokeWidth={1.5} className="text-[#080a0d] transition-transform duration-300 ease-out group-hover:translate-x-[3px]" />
               </Link>
-              <p className="text-[11px] font-semibold uppercase tracking-[.15em] text-white/35">Clarity Before Capital.</p>
             </div>
           </nav>
         </div>
