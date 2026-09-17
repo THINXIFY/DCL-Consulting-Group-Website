@@ -3,56 +3,48 @@ import { describe, expect, it } from 'vitest';
 import { expertiseSection } from '@/data/home-content';
 import { Expertise } from './Expertise';
 
+function slug(label: string) {
+  return label.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
 describe('Expertise', () => {
-  it('renders the eyebrow, two-line headline, body, and primary CTA', () => {
+  it('renders the eyebrow, two-line headline, body, micro label, and primary CTA to /expertise', () => {
     render(<Expertise />);
     const section = document.getElementById('expertise');
     expect(section).not.toBeNull();
     expect(screen.getByTestId('text-expertise-eyebrow')).toHaveTextContent('Our Expertise');
-    expect(section?.textContent).toMatch(/different expertise/i);
-    expect(section?.textContent).toMatch(/a clearer view/i);
+    expect(screen.getByTestId('text-expertise-title')).toHaveTextContent(/expertise for.*what's next/i);
+    expect(section?.textContent).toContain(expertiseSection.microLabel);
 
     const cta = screen.getByTestId('link-expertise-explore');
-    expect(cta).toHaveTextContent('Explore Our Expertise');
+    expect(cta).toHaveTextContent('Explore All Expertise');
     expect(cta).toHaveAttribute('href', '/expertise');
   });
 
-  it('renders the real supporting image with the overlay statement', () => {
+  it('renders all four expertise groups matching the real services taxonomy', () => {
     render(<Expertise />);
-    const img = document.querySelector('.dclExpertise__imageWrap img');
-    expect(img).toHaveAttribute('src', expect.stringContaining('/images/home/'));
-    expect(img).toHaveAttribute('alt', expect.stringMatching(/./));
-    for (const line of expertiseSection.imageStatementLines) {
-      expect(screen.getByText(line)).toBeInTheDocument();
+    for (const group of expertiseSection.groups) {
+      const col = screen.getByTestId(`expertise-group-${slug(group.heading)}`);
+      expect(col).toHaveTextContent(group.heading);
+      expect(col).toHaveTextContent(group.copy);
     }
   });
 
-  it('renders all four expertise areas as real links, each with icon, label, headline, copy, and a learn-more link', () => {
+  it('renders every capability as a real link to its actual /services route', () => {
     render(<Expertise />);
-    for (const area of expertiseSection.areas) {
-      const link = screen.getByTestId(`link-expertise-area-${area.label.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`);
-      expect(link).toHaveAttribute('href', area.href);
-      expect(link).toHaveTextContent(area.label);
-      expect(link).toHaveTextContent(area.headlineLines.join(''));
-      expect(link).toHaveTextContent(area.copy);
-      expect(link).toHaveTextContent('Learn more');
+    for (const group of expertiseSection.groups) {
+      for (const capability of group.capabilities) {
+        const link = screen.getByTestId(`link-expertise-capability-${slug(capability.label)}`);
+        expect(link).toHaveAttribute('href', capability.href);
+        expect(link).toHaveTextContent(capability.label);
+      }
     }
   });
 
   it('renders no decorative numbering anywhere in the section', () => {
     render(<Expertise />);
     const section = document.getElementById('expertise');
-    expect(section?.textContent).not.toMatch(/\b0[1-4]\b/);
-  });
-
-  it('renders the bottom editorial strip with eyebrow, statement, copy, and approach link', () => {
-    render(<Expertise />);
-    const section = document.getElementById('expertise');
-    expect(section?.textContent).toMatch(/our approach in practice/i);
-    expect(section?.textContent).toMatch(/expertise is most valuable/i);
-    const link = screen.getByTestId('link-expertise-strip-approach');
-    expect(link).toHaveAttribute('href', '/approach');
-    expect(link).toHaveTextContent('Our Approach');
+    expect(section?.textContent).not.toMatch(/\b0?[1-4][/.)-]/);
   });
 
   it('contains no em-dash characters', () => {

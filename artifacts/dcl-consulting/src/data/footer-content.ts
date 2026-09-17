@@ -1,6 +1,7 @@
 export interface FooterNavLink {
   label: string;
   href: string;
+  external?: boolean;
 }
 
 export const preFooterCta = {
@@ -26,6 +27,8 @@ export const footerNavLinks: FooterNavLink[] = [
   { label: 'Expertise', href: '/expertise' },
   { label: 'Approach', href: '/approach' },
   { label: 'Industries', href: '/industries' },
+  { label: 'Team', href: '/team' },
+  { label: 'Insights', href: '/insights' },
   { label: 'Partners', href: '/partners' },
   { label: 'Contact', href: '/contact' },
 ];
@@ -40,6 +43,8 @@ export const footerContact = {
 export const footerLegalLinks: FooterNavLink[] = [
   { label: 'Privacy Policy', href: '/privacy-policy' },
   { label: 'Terms & Conditions', href: '/terms' },
+  { label: 'Impressum', href: '/impressum' },
+  { label: 'Official Company Profile', href: 'https://find-and-update.company-information.service.gov.uk/company/10086906/officers', external: true },
 ];
 
 export const footerClosing = 'Clarity Before Capital.';

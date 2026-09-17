@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { IndustriesFinalCta } from './IndustriesFinalCta';
+import { industriesFinalCta } from '@/data/industries-content';
 
 function mockMatchMedia(matches: boolean) {
   window.matchMedia = vi.fn().mockImplementation((query: string) => ({
@@ -14,29 +15,18 @@ function mockMatchMedia(matches: boolean) {
 describe('IndustriesFinalCta', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('renders the headline, supporting copy, both CTAs, and the closing line', () => {
+  it('renders the eyebrow, headline, copy, and the Contact DCL button routing to /contact', () => {
     mockMatchMedia(false);
     render(<IndustriesFinalCta />);
-    expect(screen.getByTestId('text-industries-final-title')).toHaveTextContent('A clearer view');
-    expect(screen.getByTestId('text-industries-final-title')).toHaveTextContent('of the opportunity.');
-    expect(screen.getByTestId('text-industries-final-supporting')).toHaveTextContent(/independent analysis/i);
+    expect(screen.getByTestId('text-industries-final-eyebrow')).toHaveTextContent(industriesFinalCta.eyebrow);
+    expect(screen.getByTestId('text-industries-final-title')).toHaveTextContent(industriesFinalCta.headlineLines[0]);
+    expect(screen.getByTestId('text-industries-final-title')).toHaveTextContent(industriesFinalCta.headlineLines[1]);
+    expect(screen.getByText(industriesFinalCta.copy)).toBeInTheDocument();
 
-    const primary = screen.getByTestId('link-industries-final-primary');
-    expect(primary).toHaveAttribute('href', '/#about');
-    expect(primary).toHaveTextContent('Start a Conversation');
-
-    const secondary = screen.getByTestId('link-industries-final-secondary');
-    expect(secondary).toHaveAttribute('href', '/expertise');
-    expect(secondary).toHaveTextContent('Explore Our Expertise');
-
-    expect(screen.getByTestId('text-industries-final-closing')).toHaveTextContent('Clarity Before Capital.');
-  });
-
-  it('never turns the primary CTA text white', () => {
-    mockMatchMedia(false);
-    render(<IndustriesFinalCta />);
-    const primary = screen.getByTestId('link-industries-final-primary');
-    expect(primary.className).not.toMatch(/text-white/);
+    const cta = screen.getByTestId('link-industries-final-cta');
+    expect(cta).toHaveTextContent(industriesFinalCta.cta.label);
+    expect(cta).toHaveAttribute('href', industriesFinalCta.cta.href);
+    expect(cta.className).not.toMatch(/text-white/);
   });
 
   it('does not throw with reduced motion preferred', () => {

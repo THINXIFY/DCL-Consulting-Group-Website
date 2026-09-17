@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { PrivacyContent } from './PrivacyContent';
-import { privacyDraftNotice, privacySections } from '@/data/privacy-content';
+import { privacySections } from '@/data/privacy-content';
 
 function mockMatchMedia(matches: boolean) {
   window.matchMedia = vi.fn().mockImplementation((query: string) => ({
@@ -15,10 +15,19 @@ function mockMatchMedia(matches: boolean) {
 describe('PrivacyContent', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('renders the draft notice prominently', () => {
+  it('renders the real company facts inside the who-we-are section', () => {
     mockMatchMedia(false);
     render(<PrivacyContent />);
-    expect(screen.getByTestId('text-privacy-draft-notice')).toHaveTextContent(privacyDraftNotice);
+    const section = screen.getByTestId('privacy-section-who-we-are');
+    expect(section).toHaveTextContent('10086906');
+    expect(section).toHaveTextContent('info@dcl-consulting-group.com');
+  });
+
+  it('renders real links to /terms and /contact in the contact section', () => {
+    mockMatchMedia(false);
+    render(<PrivacyContent />);
+    expect(screen.getByTestId('link-privacy-inline-contact-terms-conditions')).toHaveAttribute('href', '/terms');
+    expect(screen.getByTestId('link-privacy-inline-contact-contact-dcl')).toHaveAttribute('href', '/contact');
   });
 
   it('renders every policy section with its heading and body content', () => {

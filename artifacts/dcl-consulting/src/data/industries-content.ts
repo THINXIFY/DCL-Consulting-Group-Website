@@ -9,35 +9,49 @@ export interface Sector {
   image?: SectorImage;
 }
 
-export interface EvaluationFactor {
-  name: string;
-  description: string;
-}
-
 export const industriesHero = {
-  label: 'Industries',
-  headlineLines: ['Different sectors.', 'A broader perspective.'],
-  lead: 'DCL works across a range of industries, bringing independent perspective and commercial understanding to complex opportunities and strategic decisions.',
-  primaryCta: { label: 'Explore Our Services', href: '/services' },
-  secondaryCta: { label: 'Our Approach', href: '/approach' },
-  imageStatementLines: ['Sectors', 'Ideas', 'People', 'Progress'],
+  eyebrow: 'Industries',
+  headlineLines: ['Deep knowledge.', 'Broader perspectives.'],
+  lead: 'We bring cross-sector perspective, disciplined analysis and commercial understanding to help clients navigate complexity and evaluate opportunity with greater clarity.',
+  image: {
+    src: '/images/industries/industries-hero.webp',
+    alt: 'Dark glass skyscraper with a sharp double-peaked crown rising into a dusk sky, lit windows glowing amber',
+  },
+  imageStatementLines: ['Sectors', 'Context', 'Clarity'],
 };
 
-export const ourIndustries = {
-  label: 'Our Industries',
-  headlineLines: ['Sector expertise', 'for real-world opportunities.'],
-  supporting: 'DCL combines cross-sector perspective with commercial understanding, helping clients examine opportunities, challenges and important decisions within their wider industry context.',
-  featured: [
-    {
-      name: 'Real Estate & Property',
-      description: 'Advisory support across residential, commercial and real-asset opportunities.',
-      image: { src: '/images/industries/sector-real-estate.webp', alt: 'Modern multi-story apartment buildings with balconies perched atop a rocky cliff edge under a clear blue sky' },
-    },
+export const industriesIntro = {
+  eyebrow: 'Our Industries',
+  headlineLines: ['Sector perspective for', 'a complex world.'],
+  copy: 'DCL works across a diverse range of industries, combining commercial understanding, strategic insight and disciplined analysis to support better-informed decisions.',
+  principles: ['Sector Understanding', 'Commercial Context', 'Independent Perspective'],
+};
+
+// One featured (largest), two medium, three compact-with-image, and six
+// text-led rows - deliberately not a uniform 12-tile grid. Only the six
+// sectors with real, sector-matched photography already in this project
+// (public/images/industries/) get an image treatment; the other six are
+// text-led editorial rows rather than paired with an unrelated stock
+// photo and a misleading alt description.
+export const industryDirectory = {
+  featured: {
+    name: 'Real Estate & Property',
+    description: 'Advisory support across residential, commercial and real-asset opportunities.',
+    image: { src: '/images/industries/sector-real-estate.webp', alt: 'Modern multi-story apartment buildings with balconies perched atop a rocky cliff edge under a clear blue sky' },
+  } satisfies Sector,
+  medium: [
     {
       name: 'Technology & AI',
       description: 'Strategic insight across technology, software and emerging digital sectors.',
       image: { src: '/images/industries/sector-technology.webp', alt: 'Close-up low-angle view of a blue mirrored glass office tower corner reflecting clouds in a grid pattern' },
     },
+    {
+      name: 'Financial Services',
+      description: 'Insight across financial markets, asset management and related services.',
+      image: { src: '/images/industries/sector-financial.webp', alt: 'Dense cluster of dark glass office towers with lit windows in a financial district at dusk' },
+    },
+  ] satisfies Sector[],
+  compactImage: [
     {
       name: 'Healthcare & Life Sciences',
       description: 'Strategic insight across healthcare, pharmaceuticals and related industries.',
@@ -49,17 +63,12 @@ export const ourIndustries = {
       image: { src: '/images/industries/sector-energy.webp', alt: 'Wind turbines and rows of solar panels spread across a valley floor with mountains in the background' },
     },
     {
-      name: 'Financial Services',
-      description: 'Insight across financial markets, asset management and related services.',
-      image: { src: '/images/industries/sector-financial.webp', alt: 'Dense cluster of dark glass office towers with lit windows in a financial district at dusk' },
-    },
-    {
       name: 'Industrial & Manufacturing',
       description: 'Supporting growth, investment and transformation across industrial sectors.',
       image: { src: '/images/industries/sector-industrial.webp', alt: 'Row of large white cylindrical industrial storage tanks with catwalk railings against a clear blue sky' },
     },
   ] satisfies Sector[],
-  compact: [
+  textRows: [
     { name: 'Consumer & Retail', description: 'Perspective across consumer brands, retail models and changing demand.' },
     { name: 'Logistics & Supply Chain', description: 'Supporting investment and growth across logistics and supply networks.' },
     { name: 'Hospitality & Leisure', description: 'Commercial perspective across hospitality, travel and leisure businesses.' },
@@ -69,34 +78,37 @@ export const ourIndustries = {
   ] satisfies Sector[],
 };
 
-export const globalPerspective = {
-  label: 'A Global Perspective',
-  headlineLines: ['Opportunities', 'across borders.'],
-  copy: 'DCL combines sector-aware analysis with broader commercial and strategic perspective, helping clients evaluate opportunities in local and international contexts.',
-  cta: { label: 'Our Approach', href: '/approach' },
+export const disciplinedApproach = {
+  label: 'Our Discipline',
+  headlineLines: ['Different sectors.', 'One disciplined approach.'],
+  copy: 'Across industries, our focus remains consistent: understanding fundamentals, evaluating risk, identifying opportunity and bringing greater clarity to complex decisions.',
+  columns: [
+    { name: 'Commercial Context', description: 'Understanding the market, positioning and environment surrounding the opportunity.' },
+    { name: 'Market Dynamics', description: 'Reading demand, competition and the forces shaping the sector over time.' },
+    { name: 'Risk & Resilience', description: 'Identifying uncertainties and dependencies capable of changing the outcome.' },
+    { name: 'Strategic Opportunity', description: 'Considering how the opportunity fits a wider strategic objective.' },
+  ],
 };
 
-export const whatWeLookFor = {
-  headlineLines: ['The sector changes.', 'The fundamentals still matter.'],
-  factors: [
-    { name: 'Market Context', description: 'Understand demand, positioning and the environment surrounding the opportunity.' },
-    { name: 'Business Model', description: 'Consider how the business or opportunity creates value in practice.' },
-    { name: 'Financial Fundamentals', description: 'Review the underlying economics, performance and relevant assumptions.' },
-    { name: 'Competitive Position', description: 'Assess standing relative to comparable businesses and alternatives.' },
-    { name: 'Risk & Dependencies', description: 'Identify uncertainties, dependencies and factors capable of changing the outcome.' },
-    { name: 'Strategic Relevance', description: 'Consider how the opportunity fits the wider strategic objective.' },
-  ] satisfies EvaluationFactor[],
+export const crossSectorPerspective = {
+  label: 'A Cross-Sector View',
+  headlineLines: ['Perspective across', 'industries.'],
+  copy: 'Many strategic and investment decisions sit at the intersection of sectors. We consider the wider commercial, financial and strategic context rather than viewing opportunities in isolation.',
+  image: {
+    src: '/images/industries/global-perspective.webp',
+    alt: 'Aerial view of a dense downtown business district under an overcast sky with dozens of office towers',
+  },
 };
 
-export const whereSectorPerspectiveMatters = {
-  headlineLines: ['Industry context matters', 'when the decision does.'],
-  situations: ['Investment Opportunities', 'Acquisitions', 'Market Entry', 'Growth & Expansion', 'Strategic Partnerships', 'Business Assessment'],
+export const whereInsightMatters = {
+  label: 'Where It Matters',
+  headlineLines: ['Where sector insight', 'shapes the decision.'],
+  items: ['Investment Evaluation', 'Market Entry', 'Strategic Growth', 'Acquisitions', 'Due Diligence', 'Risk Assessment', 'Private Capital', 'International Expansion'],
 };
 
 export const industriesFinalCta = {
-  headlineLines: ['A clearer view', 'of the opportunity.'],
-  supporting: 'Discuss an opportunity with DCL and explore how independent analysis and sector-aware perspective may support your decision.',
-  primaryCta: { label: 'Start a Conversation', href: '/#about' },
-  secondaryCta: { label: 'Explore Our Expertise', href: '/expertise' },
-  closing: 'Clarity Before Capital.',
+  eyebrow: 'Start a Conversation',
+  headlineLines: ['Your industry.', 'Our perspective.'],
+  copy: 'Speak with DCL about an opportunity, strategic question or investment decision.',
+  cta: { label: 'Contact DCL', href: '/contact' },
 };

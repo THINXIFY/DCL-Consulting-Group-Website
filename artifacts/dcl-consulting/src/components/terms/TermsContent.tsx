@@ -1,9 +1,13 @@
 import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import { Link } from 'wouter';
 import { ArrowUpRight } from 'lucide-react';
-import { termsDraftNotice, termsSections } from '@/data/terms-content';
+import { termsSections } from '@/data/terms-content';
 import { ensureGsapRegistered, gsap } from '@/lib/gsap';
 import { useMediaQuery } from '@/hooks/use-media-query';
+
+function slug(text: string) {
+  return text.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
 
 export function TermsContent() {
   const rootRef = useRef<HTMLElement>(null);
@@ -61,11 +65,7 @@ export function TermsContent() {
         Terms &amp; conditions details
       </h2>
       <div className="mx-auto max-w-[1280px]">
-        <div data-testid="text-terms-draft-notice" className="dclTermsContent__fadeUp border border-[#8bbfe8]/40 bg-[#f2f4f6] px-6 py-5 text-[14px] leading-6 text-[#35404a] sm:px-7">
-          {termsDraftNotice}
-        </div>
-
-        <nav aria-label="Section jump navigation" className="dclTermsContent__fadeUp mt-8 flex flex-wrap gap-x-6 gap-y-3 border-b border-[#080a0d]/12 pb-6 lg:hidden">
+        <nav aria-label="Section jump navigation" className="dclTermsContent__fadeUp flex flex-wrap gap-x-6 gap-y-3 border-b border-[#080a0d]/12 pb-6 lg:hidden">
           {termsSections.map((section) => (
             <a
               key={section.id}
@@ -149,7 +149,7 @@ export function TermsContent() {
                           <Link
                             key={link.href}
                             href={link.href}
-                            data-testid={`link-terms-inline-${section.id}`}
+                            data-testid={`link-terms-inline-${section.id}-${slug(link.label)}`}
                             className="group inline-flex items-center gap-2 text-[14px] font-semibold uppercase tracking-[.08em] text-[#080a0d] transition-colors duration-300 hover:text-[#4f718c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
                           >
                             {link.label}

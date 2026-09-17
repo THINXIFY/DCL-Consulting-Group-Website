@@ -1,8 +1,9 @@
 import { IndustriesHero } from '@/components/industries/IndustriesHero';
-import { OurIndustries } from '@/components/industries/OurIndustries';
-import { GlobalPerspective } from '@/components/industries/GlobalPerspective';
-import { WhatWeLookFor } from '@/components/industries/WhatWeLookFor';
-import { WhereSectorPerspectiveMatters } from '@/components/industries/WhereSectorPerspectiveMatters';
+import { IndustriesIntro } from '@/components/industries/IndustriesIntro';
+import { IndustryDirectory } from '@/components/industries/IndustryDirectory';
+import { DisciplinedApproach } from '@/components/industries/DisciplinedApproach';
+import { CrossSectorPerspective } from '@/components/industries/CrossSectorPerspective';
+import { WhereInsightMatters } from '@/components/industries/WhereInsightMatters';
 import { IndustriesFinalCta } from '@/components/industries/IndustriesFinalCta';
 import { Footer } from '@/components/Footer';
 
@@ -11,10 +12,11 @@ export default function IndustriesPage() {
     <>
       <main>
         <IndustriesHero />
-        <OurIndustries />
-        <GlobalPerspective />
-        <WhatWeLookFor />
-        <WhereSectorPerspectiveMatters />
+        <IndustriesIntro />
+        <IndustryDirectory />
+        <DisciplinedApproach />
+        <CrossSectorPerspective />
+        <WhereInsightMatters />
         <IndustriesFinalCta />
       </main>
       <Footer />

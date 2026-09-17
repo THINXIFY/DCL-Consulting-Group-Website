@@ -21,6 +21,8 @@ import IndustriesPage from '@/pages/industries';
 import ContactPage from '@/pages/contact';
 import PrivacyPolicyPage from '@/pages/privacy-policy';
 import TermsPage from '@/pages/terms';
+import ImpressumPage from '@/pages/impressum';
+import TeamPage from '@/pages/team';
 import PartnersPage from '@/pages/partners';
 import ServicesPage from '@/pages/services';
 import RealEstateInvestmentAdvisoryPage from '@/pages/real-estate-investment-advisory';
@@ -73,11 +75,13 @@ function Router() {
         <Route path="/expertise" component={ExpertisePage} />
         <Route path="/approach" component={ApproachPage} />
         <Route path="/industries" component={IndustriesPage} />
+        <Route path="/team" component={TeamPage} />
         <Route path="/insights" component={InsightsPage} />
         <Route path="/insights/:slug" component={InsightDetailPage} />
         <Route path="/contact" component={ContactPage} />
         <Route path="/privacy-policy" component={PrivacyPolicyPage} />
         <Route path="/terms" component={TermsPage} />
+        <Route path="/impressum" component={ImpressumPage} />
         <Route path="/partners" component={PartnersPage} />
         <Route path="/services" component={ServicesPage} />
         <Route path="/services/real-estate-investment-advisory" component={RealEstateInvestmentAdvisoryPage} />

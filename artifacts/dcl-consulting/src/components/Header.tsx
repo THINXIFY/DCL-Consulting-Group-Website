@@ -52,7 +52,7 @@ const NAV_LINKS: Array<[string, string]> = [
   ['Expertise', '/expertise'],
   ['Approach', '/approach'],
   ['Industries', '/industries'],
-  ['Insights', '/insights'],
+  ['Team', '/team'],
 ];
 
 function desktopLinkClass(theme: Theme, isActive: boolean) {
@@ -160,7 +160,16 @@ export function Header() {
         gsap.set(headerRef.current, { clearProps: 'all' });
         return;
       }
-      gsap.fromTo(headerRef.current, { autoAlpha: 0, y: -12 }, { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power3.out' });
+      // clearProps: 'transform' strips the inline transform GSAP would
+      // otherwise leave behind even at y:0 - any transform value (including
+      // an identity translate) makes this header a new containing block for
+      // its `position: fixed` mobile nav panel child, clipping it to the
+      // header's own height instead of the viewport.
+      gsap.fromTo(
+        headerRef.current,
+        { autoAlpha: 0, y: -12 },
+        { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power3.out', clearProps: 'transform' },
+      );
     }, headerRef);
     return () => ctx.revert();
   }, [prefersReducedMotion]);

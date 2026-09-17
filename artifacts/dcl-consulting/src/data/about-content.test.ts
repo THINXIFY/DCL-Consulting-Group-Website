@@ -51,10 +51,14 @@ describe('about-content', () => {
     expect(whatDefinesDcl.closingLines).toHaveLength(3);
   });
 
-  it('has leadership content with three principles, nothing invented', () => {
-    expect(leadership.name).toBe('David Christopher Lebond');
-    expect(leadership.role).toBe('Director');
-    expect(leadership.principles).toHaveLength(3);
+  it('has a concise leadership preview with the four real leadership members and a link to the full Team page', () => {
+    expect(leadership.members).toEqual([
+      { initials: 'DL', name: 'David Christopher Lebond', role: 'Chairman' },
+      { initials: 'SG', name: 'Sandeep Gupta', role: 'Managing Director' },
+      { initials: 'SR', name: 'Stephan Rotstein', role: 'CFO' },
+      { initials: 'PG', name: 'Patrick Gabaryan', role: 'COO' },
+    ]);
+    expect(leadership.cta).toEqual({ label: 'Meet the Team', href: '/team' });
   });
 
   it('has exactly the five confirmed company facts, nothing invented', () => {

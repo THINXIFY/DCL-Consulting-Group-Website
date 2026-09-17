@@ -1,7 +1,13 @@
 import { useEffect, useRef, useState, type MouseEvent } from 'react';
-import { privacyDraftNotice, privacySections } from '@/data/privacy-content';
+import { Link } from 'wouter';
+import { ArrowUpRight } from 'lucide-react';
+import { privacySections } from '@/data/privacy-content';
 import { ensureGsapRegistered, gsap } from '@/lib/gsap';
 import { useMediaQuery } from '@/hooks/use-media-query';
+
+function slug(text: string) {
+  return text.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
 
 export function PrivacyContent() {
   const rootRef = useRef<HTMLElement>(null);
@@ -59,11 +65,7 @@ export function PrivacyContent() {
         Privacy policy details
       </h2>
       <div className="mx-auto max-w-[1280px]">
-        <div data-testid="text-privacy-draft-notice" className="dclPrivacyContent__fadeUp border border-[#8bbfe8]/40 bg-[#f2f4f6] px-6 py-5 text-[14px] leading-6 text-[#35404a] sm:px-7">
-          {privacyDraftNotice}
-        </div>
-
-        <nav aria-label="Section jump navigation" className="dclPrivacyContent__fadeUp mt-8 flex flex-wrap gap-x-6 gap-y-3 border-b border-[#080a0d]/12 pb-6 lg:hidden">
+        <nav aria-label="Section jump navigation" className="dclPrivacyContent__fadeUp flex flex-wrap gap-x-6 gap-y-3 border-b border-[#080a0d]/12 pb-6 lg:hidden">
           {privacySections.map((section) => (
             <a
               key={section.id}
@@ -130,6 +132,31 @@ export function PrivacyContent() {
                           </li>
                         ))}
                       </ul>
+                    )}
+                    {section.facts && (
+                      <dl className="mt-2 flex flex-col gap-2 border-t border-[#080a0d]/12 pt-4">
+                        {section.facts.map((fact) => (
+                          <div key={fact.label} className="flex flex-wrap gap-x-3 text-[15px] leading-6">
+                            <dt className="font-semibold text-[#080a0d]">{fact.label}:</dt>
+                            <dd className="text-[#35404a]">{fact.value}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    )}
+                    {section.links && (
+                      <div className="mt-1 flex flex-wrap gap-x-8 gap-y-2">
+                        {section.links.map((link) => (
+                          <Link
+                            key={link.href}
+                            href={link.href}
+                            data-testid={`link-privacy-inline-${section.id}-${slug(link.label)}`}
+                            className="group inline-flex items-center gap-2 text-[14px] font-semibold uppercase tracking-[.08em] text-[#080a0d] transition-colors duration-300 hover:text-[#4f718c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+                          >
+                            {link.label}
+                            <ArrowUpRight size={13} strokeWidth={1.4} className="text-[#4f718c] transition-transform duration-300 group-hover:translate-x-[3px] group-hover:-translate-y-[3px]" />
+                          </Link>
+                        ))}
+                      </div>
                     )}
                   </div>
                 </div>

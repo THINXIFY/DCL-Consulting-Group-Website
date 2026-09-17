@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { whyDclSection } from '@/data/home-content';
 import { WhyDcl } from './WhyDcl';
 
 function mockDesktop(matches: boolean) {
@@ -16,41 +17,56 @@ describe('WhyDcl', () => {
 
   const TITLES = ['Independent Perspective', 'Analytical Discipline', 'Commercial Understanding', 'Clear Communication', 'Long-Term Thinking'];
 
-  it('renders the eyebrow, headline, and all five quality titles', () => {
+  it('renders the eyebrow, two-line headline, body, and all five quality rows with their own copy', () => {
     mockDesktop(true);
     render(<WhyDcl />);
     expect(screen.getByTestId('text-why-eyebrow')).toHaveTextContent('Why DCL');
+    const section = document.getElementById('why-dcl');
+    expect(section?.textContent).toMatch(/a disciplined way/i);
+    expect(section?.textContent).toMatch(/to see the decision/i);
     for (const title of TITLES) {
       expect(screen.getByTestId(`quality-${title.toLowerCase().replaceAll(' ', '-')}`)).toHaveTextContent(title);
     }
+    expect(screen.getByText(/advice shaped by the facts of the situation/i)).toBeInTheDocument();
+  });
+
+  it('renders the Our Approach CTA routing to /approach', () => {
+    mockDesktop(true);
+    render(<WhyDcl />);
+    const link = screen.getByTestId('link-why-approach');
+    expect(link).toHaveTextContent(whyDclSection.cta.label);
+    expect(link).toHaveAttribute('href', '/approach');
   });
 
   it('renders the dominant supporting image', () => {
     mockDesktop(true);
     render(<WhyDcl />);
-    const img = document.querySelector('.dclWhy__imageWrap img');
-    expect(img).not.toBeNull();
+    const img = screen.getByTestId('img-why-dcl');
     expect(img).toHaveAttribute('alt', expect.stringMatching(/./));
   });
 
-  it('shows the first quality copy in the left quote panel by default, and swaps it on focus (desktop)', () => {
+  it('marks a row active on hover/focus (desktop)', () => {
     mockDesktop(true);
     render(<WhyDcl />);
-    expect(screen.getByTestId('text-why-quote')).toHaveTextContent(/advice shaped by the facts of the situation/i);
-
-    fireEvent.focus(screen.getByTestId('quality-long-term-thinking'));
-    expect(screen.getByTestId('quality-long-term-thinking')).toHaveAttribute('data-active', 'true');
-    expect(screen.getByTestId('text-why-quote')).toHaveTextContent(/weighed against what matters beyond/i);
+    const row = screen.getByTestId('quality-long-term-thinking');
+    expect(row).toHaveAttribute('data-active', 'false');
+    fireEvent.focus(row);
+    expect(row).toHaveAttribute('data-active', 'true');
   });
 
-  it('shows every quality with its own copy inline on mobile, no interaction required', () => {
+  it('renders all rows with inline copy on mobile, no interaction required', () => {
     mockDesktop(false);
     render(<WhyDcl />);
     for (const title of TITLES) {
-      const row = screen.getByTestId(`quality-${title.toLowerCase().replaceAll(' ', '-')}`);
-      expect(row).toHaveAttribute('data-active', 'true');
+      expect(screen.getByTestId(`quality-${title.toLowerCase().replaceAll(' ', '-')}`)).toBeInTheDocument();
     }
-    expect(screen.getByText(/advice shaped by the facts of the situation/i)).toBeInTheDocument();
     expect(screen.getByText(/weighed against what matters beyond/i)).toBeInTheDocument();
+  });
+
+  it('contains no em-dash characters', () => {
+    mockDesktop(true);
+    render(<WhyDcl />);
+    const section = document.getElementById('why-dcl');
+    expect(section?.textContent).not.toMatch(/[–—]/);
   });
 });

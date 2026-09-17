@@ -1,11 +1,15 @@
-export type ExpertiseIcon = 'commercial-analysis' | 'financial-review' | 'strategic-insight' | 'risk-evaluation';
+export type ExpertiseIcon = 'bar-chart' | 'building' | 'clipboard' | 'pie-chart';
 
-export interface ExpertiseArea {
+export interface ExpertiseCapability {
   label: string;
-  headlineLines: [string, string];
+  href: string;
+}
+
+export interface ExpertiseGroup {
+  heading: string;
   copy: string;
   icon: ExpertiseIcon;
-  href: string;
+  capabilities: ExpertiseCapability[];
 }
 
 export interface ApproachStage {
@@ -16,6 +20,7 @@ export interface ApproachStage {
 export interface IndustryItem {
   name: string;
   context: string;
+  image: { src: string; alt: string };
 }
 
 export const heroContent = {
@@ -32,7 +37,7 @@ export const heroContent = {
 
 export const aboutContent = {
   eyebrow: 'About us',
-  title: 'Clarity begins with understanding.',
+  headlineLines: ['Clarity begins with', 'understanding.'] as [string, string],
   supporting: 'A considered perspective, for decisions that deserve one.',
   body: [
     'DCL Consulting and Investments Limited provides independent investment consulting and strategic decision support.',
@@ -40,63 +45,85 @@ export const aboutContent = {
     'Our role is to bring shape to the uncertain. We combine rigorous research with commercial understanding to reveal what matters, what is missing, and what should happen next.',
     "Quietly independent and deliberately close to the work, we operate as a trusted extension of our clients' thinking.",
   ],
+  cta: { label: 'Learn More', href: '/about' },
+  microStatementLines: ['A clearer perspective', 'for a more certain tomorrow.'] as [string, string],
   image: {
-    src: '/images/home/home-about-architecture.webp',
-    alt: 'Board-formed concrete building corner with an angular roofline against a deep blue sky',
+    src: 'https://marbholding.com/wp-content/uploads/2026/09/about-dcl-home.webp',
+    alt: 'DCL Consulting branded signage mounted on a marble office wall beside a glass-walled meeting room, with a branded notebook and pen on the desk in the foreground',
   },
-  principles: [
-    { title: 'Independent', copy: 'Perspective free from product or platform interest.' },
-    { title: 'Disciplined', copy: 'Rigorous analysis applied to every material assumption.' },
-    { title: 'Considered', copy: 'Clear judgement, weighed against the wider context.' },
-  ],
+  imageMicroLines: ['Insight', 'Perspective', 'Progress'] as [string, string, string],
+  panel: {
+    companyName: 'DCL Consulting and Investments Limited',
+    facts: [
+      { icon: 'building', label: 'Private limited company' },
+      { icon: 'file', label: 'Registered in England and Wales' },
+      { icon: 'hash', label: 'Company no. 10086906' },
+    ] as { icon: 'building' | 'file' | 'hash'; label: string }[],
+    statementLines: ['A stronger tomorrow', 'through deeper understanding.'] as [string, string],
+  },
+};
+
+export const servicesSection = {
+  eyebrow: 'Our Services',
+  headlineLines: ["Expertise for", "what's next."] as [string, string],
+  supporting: 'Independent advisory perspective across investment, real assets, corporate strategy and complex decision-making.',
+  cta: { label: 'Explore All Services', href: '/services' },
+  microLabel: 'Four areas. A clearer perspective.',
+  sideMicroLines: ['Perspective', 'Discipline', 'Better decisions'] as [string, string, string],
+  bottomMicroLines: ['Complex questions.', 'A clearer path.'] as [string, string],
+  backgroundImage: 'https://marbholding.com/wp-content/uploads/2026/09/ChatGPT-Image-Sep-17-2026-10_28_08-AM.webp',
+  familyIcons: {
+    'Investment & Private Capital': 'https://marbholding.com/wp-content/uploads/2026/09/profit.png',
+    'Real Estate & Assets': 'https://marbholding.com/wp-content/uploads/2026/09/residential.png',
+    'Corporate & Strategic': 'https://marbholding.com/wp-content/uploads/2026/09/workplace.png',
+    'Analysis & Decision Support': 'https://marbholding.com/wp-content/uploads/2026/09/analysis.png',
+  } as Record<string, string>,
 };
 
 export const expertiseSection = {
   eyebrow: 'Our Expertise',
-  headlineLines: ['Different expertise.', 'A clearer view.'] as [string, string],
-  body: 'We combine commercial insight, analytical discipline and real-world experience to help clients evaluate opportunities, navigate complexity and make better-informed decisions.',
-  cta: { label: 'Explore Our Expertise', href: '/expertise' },
-  image: {
-    src: '/images/home/home-expertise-architecture.webp',
-    alt: 'Sweeping curved stone facade of a contemporary building against a deep blue sky',
-  },
-  imageStatementLines: ['Insight', 'applied', 'to real', 'opportunity.'] as string[],
-  areas: [
+  headlineLines: ["Expertise for", "what's next."] as [string, string],
+  body: 'Independent, disciplined perspective across investment, real assets, corporate strategy and complex decision-making.',
+  cta: { label: 'Explore All Expertise', href: '/expertise' },
+  microLabel: 'Four areas. A clearer perspective.',
+  groups: [
     {
-      label: 'Commercial Analysis',
-      headlineLines: ['Commercial insight', 'for real decisions.'],
-      copy: 'We assess market dynamics, competitive positioning and commercial fundamentals to provide a clearer understanding of opportunity and value.',
-      icon: 'commercial-analysis',
-      href: '/expertise#four-lenses',
+      heading: 'Investment & Private Capital',
+      copy: 'Independent perspective around significant investment and capital decisions.',
+      icon: 'bar-chart',
+      capabilities: [
+        { label: 'Investment Consulting', href: '/services/investment-consulting' },
+        { label: 'Asset & Portfolio Advisory', href: '/services/asset-portfolio-advisory' },
+        { label: 'Wealth Strategy Advisory', href: '/services/wealth-strategy-advisory' },
+        { label: 'Private Capital Advisory', href: '/services/private-capital-advisory' },
+      ],
     },
     {
-      label: 'Financial Review',
-      headlineLines: ['Stronger foundations', 'for opportunity.'],
-      copy: 'We analyse financial characteristics, performance and resilience to support better-informed decisions across significant investment opportunities.',
-      icon: 'financial-review',
-      href: '/expertise#four-lenses',
+      heading: 'Real Estate & Assets',
+      copy: 'Commercial and strategic perspective around real estate opportunities.',
+      icon: 'building',
+      capabilities: [{ label: 'Real Estate Investment Advisory', href: '/services/real-estate-investment-advisory' }],
     },
     {
-      label: 'Strategic Insight',
-      headlineLines: ['Perspective for', 'a changing world.'],
-      copy: 'We identify options, test assumptions and consider broader strategic implications to help clients navigate complex environments.',
-      icon: 'strategic-insight',
-      href: '/expertise#four-lenses',
+      heading: 'Corporate & Strategic',
+      copy: 'Independent analysis around growth, transactions and strategic change.',
+      icon: 'clipboard',
+      capabilities: [
+        { label: 'Strategic Advisory', href: '/services/strategic-advisory' },
+        { label: 'M&A & Acquisition Advisory', href: '/services/ma-acquisition-advisory' },
+        { label: 'Market Entry & Expansion Advisory', href: '/services/market-entry-expansion-advisory' },
+      ],
     },
     {
-      label: 'Risk Evaluation',
-      headlineLines: ['Clarity through', 'deeper understanding.'],
-      copy: 'We evaluate uncertainty, dependencies and downside considerations to support more resilient and well-founded decisions.',
-      icon: 'risk-evaluation',
-      href: '/expertise#four-lenses',
+      heading: 'Analysis & Decision Support',
+      copy: 'Structured, independent review ahead of important decisions.',
+      icon: 'pie-chart',
+      capabilities: [
+        { label: 'Due Diligence Support', href: '/services/due-diligence-support' },
+        { label: 'Risk & Opportunity Assessment', href: '/services/risk-opportunity-assessment' },
+      ],
     },
-  ] satisfies ExpertiseArea[],
-  bottomStrip: {
-    eyebrow: 'Our Approach in Practice',
-    statementLines: ['Expertise is most valuable', 'when it leads to clarity.'] as [string, string],
-    copy: 'We apply our expertise with a pragmatic, independent mindset, always focused on the factors that matter most to our clients.',
-    cta: { label: 'Our Approach', href: '/approach' },
-  },
+  ] satisfies ExpertiseGroup[],
 };
 
 export const approach: ApproachStage[] = [
@@ -112,22 +139,53 @@ export const approachBandImage = {
 };
 
 export const industries: IndustryItem[] = [
-  { name: 'Real Estate & Property', context: 'Advisory support across residential, commercial and real-asset opportunities.' },
-  { name: 'Technology & AI', context: 'Strategic insight across technology, software and emerging digital sectors.' },
-  { name: 'Healthcare & Life Sciences', context: 'Strategic insight across healthcare, pharmaceuticals and related industries.' },
-  { name: 'Energy & Infrastructure', context: 'Advisory perspective on energy transition, resources and sustainable infrastructure.' },
-  { name: 'Financial Services', context: 'Insight across financial markets, asset management and related services.' },
-  { name: 'Industrial & Manufacturing', context: 'Supporting growth, investment and transformation across industrial sectors.' },
+  {
+    name: 'Real Estate & Property',
+    context: 'Advisory support across residential, commercial and real-asset opportunities.',
+    image: { src: '/images/industries/sector-real-estate.webp', alt: 'Modern multi-story apartment buildings with balconies perched atop a rocky cliff edge under a clear blue sky' },
+  },
+  {
+    name: 'Technology & AI',
+    context: 'Strategic insight across technology, software and emerging digital sectors.',
+    image: { src: '/images/industries/sector-technology.webp', alt: 'Close-up low-angle view of a blue mirrored glass office tower corner reflecting clouds in a grid pattern' },
+  },
+  {
+    name: 'Healthcare & Life Sciences',
+    context: 'Strategic insight across healthcare, pharmaceuticals and related industries.',
+    image: { src: '/images/industries/sector-healthcare.webp', alt: 'Curved pale stone clinical research building exterior with large oval window openings' },
+  },
+  {
+    name: 'Energy & Infrastructure',
+    context: 'Advisory perspective on energy transition, resources and sustainable infrastructure.',
+    image: { src: '/images/industries/sector-energy.webp', alt: 'Wind turbines and rows of solar panels spread across a valley floor with mountains in the background' },
+  },
+  {
+    name: 'Financial Services',
+    context: 'Insight across financial markets, asset management and related services.',
+    image: { src: '/images/industries/sector-financial.webp', alt: 'Dense cluster of dark glass office towers with lit windows in a financial district at dusk' },
+  },
+  {
+    name: 'Industrial & Manufacturing',
+    context: 'Supporting growth, investment and transformation across industrial sectors.',
+    image: { src: '/images/industries/sector-industrial.webp', alt: 'Row of large white cylindrical industrial storage tanks with catwalk railings against a clear blue sky' },
+  },
 ];
 
-export const industriesImage = {
-  src: '/images/home/home-industries.webp',
-  alt: 'Two glass high-rise towers with a honeycomb facade pattern viewed from below against the sky',
+export const industriesSection = {
+  eyebrow: 'Industries',
+  headlineLines: ['Insight across', 'every sector.'] as [string, string],
+  supporting: 'We evaluate opportunities on their own fundamentals, not a fixed sector template, so our perspective travels wherever the work takes us.',
+  cta: { label: 'View All Industries', href: '/industries' },
+  microLines: ['Real insight', 'Real opportunity', 'A clearer tomorrow'] as [string, string, string],
+  backgroundImage: 'https://marbholding.com/wp-content/uploads/2026/09/ChatGPT-Image-Sep-17-2026-10_52_45-AM.png',
 };
+
+export type QualityIcon = 'eye' | 'bar-chart' | 'layers' | 'message' | 'globe';
 
 export interface QualityItem {
   title: string;
   copy: string;
+  icon: QualityIcon;
 }
 
 export interface CompanyFact {
@@ -139,28 +197,42 @@ export const whyDcl: QualityItem[] = [
   {
     title: 'Independent Perspective',
     copy: 'Advice shaped by the facts of the situation, not by product, platform or third-party relationship.',
+    icon: 'eye',
   },
   {
     title: 'Analytical Discipline',
     copy: 'A structured approach that tests assumptions and looks past the surface of an opportunity.',
+    icon: 'bar-chart',
   },
   {
     title: 'Commercial Understanding',
     copy: 'Perspective grounded in how businesses, markets and transactions actually work.',
+    icon: 'layers',
   },
   {
     title: 'Clear Communication',
     copy: 'Analysis translated into a perspective that is clear, direct and genuinely useful.',
+    icon: 'message',
   },
   {
     title: 'Long-Term Thinking',
     copy: 'A perspective weighed against what matters beyond the immediate decision.',
+    icon: 'globe',
   },
 ];
 
 export const whyDclImage = {
   src: '/images/home/home-why-dcl.webp',
   alt: 'Angular white building facade with a diamond geometric cladding pattern against a blue sky',
+};
+
+export const whyDclSection = {
+  eyebrow: 'Why DCL',
+  headlineLines: ['A disciplined way', 'to see the decision.'] as [string, string],
+  body: "DCL's approach is designed around clarity, independence and disciplined evaluation, focusing attention on the factors that matter most.",
+  cta: { label: 'Our Approach', href: '/approach' },
+  microLines: ['Insight', 'Perspective', 'Progress'] as [string, string, string],
+  microStatementLines: ['A clearer tomorrow', 'through deeper understanding.'] as [string, string],
 };
 
 export const companyFacts: CompanyFact[] = [

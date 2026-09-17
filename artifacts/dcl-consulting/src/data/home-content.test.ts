@@ -8,10 +8,12 @@ import {
   faq,
   heroContent,
   industries,
-  industriesImage,
+  industriesSection,
   insights,
+  servicesSection,
   whyDcl,
   whyDclImage,
+  whyDclSection,
 } from './home-content';
 
 const NUMBERING_PATTERN = /\b(0?[1-9]|1[0-2])\s*[/.)-]/;
@@ -27,20 +29,42 @@ function allStrings(value: unknown): string[] {
 }
 
 describe('home-content', () => {
-  it('has four expertise areas with a real icon, headline, copy, and link, no numbering fields', () => {
-    expect(expertiseSection.areas).toHaveLength(4);
-    expect(expertiseSection.areas.map((area) => area.label)).toEqual(['Commercial Analysis', 'Financial Review', 'Strategic Insight', 'Risk Evaluation']);
-    for (const area of expertiseSection.areas) {
-      expect(area).not.toHaveProperty('number');
-      expect(area.headlineLines).toHaveLength(2);
-      expect(area.copy).toBeTruthy();
-      expect(area.href).toBeTruthy();
+  it('has four expertise groups matching the real services taxonomy, with real routes and no numbering fields', () => {
+    expect(expertiseSection.groups).toHaveLength(4);
+    expect(expertiseSection.groups.map((group) => group.heading)).toEqual([
+      'Investment & Private Capital',
+      'Real Estate & Assets',
+      'Corporate & Strategic',
+      'Analysis & Decision Support',
+    ]);
+    for (const group of expertiseSection.groups) {
+      expect(group).not.toHaveProperty('number');
+      expect(group.copy).toBeTruthy();
+      expect(group.capabilities.length).toBeGreaterThanOrEqual(1);
+      expect(group.capabilities.length).toBeLessThanOrEqual(4);
+      for (const capability of group.capabilities) {
+        expect(capability.label).toBeTruthy();
+        expect(capability.href).toMatch(/^\/services\//);
+      }
     }
   });
 
-  it('has a real, locally hosted image for the expertise section', () => {
-    expect(expertiseSection.image.src).toContain('/images/home/');
-    expect(expertiseSection.image.alt).toBeTruthy();
+  it('has the expertise CTA routing to /expertise', () => {
+    expect(expertiseSection.cta).toEqual({ label: 'Explore All Expertise', href: '/expertise' });
+  });
+
+  it('has the homepage industries section CTA routing to /industries and the editorial micro-copy', () => {
+    expect(industriesSection.cta).toEqual({ label: 'View All Industries', href: '/industries' });
+    expect(industriesSection.microLines).toHaveLength(3);
+    expect(industriesSection.backgroundImage).toMatch(/^https:\/\//);
+  });
+
+  it('has the homepage services section CTA routing to /services and the editorial micro-copy', () => {
+    expect(servicesSection.cta).toEqual({ label: 'Explore All Services', href: '/services' });
+    expect(servicesSection.microLabel).toBeTruthy();
+    expect(servicesSection.sideMicroLines).toHaveLength(3);
+    expect(servicesSection.bottomMicroLines).toHaveLength(2);
+    expect(servicesSection.backgroundImage).toMatch(/^https:\/\//);
   });
 
   it('has four approach stages (Understand, Analyse, Evaluate, Advise), no numbering', () => {
@@ -52,19 +76,17 @@ describe('home-content', () => {
     }
   });
 
-  it('has six industries with no numbering or per-item image fields', () => {
+  it('has six industries, each with a real, distinct image, no numbering fields', () => {
     expect(industries).toHaveLength(6);
     for (const item of industries) {
       expect(item).not.toHaveProperty('number');
-      expect(item).not.toHaveProperty('image');
       expect(item.name).toBeTruthy();
       expect(item.context).toBeTruthy();
+      expect(item.image.src).toMatch(/\.webp$/);
+      expect(item.image.alt).toBeTruthy();
     }
-  });
-
-  it('has exactly one dominant industries image, not per-item crossfades', () => {
-    expect(industriesImage.src).toContain('/images/home/');
-    expect(industriesImage.alt).toBeTruthy();
+    const srcs = industries.map((item) => item.image.src);
+    expect(new Set(srcs).size).toBe(srcs.length);
   });
 
   it('contains no numbering or em-dash characters anywhere', () => {
@@ -77,19 +99,26 @@ describe('home-content', () => {
     }
   });
 
-  it('has five why-dcl qualities (including Long-Term Thinking), no numbering', () => {
+  it('has five why-dcl qualities (including Long-Term Thinking), each with a real icon, no numbering', () => {
     expect(whyDcl).toHaveLength(5);
     expect(whyDcl.map((item) => item.title)).toContain('Long-Term Thinking');
     for (const item of whyDcl) {
       expect(item).not.toHaveProperty('number');
       expect(item.title).toBeTruthy();
       expect(item.copy).toBeTruthy();
+      expect(item.icon).toBeTruthy();
     }
   });
 
   it('has one real, locally hosted image for why-dcl', () => {
     expect(whyDclImage.src).toContain('/images/home/');
     expect(whyDclImage.alt).toBeTruthy();
+  });
+
+  it('has the why-dcl section CTA routing to /approach and the micro-text lines', () => {
+    expect(whyDclSection.cta).toEqual({ label: 'Our Approach', href: '/approach' });
+    expect(whyDclSection.microLines).toHaveLength(3);
+    expect(whyDclSection.microStatementLines).toHaveLength(2);
   });
 
   it('has exactly the five real company facts from the brief, nothing invented', () => {
@@ -143,18 +172,28 @@ describe('home-content', () => {
     }
   });
 
-  it('has real, locally hosted images for hero, about and the approach band', () => {
-    for (const image of [heroContent.image, aboutContent.image, approachBandImage]) {
+  it('has real, locally hosted images for the hero and the approach band', () => {
+    for (const image of [heroContent.image, approachBandImage]) {
       expect(image.src).toContain('/images/home/');
       expect(image.alt).toBeTruthy();
     }
   });
 
-  it('has exactly three about principles', () => {
-    expect(aboutContent.principles).toHaveLength(3);
-    for (const principle of aboutContent.principles) {
-      expect(principle.title).toBeTruthy();
-      expect(principle.copy).toBeTruthy();
-    }
+  it('has a real, explicitly sourced image for the about section', () => {
+    expect(aboutContent.image.src).toMatch(/^https:\/\//);
+    expect(aboutContent.image.alt).toBeTruthy();
+  });
+
+  it('has the about CTA, micro statement, image micro-lines, and a real company facts panel', () => {
+    expect(aboutContent.cta).toEqual({ label: 'Learn More', href: '/about' });
+    expect(aboutContent.microStatementLines).toHaveLength(2);
+    expect(aboutContent.imageMicroLines).toHaveLength(3);
+    expect(aboutContent.panel.companyName).toBe('DCL Consulting and Investments Limited');
+    expect(aboutContent.panel.facts).toEqual([
+      { icon: 'building', label: 'Private limited company' },
+      { icon: 'file', label: 'Registered in England and Wales' },
+      { icon: 'hash', label: 'Company no. 10086906' },
+    ]);
+    expect(aboutContent.panel.statementLines).toHaveLength(2);
   });
 });

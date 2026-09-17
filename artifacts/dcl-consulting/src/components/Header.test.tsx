@@ -25,7 +25,7 @@ describe('Header', () => {
 
   it('renders the primary desktop nav links with no numbering', () => {
     render(<Header />);
-    for (const label of ['Home', 'About', 'Services', 'Expertise', 'Approach', 'Industries', 'Insights']) {
+    for (const label of ['Home', 'About', 'Services', 'Expertise', 'Approach', 'Industries', 'Team']) {
       const link = screen.getByTestId(`link-nav-${slug(label)}`);
       expect(link).toHaveTextContent(label);
       expect(link.textContent).not.toMatch(/\d/);
@@ -41,7 +41,7 @@ describe('Header', () => {
     expect(screen.getByTestId('link-nav-expertise')).toHaveAttribute('href', '/expertise');
     expect(screen.getByTestId('link-nav-approach')).toHaveAttribute('href', '/approach');
     expect(screen.getByTestId('link-nav-industries')).toHaveAttribute('href', '/industries');
-    expect(screen.getByTestId('link-nav-insights')).toHaveAttribute('href', '/insights');
+    expect(screen.getByTestId('link-nav-team')).toHaveAttribute('href', '/team');
   });
 
   it('renders the "Get in Touch" CTA routing to /contact, never with white text', () => {
@@ -211,10 +211,10 @@ describe('Header', () => {
       expect(trigger).toHaveFocus();
     });
 
-    it('includes Partners and Contact as plain links, in addition to the Home/About/Services/Expertise/Approach/Industries/Insights set', () => {
+    it('includes Partners and Contact as plain links, in addition to the Home/About/Services/Expertise/Approach/Industries/Team set', () => {
       render(<Header />);
       fireEvent.click(screen.getByTestId('button-mobile-menu'));
-      for (const label of ['home', 'about', 'services', 'expertise', 'approach', 'industries', 'insights', 'partners', 'contact']) {
+      for (const label of ['home', 'about', 'services', 'expertise', 'approach', 'industries', 'team', 'partners', 'contact']) {
         expect(screen.getByTestId(`link-mobile-${label}`)).toBeInTheDocument();
       }
       expect(screen.getByTestId('link-mobile-partners')).toHaveAttribute('href', '/partners');

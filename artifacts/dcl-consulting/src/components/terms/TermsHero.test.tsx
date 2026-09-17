@@ -7,7 +7,7 @@ describe('TermsHero', () => {
     render(<TermsHero />);
     expect(screen.getByTestId('text-terms-hero-label')).toHaveTextContent('Legal');
     expect(screen.getByTestId('text-terms-hero-title')).toHaveTextContent('Terms & Conditions');
-    expect(screen.getByTestId('text-terms-hero-lead')).toHaveTextContent(/these terms & conditions explain/i);
+    expect(screen.getByTestId('text-terms-hero-lead')).toHaveTextContent(/these terms & conditions govern access/i);
     expect(screen.getByTestId('text-terms-hero-supporting')).toHaveTextContent(/please read these terms carefully/i);
     expect(screen.getByTestId('text-terms-hero-statement')).toHaveTextContent('Clarity');
     expect(screen.getByTestId('text-terms-hero-statement')).toHaveTextContent('Responsibility');

@@ -4,7 +4,7 @@ import { footerBrand, footerClosing, footerContact, footerLegalLinks, footerNavL
 const NUMBERING_PATTERN = /(^|\s)(\d+[.)]|step\s*\d|part\s*\d)/i;
 const DASH_CHARS = /[–—]/;
 
-const REAL_ROUTES = ['/', '/about', '/services', '/expertise', '/approach', '/industries', '/partners', '/contact', '/privacy-policy', '/terms', '/#about'];
+const REAL_ROUTES = ['/', '/about', '/services', '/expertise', '/approach', '/industries', '/team', '/insights', '/partners', '/contact', '/privacy-policy', '/terms', '/impressum', '/#about'];
 
 function allStrings(value: unknown): string[] {
   if (typeof value === 'string') return [value];
@@ -22,9 +22,13 @@ describe('footer-content', () => {
     }
   });
 
-  it('every legal link points to a real, existing route', () => {
+  it('every internal legal link points to a real, existing route, and the external one points to the real Companies House profile', () => {
     for (const link of footerLegalLinks) {
-      expect(REAL_ROUTES).toContain(link.href);
+      if (link.external) {
+        expect(link.href).toBe('https://find-and-update.company-information.service.gov.uk/company/10086906/officers');
+      } else {
+        expect(REAL_ROUTES).toContain(link.href);
+      }
     }
   });
 

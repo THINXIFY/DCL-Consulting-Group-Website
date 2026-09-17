@@ -131,6 +131,23 @@ describe('Footer', () => {
     expect(screen.getByTestId('link-footer-legal-privacy-policy')).toHaveAttribute('href', '/privacy-policy');
   });
 
+  it('renders an Impressum link and an external Official Company Profile link in the legal strip', () => {
+    mockMatchMedia(false);
+    render(<Footer />);
+    expect(screen.getByTestId('link-footer-legal-impressum')).toHaveAttribute('href', '/impressum');
+    const companyProfile = screen.getByTestId('link-footer-legal-official-company-profile');
+    expect(companyProfile).toHaveAttribute('href', 'https://find-and-update.company-information.service.gov.uk/company/10086906/officers');
+    expect(companyProfile).toHaveAttribute('target', '_blank');
+    expect(companyProfile).toHaveAttribute('rel', 'noopener noreferrer');
+  });
+
+  it('includes Team and Insights in the footer navigation', () => {
+    mockMatchMedia(false);
+    render(<Footer />);
+    expect(screen.getByTestId('link-footer-nav-team')).toHaveAttribute('href', '/team');
+    expect(screen.getByTestId('link-footer-nav-insights')).toHaveAttribute('href', '/insights');
+  });
+
   it('does not throw with reduced motion preferred', () => {
     mockMatchMedia(true);
     expect(() => render(<Footer />)).not.toThrow();

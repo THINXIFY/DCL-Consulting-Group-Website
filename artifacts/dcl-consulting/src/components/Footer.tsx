@@ -253,16 +253,30 @@ export function Footer() {
               </p>
               {footerLegalLinks.length > 0 && (
                 <div className="flex flex-wrap gap-x-5 gap-y-2">
-                  {footerLegalLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      data-testid={`link-footer-legal-${link.label.toLowerCase().replaceAll(' ', '-')}`}
-                      className="text-[11px] uppercase tracking-[.12em] text-white/35 outline-none transition-colors duration-300 hover:text-white/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
+                  {footerLegalLinks.map((link) =>
+                    link.external ? (
+                      <a
+                        key={link.href}
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-testid={`link-footer-legal-${link.label.toLowerCase().replaceAll(' ', '-')}`}
+                        className="inline-flex items-center gap-1 text-[11px] uppercase tracking-[.12em] text-white/35 outline-none transition-colors duration-300 hover:text-white/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+                      >
+                        {link.label}
+                        <ArrowUpRight size={11} strokeWidth={1.4} aria-hidden="true" />
+                      </a>
+                    ) : (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        data-testid={`link-footer-legal-${link.label.toLowerCase().replaceAll(' ', '-')}`}
+                        className="text-[11px] uppercase tracking-[.12em] text-white/35 outline-none transition-colors duration-300 hover:text-white/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+                      >
+                        {link.label}
+                      </Link>
+                    ),
+                  )}
                 </div>
               )}
             </div>

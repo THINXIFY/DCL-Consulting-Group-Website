@@ -27,7 +27,7 @@ describe('CompanyInformation', () => {
     expect(alt.toLowerCase()).not.toContain('dcl employee');
   });
 
-  it('renders exactly the five verified company facts as ruled rows, no cards', () => {
+  it('renders exactly the six verified company facts as ruled rows, no cards', () => {
     render(<CompanyInformation />);
     for (const [label, value] of [
       ['Company Number', '10086906'],
@@ -43,19 +43,24 @@ describe('CompanyInformation', () => {
     expect(office).toHaveTextContent('Tallow Wharf');
     expect(office).toHaveTextContent('SG14 1FF');
     expect(office.querySelector('address')).not.toBeNull();
+
+    const londonOffice = screen.getByTestId('company-info-fact-london-office');
+    expect(londonOffice).toHaveTextContent('5 Beaconsfield Street');
+    expect(londonOffice).toHaveTextContent('N1C 4EW');
   });
 
   it('links to the real Companies House profile for company number 10086906', () => {
     render(<CompanyInformation />);
     const link = screen.getByTestId('link-company-register');
-    expect(link).toHaveAttribute('href', 'https://find-and-update.company-information.service.gov.uk/company/10086906');
+    expect(link).toHaveAttribute('href', 'https://find-and-update.company-information.service.gov.uk/company/10086906/officers');
     expect(link).toHaveAttribute('target', '_blank');
     expect(link).toHaveAttribute('rel', expect.stringContaining('noopener'));
   });
 
-  it('links legal information to the real /terms route rather than an invented page', () => {
+  it('links legal information to the real /terms route, and Impressum to the real /impressum route', () => {
     render(<CompanyInformation />);
     expect(screen.getByTestId('link-company-legal')).toHaveAttribute('href', '/terms');
+    expect(screen.getByTestId('link-company-impressum')).toHaveAttribute('href', '/impressum');
   });
 
   it('does not invent an email, phone number, or office hours', () => {

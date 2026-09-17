@@ -53,13 +53,15 @@ describe('contact-content', () => {
     }
   });
 
-  it('company information has exactly the five verified facts, no invented fields', () => {
-    expect(companyInformation.facts).toHaveLength(5);
+  it('company information has exactly the six verified facts, no invented fields', () => {
+    expect(companyInformation.facts).toHaveLength(6);
     const labels = companyInformation.facts.map((fact) => fact.label);
-    expect(labels).toEqual(['Company Number', 'Director', 'Registered Office', 'Jurisdiction', 'Website']);
+    expect(labels).toEqual(['Company Number', 'Director', 'Registered Office', 'London Office', 'Jurisdiction', 'Website']);
     expect(companyInformation.facts.find((fact) => fact.label === 'Company Number')?.lines).toEqual(['10086906']);
     expect(companyInformation.facts.find((fact) => fact.label === 'Director')?.lines).toEqual(['David Christopher Lebond']);
-    expect(companyInformation.companiesHouseHref).toBe('https://find-and-update.company-information.service.gov.uk/company/10086906');
+    expect(companyInformation.facts.find((fact) => fact.label === 'London Office')?.lines).toEqual(['5 Beaconsfield Street,', 'London,', 'United Kingdom,', 'N1C 4EW']);
+    expect(companyInformation.companiesHouseHref).toBe('https://find-and-update.company-information.service.gov.uk/company/10086906/officers');
+    expect(companyInformation.impressumCta).toEqual({ label: 'Impressum', href: '/impressum' });
   });
 
   it('does not invent an email, phone number, office hours, or social handle for the get-in-touch band', () => {

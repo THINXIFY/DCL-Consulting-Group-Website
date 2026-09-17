@@ -14,9 +14,10 @@ export interface DefiningPrinciple {
   copy: string;
 }
 
-export interface LeadershipPrinciple {
-  title: string;
-  copy: string;
+export interface LeadershipMember {
+  initials: string;
+  name: string;
+  role: string;
 }
 
 export interface CompanyFact {
@@ -116,17 +117,14 @@ export const whatDefinesDcl = {
 export const leadership = {
   eyebrow: 'Leadership',
   headlineLines: ['Leadership grounded', 'in considered judgement.'],
-  name: 'David Christopher Lebond',
-  role: 'Director',
-  company: 'DCL Consulting and Investments Limited',
-  bodyOne: 'DCL Consulting and Investments Limited is led by David Christopher Lebond.',
-  bodyTwo:
-    "The company's approach centres on disciplined analysis, commercial understanding and clear decision support, bringing a considered perspective to investment and strategic questions.",
-  principles: [
-    { title: 'Understand before concluding.', copy: 'Establish the context and the important facts before forming a view.' },
-    { title: 'Challenge where necessary.', copy: 'Question assumptions and identify areas that require greater scrutiny.' },
-    { title: 'Communicate what matters clearly.', copy: 'Translate analysis into a perspective that is relevant to the decision.' },
-  ] satisfies LeadershipPrinciple[],
+  intro: "A concise view of the people who guide DCL's approach to investment and strategic decisions.",
+  members: [
+    { initials: 'DL', name: 'David Christopher Lebond', role: 'Chairman' },
+    { initials: 'SG', name: 'Sandeep Gupta', role: 'Managing Director' },
+    { initials: 'SR', name: 'Stephan Rotstein', role: 'CFO' },
+    { initials: 'PG', name: 'Patrick Gabaryan', role: 'COO' },
+  ] satisfies LeadershipMember[],
+  cta: { label: 'Meet the Team', href: '/team' },
 };
 
 export const companyFoundations = {

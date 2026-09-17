@@ -1,22 +1,30 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import { leadership } from '@/data/about-content';
 import { Leadership } from './Leadership';
 
 describe('Leadership', () => {
-  it('renders the eyebrow, headline, name, role, body copy, and all three principles', () => {
+  it('renders the eyebrow, headline, intro, and all four leadership members', () => {
     render(<Leadership />);
     expect(screen.getByTestId('text-leadership-eyebrow')).toHaveTextContent('Leadership');
     expect(screen.getByText(/leadership grounded/i)).toBeInTheDocument();
-    expect(screen.getByTestId('text-leadership-name')).toHaveTextContent('David Christopher Lebond');
-    expect(screen.getByTestId('text-leadership-role')).toHaveTextContent('Director');
-    expect(screen.getByTestId('text-leadership-role')).toHaveTextContent('DCL Consulting and Investments Limited');
-    expect(screen.getByText(/is led by david christopher lebond/i)).toBeInTheDocument();
 
-    const principles = screen.getAllByTestId(/^leadership-principle-/);
-    expect(principles).toHaveLength(3);
-    expect(principles[0]).toHaveTextContent('Understand before concluding.');
-    expect(principles[1]).toHaveTextContent('Challenge where necessary.');
-    expect(principles[2]).toHaveTextContent('Communicate what matters clearly.');
+    for (const member of leadership.members) {
+      const testId = `leadership-member-${member.name.toLowerCase().replaceAll(' ', '-')}`;
+      const el = screen.getByTestId(testId);
+      expect(el).toHaveTextContent(member.name);
+      expect(el).toHaveTextContent(member.role);
+      expect(el).toHaveTextContent(member.initials);
+    }
+    expect(screen.getByText('David Christopher Lebond')).toBeInTheDocument();
+    expect(screen.getByText('Chairman')).toBeInTheDocument();
+  });
+
+  it('renders a Meet the Team link routing to the real /team page', () => {
+    render(<Leadership />);
+    const link = screen.getByTestId('link-leadership-meet-team');
+    expect(link).toHaveTextContent('Meet the Team');
+    expect(link).toHaveAttribute('href', '/team');
   });
 
   it('does not render any image (typography-led, no fabricated portrait)', () => {

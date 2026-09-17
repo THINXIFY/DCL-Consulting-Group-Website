@@ -58,12 +58,14 @@ export const companyInformation = {
     { label: 'Company Number', lines: ['10086906'] },
     { label: 'Director', lines: ['David Christopher Lebond'] },
     { label: 'Registered Office', lines: ['3 Tallow Wharf,', 'Birchley Green,', 'Hertford,', 'Hertfordshire,', 'England,', 'SG14 1FF'] },
+    { label: 'London Office', lines: ['5 Beaconsfield Street,', 'London,', 'United Kingdom,', 'N1C 4EW'] },
     { label: 'Jurisdiction', lines: ['England and Wales'] },
     { label: 'Website', lines: ['dcl-consulting-group.com'] },
   ] satisfies CompanyDetailFact[],
-  companiesHouseHref: 'https://find-and-update.company-information.service.gov.uk/company/10086906',
-  companyRegisterCta: 'View Company Register',
+  companiesHouseHref: 'https://find-and-update.company-information.service.gov.uk/company/10086906/officers',
+  companyRegisterCta: 'Official Company Profile',
   legalCta: { label: 'Legal Information', href: '/terms' },
+  impressumCta: { label: 'Impressum', href: '/impressum' },
 };
 
 export const getInTouchBand = {
