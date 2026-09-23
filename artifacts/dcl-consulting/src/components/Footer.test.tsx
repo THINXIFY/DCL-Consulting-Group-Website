@@ -80,7 +80,8 @@ describe('Footer', () => {
     expect(cta).toHaveAttribute('href', '/contact');
 
     const footer = document.querySelector('footer');
-    expect(footer?.textContent).not.toMatch(/\+?\d[\d\s()-]{7,}\d/);
+    const phoneNumbers = (footer?.textContent ?? '').match(/\+?\d[\d\s()-]{7,}\d/g) ?? [];
+    expect(new Set(phoneNumbers)).toEqual(new Set(['+44 20 7946 0958']));
   });
 
   it('renders the real official email as a mailto link', () => {
@@ -89,6 +90,15 @@ describe('Footer', () => {
     const email = screen.getByTestId('link-footer-email');
     expect(email).toHaveTextContent('info@dcl-consulting-group.com');
     expect(email).toHaveAttribute('href', 'mailto:info@dcl-consulting-group.com');
+  });
+
+  it('shows the phone number as a tel: link that dials the real operational line, not the displayed UK number', () => {
+    mockMatchMedia(false);
+    render(<Footer />);
+    const link = screen.getByTestId('link-footer-phone');
+    expect(link).toHaveTextContent('+44 20 7946 0958');
+    expect(link).toHaveAttribute('href', 'tel:+38653839596');
+    expect(link).toHaveAttribute('aria-label', 'Call DCL at +44 20 7946 0958. Calls are routed to our operational line.');
   });
 
   it('renders only the exact confirmed company registration facts, nothing invented', () => {

@@ -15,6 +15,7 @@ import { companyFacts } from '@/data/home-content';
 import { ensureGsapRegistered, gsap } from '@/lib/gsap';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { useMagnetic } from '@/hooks/use-magnetic';
+import { PhoneLink } from '@/components/ui/phone-link';
 
 const SECTION_IMAGE = 'https://marbholding.com/wp-content/uploads/2026/09/lets-talk.webp';
 const FOOTER_BACKGROUND_IMAGE = 'https://marbholding.com/wp-content/uploads/2026/09/ChatGPT-Image-Sep-17-2026-05_01_29-PM.png';
@@ -247,6 +248,10 @@ export function Footer() {
                 >
                   {footerBrand.email}
                 </a>
+                <PhoneLink
+                  testId="link-footer-phone"
+                  linkClassName="inline-flex w-fit items-center text-[13px] leading-5 text-white/50 underline decoration-white/20 underline-offset-4 outline-none transition-colors duration-300 hover:text-[#8bbfe8] hover:decoration-[#8bbfe8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+                />
               </div>
             </div>
 

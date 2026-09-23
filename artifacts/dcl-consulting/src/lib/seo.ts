@@ -35,8 +35,11 @@ export function buildBreadcrumbJsonLd(items: BreadcrumbItem[]) {
 }
 
 // Verified facts only, sourced from data/company.ts - the same source of
-// truth already used by Team/Impressum/Footer. No phone number, social
-// account, rating, review, award or regulatory licence is invented here.
+// truth already used by Team/Impressum/Footer. No social account, rating,
+// review, award or regulatory licence is invented here. `telephone` uses
+// the same displayed UK number shown everywhere else on the site (not the
+// real dial destination) so a visitor checking a Google result sees the
+// same number they'd see on the page itself.
 export const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
@@ -45,6 +48,7 @@ export const organizationJsonLd = {
   url: SITE_URL,
   logo: DEFAULT_OG_IMAGE,
   email: dclCompany.email,
+  telephone: dclCompany.phoneDisplay,
   identifier: {
     '@type': 'PropertyValue',
     name: 'Companies House Registration Number',

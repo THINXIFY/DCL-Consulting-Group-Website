@@ -1,3 +1,5 @@
+import { dclCompany } from './company';
+
 export interface EnquiryType {
   id: string;
   name: string;
@@ -61,6 +63,7 @@ export const companyInformation = {
     { label: 'London Office', lines: ['5 Beaconsfield Street,', 'London,', 'United Kingdom,', 'N1C 4EW'] },
     { label: 'Jurisdiction', lines: ['England and Wales'] },
     { label: 'Website', lines: ['dcl-consulting-group.com'] },
+    { label: 'Phone', lines: [dclCompany.phoneDisplay] },
   ] satisfies CompanyDetailFact[],
   companiesHouseHref: 'https://find-and-update.company-information.service.gov.uk/company/10086906/officers',
   companyRegisterCta: 'Official Company Profile',

@@ -3,6 +3,7 @@ import { ArrowUpRight } from 'lucide-react';
 import { companyInformation } from '@/data/contact-content';
 import { ensureGsapRegistered, gsap } from '@/lib/gsap';
 import { FadeInImage } from '@/components/ui/fade-in-image';
+import { PhoneLink } from '@/components/ui/phone-link';
 import { RequestInfoModal } from './RequestInfoModal';
 
 const IMAGE_SRC = '/images/general/contact-company-meeting.webp';
@@ -148,6 +149,7 @@ export function CompanyInformation() {
             <div className="mt-8 border-t border-[#080a0d]/12">
               {companyInformation.facts.map((fact) => {
                 const isAddress = fact.label === 'Registered Office';
+                const isPhone = fact.label === 'Phone';
                 const Wrapper = isAddress ? 'address' : 'div';
                 return (
                   <div
@@ -158,13 +160,22 @@ export function CompanyInformation() {
                     <p className="text-[11px] font-semibold uppercase tracking-[.14em] text-[#8a939b]">{fact.label}</p>
                     <div>
                       <div className="dclCompanyInfo__rule mb-2 h-px w-8 origin-left scale-x-0 bg-[#8bbfe8] sm:hidden" />
-                      <Wrapper className="dclCompanyInfo__value text-[15px] not-italic leading-6 text-[#080a0d]">
-                        {fact.lines.map((line) => (
-                          <span key={line} className="block">
-                            {line}
-                          </span>
-                        ))}
-                      </Wrapper>
+                      {isPhone ? (
+                        <div className="dclCompanyInfo__value">
+                          <PhoneLink
+                            testId="link-company-info-phone"
+                            linkClassName="text-[15px] leading-6 text-[#080a0d] underline decoration-[#080a0d]/20 underline-offset-4 outline-none transition-colors duration-300 hover:text-[#171714] hover:decoration-[#8bbfe8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8bbfe8]"
+                          />
+                        </div>
+                      ) : (
+                        <Wrapper className="dclCompanyInfo__value text-[15px] not-italic leading-6 text-[#080a0d]">
+                          {fact.lines.map((line) => (
+                            <span key={line} className="block">
+                              {line}
+                            </span>
+                          ))}
+                        </Wrapper>
+                      )}
                     </div>
                   </div>
                 );

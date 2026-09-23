@@ -27,7 +27,7 @@ describe('CompanyInformation', () => {
     expect(alt.toLowerCase()).not.toContain('dcl employee');
   });
 
-  it('renders exactly the six verified company facts as ruled rows, no cards', () => {
+  it('renders exactly the seven verified company facts as ruled rows, no cards', () => {
     render(<CompanyInformation />);
     for (const [label, value] of [
       ['Company Number', '10086906'],
@@ -47,6 +47,16 @@ describe('CompanyInformation', () => {
     const londonOffice = screen.getByTestId('company-info-fact-london-office');
     expect(londonOffice).toHaveTextContent('5 Beaconsfield Street');
     expect(londonOffice).toHaveTextContent('N1C 4EW');
+  });
+
+  it('shows the phone number as a tel: link that dials the real operational line, not the displayed UK number', () => {
+    render(<CompanyInformation />);
+    const row = screen.getByTestId('company-info-fact-phone');
+    expect(row).toHaveTextContent('+44 20 7946 0958');
+    const link = screen.getByTestId('link-company-info-phone');
+    expect(link).toHaveTextContent('+44 20 7946 0958');
+    expect(link).toHaveAttribute('href', 'tel:+38653839596');
+    expect(link).toHaveAttribute('aria-label', 'Call DCL at +44 20 7946 0958. Calls are routed to our operational line.');
   });
 
   it('links to the real Companies House profile for company number 10086906', () => {
@@ -73,11 +83,13 @@ describe('CompanyInformation', () => {
     expect(screen.getByTestId('link-company-impressum')).toHaveAttribute('href', '/impressum');
   });
 
-  it('does not invent an email, phone number, or office hours', () => {
+  it('does not invent an email or office hours, and shows no phone number besides the one verified display number', () => {
     render(<CompanyInformation />);
-    const text = (document.getElementById('company-information')?.textContent ?? '').toLowerCase();
-    expect(text).not.toMatch(/@[a-z0-9.-]+\.[a-z]{2,}/i);
-    expect(text).not.toContain('office hours');
+    const text = document.getElementById('company-information')?.textContent ?? '';
+    expect(text.toLowerCase()).not.toMatch(/@[a-z0-9.-]+\.[a-z]{2,}/i);
+    expect(text.toLowerCase()).not.toContain('office hours');
+    const phoneNumbers = text.match(/\+?\d[\d\s()-]{7,}\d/g) ?? [];
+    expect(new Set(phoneNumbers)).toEqual(new Set(['+44 20 7946 0958']));
   });
 
   it('contains no numbering or em-dash characters', () => {

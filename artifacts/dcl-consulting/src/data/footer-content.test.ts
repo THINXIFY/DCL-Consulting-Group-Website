@@ -44,10 +44,13 @@ describe('footer-content', () => {
 
   it('has the one real, verified official email and no other fabricated email or phone number', () => {
     expect(footerBrand.email).toBe('info@dcl-consulting-group.com');
+    expect(footerBrand.phoneDisplay).toBe('+44 20 7946 0958');
+    expect(footerBrand.phoneDialNumber).toBe('+38653839596');
     const text = allStrings(ALL_CONTENT).join(' ');
     const emails = text.match(/[a-z0-9.-]+@[a-z0-9.-]+\.[a-z]{2,}/gi) ?? [];
     expect(new Set(emails)).toEqual(new Set(['info@dcl-consulting-group.com']));
-    expect(text).not.toMatch(/\+?\d[\d\s()-]{7,}\d/);
+    const phoneNumbers = text.match(/\+?\d[\d\s()-]{7,}\d/g) ?? [];
+    expect(new Set(phoneNumbers)).toEqual(new Set(['+44 20 7946 0958', '+38653839596']));
   });
 
   it('contains no numbering or em-dash characters anywhere', () => {

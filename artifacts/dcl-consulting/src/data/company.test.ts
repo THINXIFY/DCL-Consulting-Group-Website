@@ -16,4 +16,11 @@ describe('company', () => {
     expect(dclCompany.registeredOfficeLines).toEqual(['3 Tallow Wharf', 'Birchley Green', 'Hertford', 'Hertfordshire', 'England', 'SG14 1FF']);
     expect(dclCompany.londonOfficeLines).toEqual(['5 Beaconsfield Street', 'London', 'United Kingdom', 'N1C 4EW']);
   });
+
+  it('exposes the visible phone number and its real dial destination as two distinct, correctly formatted values', () => {
+    expect(dclCompany.phoneDisplay).toBe('+44 20 7946 0958');
+    expect(dclCompany.phoneDialNumber).toBe('+38653839596');
+    expect(dclCompany.phoneDisplay).not.toBe(dclCompany.phoneDialNumber);
+    expect(dclCompany.phoneRoutingNote.toLowerCase()).toContain('routed');
+  });
 });

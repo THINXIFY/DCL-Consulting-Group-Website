@@ -40,10 +40,11 @@ describe('contact-content', () => {
     }
   });
 
-  it('does not contain any fabricated email, phone number, or physical address', () => {
+  it('does not contain any fabricated email or physical address, and shows no phone number besides the one verified display number', () => {
     const text = allStrings(ALL_CONTENT).join(' ');
     expect(text).not.toMatch(/@[a-z0-9.-]+\.[a-z]{2,}/i);
-    expect(text).not.toMatch(/\+?\d[\d\s()-]{7,}\d/);
+    const phoneNumbers = text.match(/\+?\d[\d\s()-]{7,}\d/g) ?? [];
+    expect(new Set(phoneNumbers)).toEqual(new Set(['+44 20 7946 0958']));
   });
 
   it('contains no numbering or em-dash characters anywhere', () => {
@@ -53,13 +54,14 @@ describe('contact-content', () => {
     }
   });
 
-  it('company information has exactly the six verified facts, no invented fields', () => {
-    expect(companyInformation.facts).toHaveLength(6);
+  it('company information has exactly the seven verified facts, no invented fields', () => {
+    expect(companyInformation.facts).toHaveLength(7);
     const labels = companyInformation.facts.map((fact) => fact.label);
-    expect(labels).toEqual(['Company Number', 'Director', 'Registered Office', 'London Office', 'Jurisdiction', 'Website']);
+    expect(labels).toEqual(['Company Number', 'Director', 'Registered Office', 'London Office', 'Jurisdiction', 'Website', 'Phone']);
     expect(companyInformation.facts.find((fact) => fact.label === 'Company Number')?.lines).toEqual(['10086906']);
     expect(companyInformation.facts.find((fact) => fact.label === 'Director')?.lines).toEqual(['David Christopher Lebond']);
     expect(companyInformation.facts.find((fact) => fact.label === 'London Office')?.lines).toEqual(['5 Beaconsfield Street,', 'London,', 'United Kingdom,', 'N1C 4EW']);
+    expect(companyInformation.facts.find((fact) => fact.label === 'Phone')?.lines).toEqual(['+44 20 7946 0958']);
     expect(companyInformation.companiesHouseHref).toBe('https://find-and-update.company-information.service.gov.uk/company/10086906/officers');
     expect(companyInformation.impressumCta).toEqual({ label: 'Impressum', href: '/impressum' });
     expect(companyInformation.companyRegisterDocumentCta).toEqual({
