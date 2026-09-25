@@ -44,7 +44,7 @@ export const privacySections: PolicySection[] = [
       { label: 'Registered office', value: '3 Tallow Wharf, Birchley Green, Hertford, Hertfordshire, England, SG14 1FF' },
       { label: 'Company number', value: '10086906' },
       { label: 'Website', value: 'dcl-consulting-group.com' },
-      { label: 'Privacy enquiries', value: 'info@dcl-consulting-group.com' },
+      { label: 'Privacy enquiries', value: 'info@dcl-consulting-group.co.uk' },
     ],
   },
   {
@@ -224,7 +224,7 @@ export const privacySections: PolicySection[] = [
       'If you have questions about this Privacy Policy or how DCL handles personal information, please contact:',
       'DCL Consulting and Investments Limited',
       '3 Tallow Wharf, Birchley Green, Hertford, Hertfordshire, England, SG14 1FF',
-      'Email: info@dcl-consulting-group.com',
+      'Email: info@dcl-consulting-group.co.uk',
       'Company number: 10086906',
     ],
     links: [

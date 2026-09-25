@@ -10,7 +10,7 @@ export const dclCompany = {
   jurisdiction: 'England and Wales',
   registeredOfficeLines: ['3 Tallow Wharf', 'Birchley Green', 'Hertford', 'Hertfordshire', 'England', 'SG14 1FF'],
   londonOfficeLines: ['5 Beaconsfield Street', 'London', 'United Kingdom', 'N1C 4EW'],
-  email: 'info@dcl-consulting-group.com',
+  email: 'info@dcl-consulting-group.co.uk',
   website: 'dcl-consulting-group.com',
   companiesHouseUrl: 'https://find-and-update.company-information.service.gov.uk/company/10086906/officers',
   // The number shown to visitors is a UK contact number; calls made from it

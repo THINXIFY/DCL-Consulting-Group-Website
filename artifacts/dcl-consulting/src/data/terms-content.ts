@@ -37,7 +37,7 @@ export const termsSections: TermsSection[] = [
       { label: 'Company number', value: '10086906' },
       { label: 'Registered office', value: '3 Tallow Wharf, Birchley Green, Hertford, Hertfordshire, England, SG14 1FF' },
       { label: 'Website', value: 'dcl-consulting-group.com' },
-      { label: 'Contact', value: 'info@dcl-consulting-group.com' },
+      { label: 'Contact', value: 'info@dcl-consulting-group.co.uk' },
     ],
   },
   {
@@ -255,7 +255,7 @@ export const termsSections: TermsSection[] = [
       'Questions regarding these Terms & Conditions may be sent to:',
       'DCL Consulting and Investments Limited',
       '3 Tallow Wharf, Birchley Green, Hertford, Hertfordshire, England, SG14 1FF',
-      'Email: info@dcl-consulting-group.com',
+      'Email: info@dcl-consulting-group.co.uk',
       'Company number: 10086906',
     ],
     links: [

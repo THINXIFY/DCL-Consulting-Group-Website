@@ -59,7 +59,7 @@ describe('privacy-content', () => {
       { label: 'Registered office', value: '3 Tallow Wharf, Birchley Green, Hertford, Hertfordshire, England, SG14 1FF' },
       { label: 'Company number', value: '10086906' },
       { label: 'Website', value: 'dcl-consulting-group.com' },
-      { label: 'Privacy enquiries', value: 'info@dcl-consulting-group.com' },
+      { label: 'Privacy enquiries', value: 'info@dcl-consulting-group.co.uk' },
     ]);
   });
 
@@ -92,7 +92,7 @@ describe('privacy-content', () => {
       { label: 'Contact DCL', href: '/contact' },
     ]);
     const text = section!.body.join(' ');
-    expect(text).toContain('info@dcl-consulting-group.com');
+    expect(text).toContain('info@dcl-consulting-group.co.uk');
     expect(text).toContain('10086906');
   });
 

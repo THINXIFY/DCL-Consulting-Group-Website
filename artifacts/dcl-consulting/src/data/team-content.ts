@@ -3,12 +3,14 @@ export interface TeamLeader {
   name: string;
   role: string;
   description: string;
+  email: string;
 }
 
 export interface TeamMember {
   name: string;
   role: string;
   description: string;
+  email: string;
 }
 
 export const teamHero = {
@@ -32,6 +34,7 @@ export const teamLeadership = {
       role: 'Chairman',
       description:
         "Provides overall leadership, strategic direction, and governance, helping align DCL's long-term priorities, commercial judgement, client focus, and organisational development across the business.",
+      email: 'david.c@dcl-consulting-group.co.uk',
     },
     {
       initials: 'SG',
@@ -39,6 +42,7 @@ export const teamLeadership = {
       role: 'Managing Director',
       description:
         "Leads day-to-day management and execution, coordinating teams, client priorities, strategic initiatives, and operational delivery while supporting disciplined growth across DCL's advisory activities.",
+      email: 'sandeep.g@dcl-consulting-group.co.uk',
     },
     {
       initials: 'SR',
@@ -46,6 +50,7 @@ export const teamLeadership = {
       role: 'CFO',
       description:
         "Oversees financial planning, reporting, controls, and commercial discipline, supporting informed decision-making, responsible resource allocation, and the financial resilience of DCL's operations.",
+      email: 'stephan.r@dcl-consulting-group.co.uk',
     },
     {
       initials: 'PG',
@@ -53,6 +58,7 @@ export const teamLeadership = {
       role: 'COO',
       description:
         "Directs operational execution across the business, strengthening internal processes, cross-functional coordination, service delivery, and organisational efficiency while supporting DCL's strategic objectives.",
+      email: 'patrick.g@dcl-consulting-group.co.uk',
     },
   ] satisfies TeamLeader[],
 };
@@ -67,42 +73,49 @@ export const teamDirectory = {
       role: 'CRM',
       description:
         'Supports client relationship management by coordinating communication, service continuity, engagement follow-up, and internal collaboration to help maintain responsive, professional, long-term client relationships.',
+      email: 'steve.j@dcl-consulting-group.co.uk',
     },
     {
       name: 'Thomas Zeman',
       role: 'Investment Manager',
       description:
         'Supports the evaluation and management of investment opportunities, combining commercial context, financial considerations, risk awareness, and strategic perspective to inform decision-making.',
+      email: 'thomas.z@dcl-consulting-group.co.uk',
     },
     {
       name: 'Markus Weber',
       role: 'Investment Analyst',
       description:
         'Conducts structured investment research and analysis, reviewing market context, financial information, business fundamentals, and material risks to support clear, evidence-based investment assessments.',
+      email: 'markus.w@dcl-consulting-group.co.uk',
     },
     {
       name: 'Brian Alther',
       role: 'Sales Manager',
       description:
         "Leads sales activity and business development, supporting new client relationships, opportunity identification, commercial communication, and coordinated engagement across DCL's advisory offering.",
+      email: 'b.alther@dcl-consulting-group.co.uk',
     },
     {
       name: 'Johnathan Reynolds',
       role: 'Finance Manager',
       description:
         'Supports financial management, budgeting, reporting, and internal controls, helping maintain financial discipline, operational visibility, and reliable information for management decision-making.',
+      email: 'johnathan.r@dcl-consulting-group.co.uk',
     },
     {
       name: 'Rajesh Sharma',
       role: 'Senior Investment Analyst',
       description:
         'Provides senior-level investment analysis across opportunities and markets, assessing financial fundamentals, commercial drivers, strategic context, and key risks to support informed advisory conclusions.',
+      email: 'rajesh.s@dcl-consulting-group.co.uk',
     },
     {
       name: 'Sonia Agarwal',
       role: 'Financial Analyst',
       description:
         "Supports financial analysis through detailed review of financial data, performance indicators, assumptions, and commercial context, helping strengthen the quality of DCL's decision support.",
+      email: 'sonia.a@dcl-consulting-group.co.uk',
     },
   ] satisfies TeamMember[],
   microLines: ['Talent', 'Discipline', 'Better outcomes'] as [string, string, string],

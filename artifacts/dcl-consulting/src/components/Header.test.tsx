@@ -272,8 +272,8 @@ describe('Header', () => {
       expect(screen.getByTestId('link-mobile-impressum')).toHaveAttribute('href', '/impressum');
 
       const email = screen.getByTestId('link-mobile-email');
-      expect(email).toHaveTextContent('info@dcl-consulting-group.com');
-      expect(email).toHaveAttribute('href', 'mailto:info@dcl-consulting-group.com');
+      expect(email).toHaveTextContent('info@dcl-consulting-group.co.uk');
+      expect(email).toHaveAttribute('href', 'mailto:info@dcl-consulting-group.co.uk');
 
       const cta = screen.getByTestId('link-mobile-cta');
       expect(cta).toHaveTextContent('Get in Touch');

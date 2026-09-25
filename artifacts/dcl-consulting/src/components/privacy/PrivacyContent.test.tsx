@@ -20,7 +20,7 @@ describe('PrivacyContent', () => {
     render(<PrivacyContent />);
     const section = screen.getByTestId('privacy-section-who-we-are');
     expect(section).toHaveTextContent('10086906');
-    expect(section).toHaveTextContent('info@dcl-consulting-group.com');
+    expect(section).toHaveTextContent('info@dcl-consulting-group.co.uk');
   });
 
   it('renders real links to /terms and /contact in the contact section', () => {

@@ -85,6 +85,13 @@ export function TeamDirectory() {
                 <p className="dclTeamDirectory__rowDescription mt-3 max-w-[420px] text-[16px] leading-6 text-white/55 lg:max-w-[380px] lg:text-[14px] lg:leading-[1.55]">
                   {member.description}
                 </p>
+                <a
+                  href={`mailto:${member.email}`}
+                  data-testid={`team-member-email-${slug(member.name)}`}
+                  className="mt-3 inline-flex w-fit items-center text-[13px] leading-5 text-white/45 underline decoration-white/20 underline-offset-4 transition-colors duration-300 hover:text-[#8bbfe8] hover:decoration-[#8bbfe8]"
+                >
+                  {member.email}
+                </a>
               </div>
               <ArrowRight size={16} strokeWidth={1.4} className="mt-2 shrink-0 text-white/30 transition-all duration-300 group-hover:translate-x-1 group-hover:text-[#8bbfe8]" aria-hidden="true" />
             </div>

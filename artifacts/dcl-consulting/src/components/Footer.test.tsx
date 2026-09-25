@@ -88,8 +88,8 @@ describe('Footer', () => {
     mockMatchMedia(false);
     render(<Footer />);
     const email = screen.getByTestId('link-footer-email');
-    expect(email).toHaveTextContent('info@dcl-consulting-group.com');
-    expect(email).toHaveAttribute('href', 'mailto:info@dcl-consulting-group.com');
+    expect(email).toHaveTextContent('info@dcl-consulting-group.co.uk');
+    expect(email).toHaveAttribute('href', 'mailto:info@dcl-consulting-group.co.uk');
   });
 
   it('shows the phone number as a tel: link that dials the real operational line, not the displayed UK number', () => {

@@ -33,7 +33,7 @@ describe("app CORS configuration", () => {
     process.env.OTP_HASH_SECRET = "test-secret";
     process.env.MAIL_PROVIDER = "resend";
     process.env.RESEND_API_KEY = "re_test";
-    process.env.MAIL_FROM_EMAIL = "info@dcl-consulting-group.com";
+    process.env.MAIL_FROM_EMAIL = "info@dcl-consulting-group.co.uk";
 
     await expect(loadApp()).rejects.toThrow(/CORS_ALLOWED_ORIGINS must be set in production/);
   });
@@ -44,7 +44,7 @@ describe("app CORS configuration", () => {
     process.env.OTP_HASH_SECRET = "test-secret";
     process.env.MAIL_PROVIDER = "resend";
     process.env.RESEND_API_KEY = "re_test";
-    process.env.MAIL_FROM_EMAIL = "info@dcl-consulting-group.com";
+    process.env.MAIL_FROM_EMAIL = "info@dcl-consulting-group.co.uk";
 
     await expect(loadApp()).resolves.toBeDefined();
   });

@@ -19,7 +19,7 @@ describe('TermsContent', () => {
     render(<TermsContent />);
     const section = screen.getByTestId('terms-section-about-dcl');
     expect(section).toHaveTextContent('10086906');
-    expect(section).toHaveTextContent('info@dcl-consulting-group.com');
+    expect(section).toHaveTextContent('info@dcl-consulting-group.co.uk');
   });
 
   it('renders bullet points for the use-of-the-website section', () => {

@@ -26,6 +26,9 @@ describe('TeamDirectory', () => {
       expect(el).toHaveTextContent(member.name);
       expect(el).toHaveTextContent(member.role);
       expect(el).toHaveTextContent(member.description);
+      const emailEl = screen.getByTestId(`team-member-email-${testId.replace('team-member-', '')}`);
+      expect(emailEl).toHaveTextContent(member.email);
+      expect(emailEl).toHaveAttribute('href', `mailto:${member.email}`);
     }
   });
 

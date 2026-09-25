@@ -21,24 +21,32 @@ describe('team-content', () => {
   });
 
   it('has exactly the four approved leadership members with real titles, nothing invented', () => {
-    expect(teamLeadership.members.map(({ initials, name, role }) => ({ initials, name, role }))).toEqual([
-      { initials: 'DL', name: 'David Christopher Lebond', role: 'Chairman' },
-      { initials: 'SG', name: 'Sandeep Gupta', role: 'Managing Director' },
-      { initials: 'SR', name: 'Stephan Rotstein', role: 'CFO' },
-      { initials: 'PG', name: 'Patrick Gabaryan', role: 'COO' },
+    expect(teamLeadership.members.map(({ initials, name, role, email }) => ({ initials, name, role, email }))).toEqual([
+      { initials: 'DL', name: 'David Christopher Lebond', role: 'Chairman', email: 'david.c@dcl-consulting-group.co.uk' },
+      { initials: 'SG', name: 'Sandeep Gupta', role: 'Managing Director', email: 'sandeep.g@dcl-consulting-group.co.uk' },
+      { initials: 'SR', name: 'Stephan Rotstein', role: 'CFO', email: 'stephan.r@dcl-consulting-group.co.uk' },
+      { initials: 'PG', name: 'Patrick Gabaryan', role: 'COO', email: 'patrick.g@dcl-consulting-group.co.uk' },
     ]);
   });
 
   it('has exactly the seven approved broader-team members with real titles, nothing invented', () => {
-    expect(teamDirectory.members.map(({ name, role }) => ({ name, role }))).toEqual([
-      { name: 'Steve Johnson', role: 'CRM' },
-      { name: 'Thomas Zeman', role: 'Investment Manager' },
-      { name: 'Markus Weber', role: 'Investment Analyst' },
-      { name: 'Brian Alther', role: 'Sales Manager' },
-      { name: 'Johnathan Reynolds', role: 'Finance Manager' },
-      { name: 'Rajesh Sharma', role: 'Senior Investment Analyst' },
-      { name: 'Sonia Agarwal', role: 'Financial Analyst' },
+    expect(teamDirectory.members.map(({ name, role, email }) => ({ name, role, email }))).toEqual([
+      { name: 'Steve Johnson', role: 'CRM', email: 'steve.j@dcl-consulting-group.co.uk' },
+      { name: 'Thomas Zeman', role: 'Investment Manager', email: 'thomas.z@dcl-consulting-group.co.uk' },
+      { name: 'Markus Weber', role: 'Investment Analyst', email: 'markus.w@dcl-consulting-group.co.uk' },
+      { name: 'Brian Alther', role: 'Sales Manager', email: 'b.alther@dcl-consulting-group.co.uk' },
+      { name: 'Johnathan Reynolds', role: 'Finance Manager', email: 'johnathan.r@dcl-consulting-group.co.uk' },
+      { name: 'Rajesh Sharma', role: 'Senior Investment Analyst', email: 'rajesh.s@dcl-consulting-group.co.uk' },
+      { name: 'Sonia Agarwal', role: 'Financial Analyst', email: 'sonia.a@dcl-consulting-group.co.uk' },
     ]);
+  });
+
+  it('every team member has a unique dcl-consulting-group.co.uk email address', () => {
+    const allMembers = [...teamLeadership.members, ...teamDirectory.members];
+    for (const member of allMembers) {
+      expect(member.email).toMatch(/^[a-z.]+@dcl-consulting-group\.co\.uk$/);
+    }
+    expect(new Set(allMembers.map((member) => member.email)).size).toBe(allMembers.length);
   });
 
   it('has exactly eleven team members in total across leadership and the broader team', () => {

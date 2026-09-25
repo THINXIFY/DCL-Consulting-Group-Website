@@ -37,7 +37,7 @@ describe('impressum-content', () => {
       { label: 'Company type', value: 'Private Limited Company' },
       { label: 'Company registration number', value: '10086906' },
       { label: 'Registered in', value: 'England and Wales' },
-      { label: 'Email', value: 'info@dcl-consulting-group.com' },
+      { label: 'Email', value: 'info@dcl-consulting-group.co.uk' },
       { label: 'Website', value: 'dcl-consulting-group.com' },
     ]);
   });

@@ -89,7 +89,7 @@ services:
       - key: MAIL_PROVIDER
         value: resend
       - key: MAIL_FROM_EMAIL
-        value: info@dcl-consulting-group.com
+        value: info@dcl-consulting-group.co.uk
       - key: MAIL_FROM_NAME
         value: DCL Consulting and Investments Limited
       - key: PUBLIC_SITE_URL

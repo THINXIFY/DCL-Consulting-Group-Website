@@ -77,6 +77,13 @@ export function TeamLeadership() {
               <p className="dclTeamLeadership__memberName mt-4 text-[16px] leading-[1.3] text-[#080a0d]">{member.name}</p>
               <p className="dclTeamLeadership__memberRole mt-1.5 text-[11px] font-semibold uppercase tracking-[.13em] text-[#6b737a]">{member.role}</p>
               <p className="dclTeamLeadership__memberDescription mt-3 max-w-[320px] text-[16px] leading-6 text-[#4b545c] lg:max-w-[280px] lg:text-[14px] lg:leading-[1.55]">{member.description}</p>
+              <a
+                href={`mailto:${member.email}`}
+                data-testid={`team-leader-email-${slug(member.name)}`}
+                className="mt-3 inline-flex w-fit items-center text-[13px] leading-5 text-[#6b737a] underline decoration-[#080a0d]/15 underline-offset-4 transition-colors duration-300 hover:text-[#4f718c] hover:decoration-[#8bbfe8]"
+              >
+                {member.email}
+              </a>
             </div>
           ))}
         </div>

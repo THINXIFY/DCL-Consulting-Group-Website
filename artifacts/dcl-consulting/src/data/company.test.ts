@@ -7,7 +7,7 @@ describe('company', () => {
     expect(dclCompany.number).toBe('10086906');
     expect(dclCompany.type).toBe('Private Limited Company');
     expect(dclCompany.jurisdiction).toBe('England and Wales');
-    expect(dclCompany.email).toBe('info@dcl-consulting-group.com');
+    expect(dclCompany.email).toBe('info@dcl-consulting-group.co.uk');
     expect(dclCompany.website).toBe('dcl-consulting-group.com');
     expect(dclCompany.companiesHouseUrl).toBe('https://find-and-update.company-information.service.gov.uk/company/10086906/officers');
   });
