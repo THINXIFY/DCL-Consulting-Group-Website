@@ -22,22 +22,22 @@ describe('team-content', () => {
 
   it('has exactly the four approved leadership members with real titles, nothing invented', () => {
     expect(teamLeadership.members.map(({ initials, name, role, email }) => ({ initials, name, role, email }))).toEqual([
-      { initials: 'DL', name: 'David Christopher Lebond', role: 'Chairman', email: 'david.c@dcl-consulting-group.co.uk' },
-      { initials: 'SG', name: 'Sandeep Gupta', role: 'Managing Director', email: 'sandeep.g@dcl-consulting-group.co.uk' },
-      { initials: 'SR', name: 'Stephan Rotstein', role: 'CFO', email: 'stephan.r@dcl-consulting-group.co.uk' },
-      { initials: 'PG', name: 'Patrick Gabaryan', role: 'COO', email: 'patrick.g@dcl-consulting-group.co.uk' },
+      { initials: 'DL', name: 'David Christopher Lebond', role: 'Chairman', email: 'davidchristopherlebond@dcl-consulting-group.co.uk' },
+      { initials: 'SG', name: 'Sandeep Gupta', role: 'Managing Director', email: 'sandeepgupta@dcl-consulting-group.co.uk' },
+      { initials: 'SR', name: 'Stephan Rotstein', role: 'CFO', email: 'stephanrotstein@dcl-consulting-group.co.uk' },
+      { initials: 'PG', name: 'Patrick Gabaryan', role: 'COO', email: 'patrickgabaryan@dcl-consulting-group.co.uk' },
     ]);
   });
 
   it('has exactly the seven approved broader-team members with real titles, nothing invented', () => {
     expect(teamDirectory.members.map(({ name, role, email }) => ({ name, role, email }))).toEqual([
-      { name: 'Steve Johnson', role: 'CRM', email: 'steve.j@dcl-consulting-group.co.uk' },
-      { name: 'Thomas Zeman', role: 'Investment Manager', email: 'thomas.z@dcl-consulting-group.co.uk' },
-      { name: 'Markus Weber', role: 'Investment Analyst', email: 'markus.w@dcl-consulting-group.co.uk' },
-      { name: 'Brian Alther', role: 'Sales Manager', email: 'b.alther@dcl-consulting-group.co.uk' },
-      { name: 'Johnathan Reynolds', role: 'Finance Manager', email: 'johnathan.r@dcl-consulting-group.co.uk' },
-      { name: 'Rajesh Sharma', role: 'Senior Investment Analyst', email: 'rajesh.s@dcl-consulting-group.co.uk' },
-      { name: 'Sonia Agarwal', role: 'Financial Analyst', email: 'sonia.a@dcl-consulting-group.co.uk' },
+      { name: 'Steve Johnson', role: 'CRM', email: 'stevejohnson@dcl-consulting-group.co.uk' },
+      { name: 'Thomas Zeman', role: 'Investment Manager', email: 'thomaszeman@dcl-consulting-group.co.uk' },
+      { name: 'Markus Weber', role: 'Investment Analyst', email: 'markusweber@dcl-consulting-group.co.uk' },
+      { name: 'Brian Alther', role: 'Sales Manager', email: 'brianalther@dcl-consulting-group.co.uk' },
+      { name: 'Johnathan Reynolds', role: 'Finance Manager', email: 'johnathanreynolds@dcl-consulting-group.co.uk' },
+      { name: 'Rajesh Sharma', role: 'Senior Investment Analyst', email: 'rajeshsharma@dcl-consulting-group.co.uk' },
+      { name: 'Sonia Agarwal', role: 'Financial Analyst', email: 'soniaagarwal@dcl-consulting-group.co.uk' },
     ]);
   });
 
