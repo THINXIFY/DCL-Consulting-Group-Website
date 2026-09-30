@@ -49,14 +49,14 @@ describe('CompanyInformation', () => {
     expect(londonOffice).toHaveTextContent('N1C 4EW');
   });
 
-  it('shows the phone number as a tel: link that dials the real operational line, not the displayed UK number', () => {
+  it('shows the phone number as a tel: link that dials the same number shown', () => {
     render(<CompanyInformation />);
     const row = screen.getByTestId('company-info-fact-phone');
     expect(row).toHaveTextContent('+44 20 7946 0958');
     const link = screen.getByTestId('link-company-info-phone');
     expect(link).toHaveTextContent('+44 20 7946 0958');
-    expect(link).toHaveAttribute('href', 'tel:+38653839596');
-    expect(link).toHaveAttribute('aria-label', 'Call DCL at +44 20 7946 0958. Calls are routed to our operational line.');
+    expect(link).toHaveAttribute('href', 'tel:+442079460958');
+    expect(link).toHaveAttribute('aria-label', 'Call DCL at +44 20 7946 0958');
   });
 
   it('links to the real Companies House profile for company number 10086906', () => {

@@ -92,13 +92,13 @@ describe('Footer', () => {
     expect(email).toHaveAttribute('href', 'mailto:info@dcl-consulting-group.co.uk');
   });
 
-  it('shows the phone number as a tel: link that dials the real operational line, not the displayed UK number', () => {
+  it('shows the phone number as a tel: link that dials the same number shown', () => {
     mockMatchMedia(false);
     render(<Footer />);
     const link = screen.getByTestId('link-footer-phone');
     expect(link).toHaveTextContent('+44 20 7946 0958');
-    expect(link).toHaveAttribute('href', 'tel:+38653839596');
-    expect(link).toHaveAttribute('aria-label', 'Call DCL at +44 20 7946 0958. Calls are routed to our operational line.');
+    expect(link).toHaveAttribute('href', 'tel:+442079460958');
+    expect(link).toHaveAttribute('aria-label', 'Call DCL at +44 20 7946 0958');
   });
 
   it('renders only the exact confirmed company registration facts, nothing invented', () => {

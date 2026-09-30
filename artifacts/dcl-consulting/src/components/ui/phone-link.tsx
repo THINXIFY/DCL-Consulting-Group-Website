@@ -1,12 +1,6 @@
 import { dclCompany } from '@/data/company';
 
-/**
- * The single place the DCL phone number is rendered anywhere on the site.
- * Displays the UK-facing number but dials the real operational line - the
- * mismatch is disclosed, never hidden: the aria-label spells it out for
- * screen readers, and the native `title` surfaces it as a hover tooltip
- * on desktop, without a permanent visible caption cluttering the UI.
- */
+/** The single place the DCL phone number is rendered anywhere on the site. */
 export function PhoneLink({
   testId = 'link-phone',
   linkClassName,
@@ -16,10 +10,9 @@ export function PhoneLink({
 }) {
   return (
     <a
-      href={`tel:${dclCompany.phoneDialNumber}`}
+      href={`tel:${dclCompany.phoneDisplay.replace(/\s+/g, '')}`}
       data-testid={testId}
-      aria-label={`Call DCL at ${dclCompany.phoneDisplay}. ${dclCompany.phoneRoutingNote}`}
-      title={dclCompany.phoneRoutingNote}
+      aria-label={`Call DCL at ${dclCompany.phoneDisplay}`}
       className={linkClassName}
     >
       {dclCompany.phoneDisplay}

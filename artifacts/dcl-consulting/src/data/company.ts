@@ -13,11 +13,5 @@ export const dclCompany = {
   email: 'info@dcl-consulting-group.co.uk',
   website: 'dcl-consulting-group.com',
   companiesHouseUrl: 'https://find-and-update.company-information.service.gov.uk/company/10086906/officers',
-  // The number shown to visitors is a UK contact number; calls made from it
-  // are routed to DCL's actual operational line below. Both numbers are
-  // deliberately exposed together wherever this is used - never just the
-  // display number - so the routing is disclosed, not hidden.
   phoneDisplay: '+44 20 7946 0958',
-  phoneDialNumber: '+38653839596',
-  phoneRoutingNote: 'Calls are routed to our operational line.',
 };

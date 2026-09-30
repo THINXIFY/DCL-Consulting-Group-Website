@@ -3,18 +3,17 @@ import { describe, expect, it } from 'vitest';
 import { PhoneLink } from './phone-link';
 
 describe('PhoneLink', () => {
-  it('displays the UK number but dials the real operational line', () => {
+  it('displays and dials the same real number', () => {
     render(<PhoneLink />);
     const link = screen.getByTestId('link-phone');
     expect(link).toHaveTextContent('+44 20 7946 0958');
-    expect(link).toHaveAttribute('href', 'tel:+38653839596');
+    expect(link).toHaveAttribute('href', 'tel:+442079460958');
   });
 
-  it('discloses the routing via the accessible label and a hover tooltip, without a permanent visible caption', () => {
+  it('has an accessible label naming the number', () => {
     render(<PhoneLink />);
     const link = screen.getByTestId('link-phone');
-    expect(link).toHaveAttribute('aria-label', 'Call DCL at +44 20 7946 0958. Calls are routed to our operational line.');
-    expect(link).toHaveAttribute('title', 'Calls are routed to our operational line.');
+    expect(link).toHaveAttribute('aria-label', 'Call DCL at +44 20 7946 0958');
   });
 
   it('accepts a distinct testid so multiple instances on one page (e.g. footer + contact page) never collide', () => {

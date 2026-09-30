@@ -22,8 +22,6 @@ export const footerBrand = {
   copy: 'DCL provides independent advisory perspective across investment, assets, strategy and complex decision-making.',
   email: dclCompany.email,
   phoneDisplay: dclCompany.phoneDisplay,
-  phoneDialNumber: dclCompany.phoneDialNumber,
-  phoneRoutingNote: dclCompany.phoneRoutingNote,
 };
 
 export const footerCompanyLinks: FooterNavLink[] = [
